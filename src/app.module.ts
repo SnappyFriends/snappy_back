@@ -6,9 +6,23 @@ import { PrivacyModule } from './privacy/privacy.module';
 import { MessagesModule } from './messages/messages.module';
 import { InterestsModule } from './interests/interests.module';
 
+import typeorm from './config/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
+import { ReactionsModule } from './reactions/reactions.module';
+import { CommentsModule } from './comments/comments.module';
+import { PollsModule } from './polls/polls.module';
+
 @Module({
-  imports: [ReportsModule, PrivacyModule, MessagesModule, InterestsModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
+  TypeOrmModule.forRootAsync({
+    inject: [ConfigService],
+    useFactory: (configTypeORM: ConfigService) => configTypeORM.get('typeorm')
+  }),
+    UsersModule, PostsModule, ReactionsModule, CommentsModule, PollsModule, ReportsModule, PrivacyModule, InterestsModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
