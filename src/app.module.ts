@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 import typeorm from './config/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -17,9 +15,7 @@ import { MessagesModule } from './messages/messages.module';
 import { InterestsModule } from './interests/interests.module';
 import { FriendshipsModule } from './friendships/friendships.module';
 
-
 @Module({
-<<<<<<< HEAD
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
     TypeOrmModule.forRootAsync({
@@ -35,17 +31,10 @@ import { FriendshipsModule } from './friendships/friendships.module';
     ReportsModule,
     PrivacyModule,
     InterestsModule,
+    FriendshipsModule,
     MessagesModule,
   ],
-=======
-  imports: [ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
-  TypeOrmModule.forRootAsync({
-    inject: [ConfigService],
-    useFactory: (configTypeORM: ConfigService) => configTypeORM.get('typeorm')
-  }),
-    UsersModule, PostsModule, ReactionsModule, CommentsModule, PollsModule, ReportsModule, PrivacyModule, InterestsModule, FriendshipsModule],
->>>>>>> d4a98499fabdffc4a7f5367044802f87f4cd76f9
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule { }
