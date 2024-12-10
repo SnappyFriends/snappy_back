@@ -4,9 +4,24 @@ import { AppService } from './app.service';
 import { ReportsModule } from './reports/reports.module';
 import { PrivacyModule } from './privacy/privacy.module';
 
+import typeorm from './config/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
+import { ReactionsModule } from './reactions/reactions.module';
+import { CommentsModule } from './comments/comments.module';
+import { PollsModule } from './polls/polls.module';
+
 @Module({
-  imports: [ReportsModule, PrivacyModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
+  TypeOrmModule.forRootAsync({
+    inject: [ConfigService],
+    useFactory: (configTypeORM: ConfigService) => configTypeORM.get('typeorm')
+  }),
+    UsersModule, PostsModule, ReactionsModule, CommentsModule, PollsModule, ReportsModule, PrivacyModule],
+
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
