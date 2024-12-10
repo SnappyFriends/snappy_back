@@ -19,13 +19,33 @@ import { FriendshipsModule } from './friendships/friendships.module';
 
 
 @Module({
+<<<<<<< HEAD
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configTypeORM: ConfigService) =>
+        configTypeORM.get('typeorm'),
+    }),
+    UsersModule,
+    PostsModule,
+    ReactionsModule,
+    CommentsModule,
+    PollsModule,
+    ReportsModule,
+    PrivacyModule,
+    InterestsModule,
+    MessagesModule,
+  ],
+=======
   imports: [ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
   TypeOrmModule.forRootAsync({
     inject: [ConfigService],
     useFactory: (configTypeORM: ConfigService) => configTypeORM.get('typeorm')
   }),
     UsersModule, PostsModule, ReactionsModule, CommentsModule, PollsModule, ReportsModule, PrivacyModule, InterestsModule, FriendshipsModule],
+>>>>>>> d4a98499fabdffc4a7f5367044802f87f4cd76f9
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
