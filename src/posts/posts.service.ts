@@ -13,11 +13,11 @@ export class PostsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    return `This action returns a #${id} posts`;
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+    return `This action updates a #${id} posts`;
   }
 
   remove(id: number) {
