@@ -32,13 +32,7 @@ import { FriendshipsModule } from './friendships/friendships.module';
     FriendshipsModule,
     MessagesModule,
   ],
-<<<<<<< HEAD
-  controllers: [AppController],
-  providers: [AppService],
-=======
   controllers: [],
   providers: [],
->>>>>>> 4ab2581e420992679a2b107b9766495cf3ea6e61
 })
-
-export class AppModule { }
+export class AppModule {}
