@@ -16,13 +16,24 @@ import { CommentsModule } from './comments/comments.module';
 import { PollsModule } from './polls/polls.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
-  TypeOrmModule.forRootAsync({
-    inject: [ConfigService],
-    useFactory: (configTypeORM: ConfigService) => configTypeORM.get('typeorm')
-  }),
-    UsersModule, PostsModule, ReactionsModule, CommentsModule, PollsModule, ReportsModule, PrivacyModule, InterestsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configTypeORM: ConfigService) =>
+        configTypeORM.get('typeorm'),
+    }),
+    UsersModule,
+    PostsModule,
+    ReactionsModule,
+    CommentsModule,
+    PollsModule,
+    ReportsModule,
+    PrivacyModule,
+    InterestsModule,
+    MessagesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
