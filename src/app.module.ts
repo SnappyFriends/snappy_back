@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
-
 import typeorm from './config/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { ReactionsModule } from './reactions/reactions.module';
@@ -37,4 +35,5 @@ import { FriendshipsModule } from './friendships/friendships.module';
   controllers: [],
   providers: [],
 })
+
 export class AppModule { }
