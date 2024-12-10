@@ -7,6 +7,8 @@ import { ReportsModule } from './reports/reports.module';
 import { PrivacyModule } from './privacy/privacy.module';
 import { MessagesModule } from './messages/messages.module';
 import { InterestsModule } from './interests/interests.module';
+import { FriendshipsModule } from './friendships/friendships.module';
+
 
 @Module({
   imports: [ReportsModule, PrivacyModule, MessagesModule, InterestsModule, FriendshipsModule],
@@ -34,4 +36,4 @@ import { PollsModule } from './polls/polls.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
