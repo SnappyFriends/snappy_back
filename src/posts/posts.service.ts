@@ -9,7 +9,7 @@ export class PostsService {
   }
 
   findAll() {
-    return `This action returns all posts`;
+    return `This action returns all post`;
   }
 
   findOne(id: number) {
@@ -17,7 +17,7 @@ export class PostsService {
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} posts`;
+    return `This action updates a #${id} post`;
   }
 
   remove(id: number) {
