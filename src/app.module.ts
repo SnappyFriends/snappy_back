@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ReportsModule } from './reports/reports.module';
 
 import typeorm from './config/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -17,7 +18,7 @@ import { PollsModule } from './polls/polls.module';
       inject: [ConfigService],
       useFactory: (configTypeORM: ConfigService) => configTypeORM.get('typeorm')
     }),
-    UsersModule, PostsModule, ReactionsModule, CommentsModule, PollsModule],
+    UsersModule, PostsModule, ReactionsModule, CommentsModule, PollsModule, ReportsModule],
   controllers: [AppController],
   providers: [AppService],
 })
