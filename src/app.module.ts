@@ -1,11 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-
 import typeorm from './config/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { ReactionsModule } from './reactions/reactions.module';
@@ -36,7 +32,13 @@ import { FriendshipsModule } from './friendships/friendships.module';
     FriendshipsModule,
     MessagesModule,
   ],
+<<<<<<< HEAD
   controllers: [AppController],
   providers: [AppService],
+=======
+  controllers: [],
+  providers: [],
+>>>>>>> 4ab2581e420992679a2b107b9766495cf3ea6e61
 })
-export class AppModule {}
+
+export class AppModule { }
