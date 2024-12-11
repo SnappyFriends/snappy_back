@@ -21,6 +21,7 @@ import { FriendshipsModule } from './friendships/friendships.module';
       useFactory: (configTypeORM: ConfigService) =>
         configTypeORM.get('typeorm'),
     }),
+    AuthModule,
     UsersModule,
     PostsModule,
     ReactionsModule,
