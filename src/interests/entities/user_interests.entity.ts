@@ -7,7 +7,7 @@ import { Interests } from "./interests.entity";
 })
 export class User_Interests {
     @PrimaryColumn()
-    @ManyToOne(() => User, (user) => user.interests)
+    @ManyToOne(() => User, (user) => user.id)
     user_id: User;
 
     @ManyToOne(() => Interests, (interest) => interest.interest_id)
