@@ -11,6 +11,9 @@ import { v4 as uuid } from 'uuid';
 import { Purchase_Log } from 'src/purchases/entities/purchase_log.entity';
 import { User_Interests } from 'src/interests/entities/user_interests.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
+import { Chat_Groups } from 'src/messages/entities/chatGroup.entity';
+import { Group_Members } from 'src/messages/entities/groupMembers..entity';
+import { Message_Receiver } from 'src/messages/entities/message_Receiver.entity';
 
 @Entity({
   name: 'Users',
@@ -107,5 +110,14 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => Group_Members, (groupMember) => groupMember.user)
+  groupMembers: Group_Members[];
+
+  @OneToMany(() => Chat_Groups, (chatGroup) => chatGroup.creator)
+  userChatGroup: Chat_Groups[];
+
+  @OneToMany(() => Message_Receiver, (messageReceiver) => messageReceiver.receiver)
+  userMessageReceivers: Message_Receiver[];
 
 }
