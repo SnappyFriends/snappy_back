@@ -6,7 +6,14 @@ import { Report } from 'src/reports/entities/report.entity';
 import { Poll } from 'src/polls/entities/poll.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Stories } from 'src/stories/entities/stories.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Purchase_Log } from 'src/purchases/entities/purchase_log.entity';
 import { User_Interests } from 'src/interests/entities/user_interests.entity';
@@ -39,14 +46,11 @@ export class User {
   })
   password: string;
 
-  @Column({
-    nullable: false,
-  })
+  //Cambié el decorador para que se genere de forma automaGica.
+  @CreateDateColumn()
   registration_date: Date;
 
-  @Column({
-    nullable: false,
-  })
+  @UpdateDateColumn()
   last_login_date: Date;
 
   @Column({
