@@ -24,7 +24,7 @@ export class Message_Receiver {
     })
     message: Message
 
-    @ManyToOne(() => User, (user) => user.userMessageReceiver)
+    @ManyToOne(() => User, (user) => user.userMessageReceivers, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({
         name: 'receiver_id'
     })

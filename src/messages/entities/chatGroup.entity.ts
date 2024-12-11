@@ -32,7 +32,7 @@ export class Chat_Groups {
     })
     privacy: Privacy
 
-    @ManyToOne(() => User, (user) => user.userChatGroup)
+    @ManyToOne(() => User, (user) => user.userChatGroup, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({
         name: 'creator_id'
     })

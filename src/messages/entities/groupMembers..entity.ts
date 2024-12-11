@@ -30,7 +30,7 @@ export class Group_Members {
     })
     group: Chat_Groups;
 
-    @ManyToOne(() => User, (user) => user.groupMembers)
+    @ManyToOne(() => User, (user) => user.groupMembers, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({
         name: 'user_id'
     })
