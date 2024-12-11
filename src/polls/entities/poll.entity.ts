@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { PollResponse } from '../../polls/pollResponse.entity';
+import { PollResponse } from '../../poll-response/entities/poll-response.entity';
 
 @Entity('polls')
 export class Poll {

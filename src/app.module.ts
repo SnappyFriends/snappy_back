@@ -11,6 +11,7 @@ import { PrivacyModule } from './privacy/privacy.module';
 import { MessagesModule } from './messages/messages.module';
 import { InterestsModule } from './interests/interests.module';
 import { FriendshipsModule } from './friendships/friendships.module';
+import { PollResponseModule } from './poll-response/poll-response.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 
@@ -33,6 +34,7 @@ import { PostsModule } from './posts/posts.module';
     InterestsModule,
     FriendshipsModule,
     MessagesModule,
+    PollResponseModule,
   ],
   controllers: [],
   providers: [],
