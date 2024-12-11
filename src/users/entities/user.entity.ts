@@ -1,4 +1,7 @@
 
+import { Privacy } from 'src/privacy/entities/privacy.entity';
+
+
 import { Friendship } from 'src/friendships/entities/friendship.entity';
 
 
@@ -11,6 +14,7 @@ import { Report } from 'src/reports/entities/report.entity';
 import { Poll } from 'src/polls/entities/poll.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Reaction } from 'src/reactions/entities/reaction.entity';
+
 
 
 
@@ -79,6 +83,10 @@ export class User {
   stories: Stories[];
 
 
+  @OneToMany(() => Privacy, (privacy) => privacy.user)
+  privacy: Privacy[];
+
+
   @OneToMany(() => Friendship, (friendship) => friendship.user1)
   friendships1: Friendship[];
 
@@ -105,7 +113,5 @@ export class User {
 
   @OneToMany(() => Reaction, (reaction) => reaction.user)
   reactions: Reaction[];
-
-
 
 }
