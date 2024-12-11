@@ -12,6 +12,7 @@ import { PrivacyModule } from './privacy/privacy.module';
 import { MessagesModule } from './messages/messages.module';
 import { InterestsModule } from './interests/interests.module';
 import { FriendshipsModule } from './friendships/friendships.module';
+import { PollResponseModule } from './poll-response/poll-response.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { FriendshipsModule } from './friendships/friendships.module';
     InterestsModule,
     FriendshipsModule,
     MessagesModule,
+    PollResponseModule,
   ],
   controllers: [],
   providers: [],
