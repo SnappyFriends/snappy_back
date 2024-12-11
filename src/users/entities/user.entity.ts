@@ -1,10 +1,14 @@
 
+import { PollResponse } from 'src/poll-response/entities/poll-response.entity';
+
+
 import { Report } from 'src/reports/entities/report.entity';
 
 
 import { Poll } from 'src/polls/entities/poll.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Reaction } from 'src/reactions/entities/reaction.entity';
+
 
 import { Stories } from 'src/stories/entities/stories.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -71,6 +75,10 @@ export class User {
   stories: Stories[];
 
 
+  @OneToMany(() => PollResponse, (response) => response.user)
+  responses: Response[];
+
+
   @OneToMany(() => Report, (report) => report.reported_user)
   reportedReports: Report[];
 
@@ -86,5 +94,6 @@ export class User {
 
   @OneToMany(() => Reaction, (reaction) => reaction.user)
   reactions: Reaction[];
+
 
 }
