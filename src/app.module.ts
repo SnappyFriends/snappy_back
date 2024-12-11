@@ -14,6 +14,7 @@ import { FriendshipsModule } from './friendships/friendships.module';
 import { PollResponseModule } from './poll-response/poll-response.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
+import { StoriesModule } from './stories/stories.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PostsModule } from './posts/posts.module';
     FriendshipsModule,
     MessagesModule,
     PollResponseModule,
+    StoriesModule,
   ],
   controllers: [],
   providers: [],
