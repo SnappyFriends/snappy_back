@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Reaction } from '../../reactions/entities/reaction.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity('posts')
 export class Post {
@@ -35,4 +36,8 @@ export class Post {
     onDelete: 'CASCADE',
   })
   user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.postComment)
+  comments: Comment[];
+
 }

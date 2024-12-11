@@ -1,6 +1,7 @@
+import { Post } from "src/posts/entities/post.entity";
 import { Report } from "src/reports/entities/report.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity({
@@ -16,15 +17,15 @@ export class Comment {
     @Column({ type: Date })
     comment_date: Date
 
-    @ManyToOne(() => User)
-    @JoinColumn({ name: 'User_id' })
+    @ManyToOne(() => User, (user) => user.comments, { nullable: false, onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'user_id' })
     user: User
 
-    @ManyToMany(() => Report)
-    @JoinTable({
-        name: 'Comments_Reports'
+    @ManyToOne(() => Post, (post) => post.comments, { nullable: false, onDelete: 'CASCADE' })
+    @JoinColumn({
+        name: 'post_id'
     })
-    Reports: Report[]
+    postComment: Post;
 
 
 }
