@@ -5,10 +5,10 @@ import { PollResponse } from 'src/poll-response/entities/poll-response.entity';
 import { Report } from 'src/reports/entities/report.entity';
 import { Poll } from 'src/polls/entities/poll.entity';
 import { Post } from 'src/posts/entities/post.entity';
-import { Reaction } from 'src/reactions/entities/reaction.entity';
 import { Stories } from 'src/stories/entities/stories.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Purchase_Log } from 'src/purchases/entities/purchase_log.entity';
 
 @Entity({
   name: 'Users',
@@ -69,6 +69,9 @@ export class User {
 
   @OneToMany(() => Stories, (story) => story.user_id)
   stories: Stories[];
+
+  @OneToMany(() => Purchase_Log, (purchase) => purchase.user_id)
+  purchases: Purchase_Log[];
 
   @OneToMany(() => Privacy, (privacy) => privacy.user)
   privacy: Privacy[];
