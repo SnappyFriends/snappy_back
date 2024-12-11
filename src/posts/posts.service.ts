@@ -4,22 +4,35 @@ import { CreatePostDto } from './dto/create-post-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post) private postsRepository: Repository<Post>,
+    @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
-
   async create(createPostDto: CreatePostDto): Promise<Post> {
     try {
-      const newPost = this.postsRepository.create(createPostDto);
+      const { userId, ...postData } = createPostDto;
+
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new BadRequestException('El usuario no existe');
+      }
+
+      const newPost = this.postsRepository.create({
+        ...postData,
+        user,
+      });
 
       console.log(newPost);
       return await this.postsRepository.save(newPost);
     } catch {
       throw new BadRequestException(
-        'Ocurrió un error inesperado al crear el post. Inténtelo de nuevo. ',
+        'Ocurrió un error inesperado al crear el post. Inténtelo de nuevo.',
       );
     }
   }
