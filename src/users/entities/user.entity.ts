@@ -1,4 +1,7 @@
+
 import { Poll } from 'src/polls/entities/poll.entity';
+import { Post } from 'src/posts/entities/post.entity';
+import { Reaction } from 'src/reactions/entities/reaction.entity';
 import { Stories } from 'src/stories/entities/stories.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -63,6 +66,14 @@ export class User {
   @OneToMany(() => Stories, (story) => story.user_id)
   stories: Stories[];
 
+
   @OneToMany(() => Poll, (poll) => poll.user)
   polls: Poll[];
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
+
+  @OneToMany(() => Reaction, (reaction) => reaction.user)
+  reactions: Reaction[];
+
 }
