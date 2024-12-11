@@ -1,1 +1,39 @@
-export class Friendship {}
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+
+export enum FriendshipStatus {
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  BLOCKED = 'blocked',
+}
+
+@Entity()
+export class Friendship {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({
+    type: 'enum',
+    enum: FriendshipStatus,
+    default: FriendshipStatus.PENDING,
+  })
+  status: FriendshipStatus;
+
+  @CreateDateColumn()
+  request_date: Date;
+
+  @ManyToOne(() => User, (user) => user.friendships1)
+  @JoinColumn({ name: 'user_id_1' })
+  user1: User;
+
+  @ManyToOne(() => User, (user) => user.friendships2)
+  @JoinColumn({ name: 'user_id_2' })
+  user2: User;
+}
