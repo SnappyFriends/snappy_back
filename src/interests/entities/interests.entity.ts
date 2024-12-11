@@ -1,12 +1,12 @@
-import { Column, Entity, OneToMany } from "typeorm";
-import { User_Interests } from "./user_interests.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { v4 as uuid } from "uuid";
 
 @Entity({
     name: 'interests'
 })
 export class Interests {
-    @OneToMany(() => User_Interests, (interest) => interest.interest_id)
-    interest_id: User_Interests[];
+    @PrimaryGeneratedColumn('uuid')
+    interest_id: string = uuid();
 
     @Column({
         nullable: false
