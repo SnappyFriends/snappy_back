@@ -7,12 +7,12 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { PollResponse } from '../../polls/pollResponse.entity';
+import { Reaction } from '../../reactions/entities/reaction.entity';
 
-@Entity('polls')
-export class Poll {
+@Entity('posts')
+export class Post {
   @PrimaryGeneratedColumn('uuid')
-  poll_id: string;
+  post_id: string;
 
   @Column('text', { nullable: false })
   content: string;
@@ -22,18 +22,15 @@ export class Poll {
 
   @Column({
     type: 'enum',
-    enum: ['group', 'post'],
+    enum: ['text', 'image', 'video'],
     nullable: false,
   })
-  type: 'group' | 'post';
+  type: 'text' | 'image' | 'video';
 
-  @Column({ type: 'timestamp', nullable: true })
-  closing_date: Date;
+  @OneToMany(() => Reaction, (reaction) => reaction.post)
+  reactions: Reaction[];
 
-  @OneToMany(() => PollResponse, (pollResponse) => pollResponse.poll)
-  responses: PollResponse[];
-
-  @ManyToOne(() => User, (user) => user.polls, {
+  @ManyToOne(() => User, (user) => user.posts, {
     nullable: false,
     onDelete: 'CASCADE',
   })
