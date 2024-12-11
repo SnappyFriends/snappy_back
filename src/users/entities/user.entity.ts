@@ -8,6 +8,8 @@ import { Post } from 'src/posts/entities/post.entity';
 import { Stories } from 'src/stories/entities/stories.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Purchase_Log } from 'src/purchases/entities/purchase_log.entity';
+import { User_Interests } from 'src/interests/entities/user_interests.entity';
 
 @Entity({
   name: 'Users',
@@ -68,6 +70,12 @@ export class User {
 
   @OneToMany(() => Stories, (story) => story.user_id)
   stories: Stories[];
+
+  @OneToMany(() => Purchase_Log, (purchase) => purchase.user_id)
+  purchases: Purchase_Log[];
+
+  @OneToMany(() => User_Interests, (interest) => interest.user_id)
+  interests: User_Interests[];
 
   @OneToMany(() => Privacy, (privacy) => privacy.user)
   privacy: Privacy[];
