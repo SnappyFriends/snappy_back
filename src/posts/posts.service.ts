@@ -11,7 +11,7 @@ export class PostsService {
     @InjectRepository(Post) private postsRepository: Repository<Post>,
   ) {}
 
-  async create(createPostDto: CreatePostDto) {
+  async create(createPostDto: CreatePostDto): Promise<Post> {
     try {
       const newPost = this.postsRepository.create(createPostDto);
 
@@ -24,8 +24,16 @@ export class PostsService {
     }
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAll(): Promise<Post[]> {
+    try {
+      return await this.postsRepository.find({
+        relations: ['reactions', 'user'],
+      });
+    } catch {
+      throw new BadRequestException(
+        'Ocurrió un error inesperado al traer todos los posts. Inténtelo nuevamente.',
+      );
+    }
   }
 
   findOne(id: number) {
