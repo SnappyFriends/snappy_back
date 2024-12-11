@@ -60,6 +60,9 @@ export class User {
   })
   location: string;
 
+  @OneToMany(() => Stories, (story) => story.user_id)
+  stories: Stories[];
+
   @OneToMany(() => Privacy, (privacy) => privacy.user)
   privacy: Privacy[];
 }
