@@ -1,5 +1,12 @@
 import { Privacy } from 'src/privacy/entities/privacy.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Stories } from 'src/stories/entities/stories.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 @Entity({
@@ -58,7 +65,4 @@ export class User {
     nullable: false,
   })
   location: string;
-
-  @OneToMany(() => Privacy, (privacy) => privacy.user)
-  privacy: Privacy[];
 }
