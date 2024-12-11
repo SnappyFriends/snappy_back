@@ -15,6 +15,7 @@ import { PollResponseModule } from './poll-response/poll-response.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { StoriesModule } from './stories/stories.module';
+import { PurchasesModule } from './purchases/purchases.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { StoriesModule } from './stories/stories.module';
     MessagesModule,
     PollResponseModule,
     StoriesModule,
+    PurchasesModule,
   ],
   controllers: [],
   providers: [],
