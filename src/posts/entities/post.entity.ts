@@ -1,0 +1,38 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { Reaction } from '../../reactions/entities/reaction.entity';
+
+@Entity('posts')
+export class Post {
+  @PrimaryGeneratedColumn('uuid')
+  post_id: string;
+
+  @Column('text', { nullable: false })
+  content: string;
+
+  @CreateDateColumn()
+  creation_date: Date;
+
+  @Column({
+    type: 'enum',
+    enum: ['text', 'image', 'video'],
+    nullable: false,
+  })
+  type: 'text' | 'image' | 'video';
+
+  @OneToMany(() => Reaction, (reaction) => reaction.post)
+  reactions: Reaction[];
+
+  @ManyToOne(() => User, (user) => user.posts, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  user: User;
+}
