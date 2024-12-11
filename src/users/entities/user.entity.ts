@@ -17,6 +17,7 @@ import {
 import { v4 as uuid } from 'uuid';
 import { Purchase_Log } from 'src/purchases/entities/purchase_log.entity';
 import { User_Interests } from 'src/interests/entities/user_interests.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity({
   name: 'Users',
@@ -107,4 +108,8 @@ export class User {
 
   @OneToMany(() => Reaction, (reaction) => reaction.user)
   reactions: Reaction[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
+
 }
