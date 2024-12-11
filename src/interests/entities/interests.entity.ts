@@ -1,15 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { v4 as uuid } from "uuid";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 @Entity({
-    name: 'interests'
+  name: 'interests',
 })
 export class Interests {
-    @PrimaryGeneratedColumn('uuid')
-    interest_id: string = uuid();
+  @PrimaryGeneratedColumn('uuid')
+  interest_id: string = uuid();
 
-    @Column({
-        nullable: false
-    })
-    name: string;
+  @Column({
+    nullable: false,
+  })
+  name: string;
 }

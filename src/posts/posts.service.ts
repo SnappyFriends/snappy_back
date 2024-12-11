@@ -15,7 +15,7 @@ export class PostsService {
     try {
       const newPost = this.postsRepository.create(createPostDto);
 
-      console.log('Post creado.');
+      console.log(newPost);
       return await this.postsRepository.save(newPost);
     } catch {
       throw new BadRequestException(
