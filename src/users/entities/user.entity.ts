@@ -1,7 +1,11 @@
 
+import { Report } from 'src/reports/entities/report.entity';
+
+
 import { Poll } from 'src/polls/entities/poll.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Reaction } from 'src/reactions/entities/reaction.entity';
+
 import { Stories } from 'src/stories/entities/stories.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -65,6 +69,13 @@ export class User {
 
   @OneToMany(() => Stories, (story) => story.user_id)
   stories: Stories[];
+
+
+  @OneToMany(() => Report, (report) => report.reported_user)
+  reportedReports: Report[];
+
+  @OneToMany(() => Report, (report) => report.reporting_user)
+  reportingReports: Report[];
 
 
   @OneToMany(() => Poll, (poll) => poll.user)
