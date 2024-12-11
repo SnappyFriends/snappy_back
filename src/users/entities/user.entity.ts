@@ -1,4 +1,7 @@
 
+import { Friendship } from 'src/friendships/entities/friendship.entity';
+
+
 import { PollResponse } from 'src/poll-response/entities/poll-response.entity';
 
 
@@ -8,6 +11,7 @@ import { Report } from 'src/reports/entities/report.entity';
 import { Poll } from 'src/polls/entities/poll.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Reaction } from 'src/reactions/entities/reaction.entity';
+
 
 
 import { Stories } from 'src/stories/entities/stories.entity';
@@ -75,6 +79,13 @@ export class User {
   stories: Stories[];
 
 
+  @OneToMany(() => Friendship, (friendship) => friendship.user1)
+  friendships1: Friendship[];
+
+  @OneToMany(() => Friendship, (friendship) => friendship.user2)
+  friendships2: Friendship[];
+
+
   @OneToMany(() => PollResponse, (response) => response.user)
   responses: Response[];
 
@@ -94,6 +105,7 @@ export class User {
 
   @OneToMany(() => Reaction, (reaction) => reaction.user)
   reactions: Reaction[];
+
 
 
 }
