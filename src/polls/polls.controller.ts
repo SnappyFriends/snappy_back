@@ -27,9 +27,9 @@ export class PollsController {
     return this.pollsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.pollsService.findOne(id);
+  @Get('/:poll_id')
+  findOne(@Param('poll_id', ParseUUIDPipe) poll_id: string) {
+    return this.pollsService.findOne(poll_id);
   }
 
   @Delete(':id')
