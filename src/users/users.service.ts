@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,9 +12,13 @@ export class UsersService {
   ) { }
 
   async getUsers() {
-    return await this.usersRepository.find({
+    const foundUsers = await this.usersRepository.find({
       relations: ['stories', 'interests', 'privacy', 'friendships1', 'friendships2', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
     });
+
+    const { password, ...userWithoutPassword } = foundUsers;
+
+    return userWithoutPassword;
   }
 
   getUserById(id: number) {
