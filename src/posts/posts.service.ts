@@ -49,15 +49,25 @@ export class PostsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: string): Promise<Post | undefined> {
+    try {
+      const post = await this.postsRepository.findOne({
+        where: { post_id: id },
+      });
+      if (!post) {
+        throw new BadRequestException('Post not found.');
+      }
+      return post;
+    } catch {
+      throw new BadRequestException('Post not found.');
+    }
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
+  update(id: string, updatePostDto: UpdatePostDto) {
     return `This action updates a #${id} post`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} post`;
   }
 }
