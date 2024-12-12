@@ -16,9 +16,9 @@ export class UsersService {
       relations: ['stories', 'interests', 'privacy', 'friendships1', 'friendships2', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
     });
 
-    const { password, ...userWithoutPassword } = foundUsers;
+    const usersWithoutPassword = foundUsers.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
 
-    return userWithoutPassword;
+    return usersWithoutPassword;
   }
 
   getUserById(id: number) {
