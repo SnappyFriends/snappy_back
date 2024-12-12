@@ -11,7 +11,9 @@ export class UsersService {
   ) { }
 
   async getUsers() {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      relations: ['stories', 'interests', 'privacy', 'friendships1', 'friendships2', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
+    });
   }
 
   getUserById(id: number) {
