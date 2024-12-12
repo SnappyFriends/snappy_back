@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Poll } from './entities/poll.entity';
@@ -65,17 +70,33 @@ export class PollsService {
     }
   }
 
-  async findOne(id: string): Promise<Poll> {
+  async findOne(poll_id: string) {
     try {
-      const poll = await this.pollsRepository.findOne({
-        where: { poll_id: id },
+      const allResponses = await this.pollsRepository.find({
+        where: { poll_id: poll_id },
+        relations: ['responses', 'responses.user'],
       });
-      if (!poll) {
-        throw new BadRequestException('Poll not found.');
+
+      if (!allResponses || allResponses.length === 0) {
+        throw new NotFoundException(
+          `Todavía no hay respuestas para la encuesta con id ${poll_id}`,
+        );
       }
-      return poll;
+      const responseObject = allResponses.map((poll) => ({
+        ...poll,
+        responses: poll.responses.map((response) => ({
+          ...response,
+          user: {
+            id: response.user.id,
+          },
+        })),
+      }));
+
+      return responseObject;
     } catch {
-      throw new BadRequestException('Poll not found.');
+      throw new InternalServerErrorException(
+        'No fue posible traer las respuestas para la encuesta.',
+      );
     }
   }
 

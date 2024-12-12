@@ -22,18 +22,13 @@ export class PollResponseController {
     return this.pollResponseService.create(poll_id, createPollResponseDto);
   }
 
-  @Get()
-  findAll() {
-    return this.pollResponseService.findAll();
-  }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pollResponseService.findOne(+id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.pollResponseService.findOne(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pollResponseService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.pollResponseService.remove(id);
   }
 }
