@@ -28,7 +28,7 @@ export enum userType {
   ADMIN = "admin"
 }
 
-enum userStatus {
+export enum userStatus {
   ACTIVE = "active",
   BLOCKED = "blocked"
 }
