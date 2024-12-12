@@ -33,7 +33,7 @@ export class Message {
     })
     user: User
 
-    @OneToMany(() => Message_Receiver, (messageReceiver) => messageReceiver.message)
+    @OneToMany(() => Message_Receiver, (messageReceiver) => messageReceiver.message_id)
     messageReceivers: Message_Receiver[]
 
 }

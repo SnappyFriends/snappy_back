@@ -1,0 +1,152 @@
+[
+  {
+    "fullname": "John Doe",
+    "username": "johndoe",
+    "email": "johndoe@example.com",
+    "password": "securePassword123",
+    "user_type": "admin",
+    "status": "active",
+    "profile_image": "https://example.com/profile1.jpg",
+    "location": "New York"
+  },
+  {
+    "fullname": "Jane Smith",
+    "username": "janesmith",
+    "email": "janesmith@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile2.jpg",
+    "location": "Los Angeles"
+  },
+  {
+    "fullname": "Michael Johnson",
+    "username": "michaeljohnson",
+    "email": "michael@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "inactive",
+    "profile_image": "https://example.com/profile3.jpg",
+    "location": "Chicago"
+  },
+  {
+    "fullname": "Sarah Williams",
+    "username": "sarahwilliams",
+    "email": "sarah@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile4.jpg",
+    "location": "Miami"
+  },
+  {
+    "fullname": "David Brown",
+    "username": "davidbrown",
+    "email": "david@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile5.jpg",
+    "location": "San Francisco"
+  },
+  {
+    "fullname": "Emily Davis",
+    "username": "emilydavis",
+    "email": "emily@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile6.jpg",
+    "location": "Austin"
+  },
+  {
+    "fullname": "William Martinez",
+    "username": "williammartinez",
+    "email": "william@example.com",
+    "password": "securePassword123",
+    "user_type": "admin",
+    "status": "active",
+    "profile_image": "https://example.com/profile7.jpg",
+    "location": "Dallas"
+  },
+  {
+    "fullname": "Olivia Wilson",
+    "username": "oliviawilson",
+    "email": "olivia@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "inactive",
+    "profile_image": "https://example.com/profile8.jpg",
+    "location": "Phoenix"
+  },
+  {
+    "fullname": "Liam Moore",
+    "username": "liammoore",
+    "email": "liam@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile9.jpg",
+    "location": "Philadelphia"
+  },
+  {
+    "fullname": "Sophia Taylor",
+    "username": "sophiataylor",
+    "email": "sophia@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile10.jpg",
+    "location": "Seattle"
+  },
+  {
+    "fullname": "Jackson Lee",
+    "username": "jacksonlee",
+    "email": "jackson@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile11.jpg",
+    "location": "San Diego"
+  },
+  {
+    "fullname": "Amelia Harris",
+    "username": "ameliaharris",
+    "email": "amelia@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "inactive",
+    "profile_image": "https://example.com/profile12.jpg",
+    "location": "Boston"
+  },
+  {
+    "fullname": "Mason Clark",
+    "username": "masonclark",
+    "email": "mason@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile13.jpg",
+    "location": "Denver"
+  },
+  {
+    "fullname": "Isabella Young",
+    "username": "isabellayoung",
+    "email": "isabella@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "inactive",
+    "profile_image": "https://example.com/profile14.jpg",
+    "location": "Boston"
+  },
+  {
+    "fullname": "James King",
+    "username": "jamesking",
+    "email": "james@example.com",
+    "password": "securePassword123",
+    "user_type": "user",
+    "status": "active",
+    "profile_image": "https://example.com/profile15.jpg",
+    "location": "Las Vegas"
+  }
+]
