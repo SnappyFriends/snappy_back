@@ -42,9 +42,22 @@ export class PollsService {
     }
   }
 
-  async findAll(): Promise<Poll[]> {
+  async findAll() {
     try {
-      return await this.pollsRepository.find({ relations: ['responses'] });
+      const polls = await this.pollsRepository.find({
+        relations: ['responses', 'responses.user'],
+      });
+
+      const responseObject = polls.map((poll) => ({
+        ...poll,
+        responses: poll.responses.map((response) => ({
+          ...response,
+          user: {
+            id: response.user.id,
+          },
+        })),
+      }));
+      return responseObject;
     } catch {
       throw new BadRequestException(
         'Ocurrió un error inesperado al traer todos las encuestas. Inténtelo nuevamente.',
