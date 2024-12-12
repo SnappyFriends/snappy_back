@@ -9,7 +9,7 @@ import { CreateUserDto } from './dto/create-user-dto';
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
     try {
@@ -23,8 +23,8 @@ export class UsersService {
     }
   }
 
-  getUsers() {
-    return `This action returns all users`;
+  async getUsers() {
+    return await this.usersRepository.find();
   }
 
   getUserById(id: number) {
