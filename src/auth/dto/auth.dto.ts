@@ -1,6 +1,5 @@
 import { PickType } from "@nestjs/mapped-types";
-import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength, Validate } from "class-validator";
-import { MatchPassword } from "src/decorators/matchPassword.decorator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class registerUserDTO {
     @IsNotEmpty()
@@ -24,16 +23,13 @@ export class registerUserDTO {
     @IsEmail()
     email: string;
 
+    @IsOptional()
     @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres.' })
-    @MaxLength(15, { message: 'La contraseña debe tener como máximo 15 caracteres.' })
+    @MaxLength(20, { message: 'La contraseña debe tener como máximo 20 caracteres.' })
     @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/, {
         message: 'La contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).',
     })
     password: string;
-
-    @IsNotEmpty()
-    @Validate(MatchPassword, ['password'])
-    confirmPassword: string;
 }
 
 export class LoginUserDTO extends PickType(registerUserDTO, [
