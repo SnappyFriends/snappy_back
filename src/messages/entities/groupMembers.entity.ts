@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Chat_Groups } from "./chatGroup.entity";
 import { User } from "src/users/entities/user.entity";
 
@@ -10,8 +10,11 @@ export enum Role {
 @Entity({
     name: 'Group_Members'
 })
-
 export class Group_Members {
+    @PrimaryColumn('uuid')
+    @ManyToOne(() => Chat_Groups, (chatgroup) => chatgroup.group_id)
+    @JoinColumn({ name: 'group_id' })
+    group_id: Chat_Groups;
 
     @Column({
         type: 'enum',
@@ -23,14 +26,7 @@ export class Group_Members {
     @Column({ type: 'date' })
     join_date: Date;
 
-    @PrimaryColumn()
-    @ManyToOne(() => Chat_Groups, (chatgroup) => chatgroup.members)
-    @JoinColumn({
-        name: 'group_id'
-    })
-    group: Chat_Groups;
-
-    @ManyToOne(() => User, (user) => user.groupMembers)
+    @ManyToOne(() => User, (user) => user.groupMembers, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({
         name: 'user_id'
     })

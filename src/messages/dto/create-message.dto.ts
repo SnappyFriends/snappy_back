@@ -11,3 +11,5 @@ export enum MessageReceiver {
 }
 
 export class MessageTypeDto {}
+
+export class CreateMessageDto {}

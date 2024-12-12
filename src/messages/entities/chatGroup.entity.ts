@@ -1,6 +1,6 @@
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Group_Members } from "./groupMembers..entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { v4 as uuid } from 'uuid';
 
 export enum Privacy {
     PUBLIC = 'public',
@@ -10,11 +10,9 @@ export enum Privacy {
 @Entity({
     name: 'Chat_Groups'
 })
-
 export class Chat_Groups {
-
     @PrimaryGeneratedColumn('uuid')
-    group_id: string;
+    group_id: string = uuid();
 
     @Column({ type: 'varchar', length: 100, nullable: false })
     name: string;
@@ -32,13 +30,9 @@ export class Chat_Groups {
     })
     privacy: Privacy
 
-    @ManyToOne(() => User, (user) => user.userChatGroup)
+    @ManyToOne(() => User, (user) => user.userChatGroup, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({
         name: 'creator_id'
     })
     creator: User
-
-    @OneToMany(() => Group_Members, (member) => member.group)
-    members: Group_Members[]
-
 }
