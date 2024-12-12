@@ -60,6 +60,15 @@ export class User {
   })
   password: string;
 
+  @Column({
+    type: "date",
+    nullable: false
+  })
+  birthdate: Date;
+
+  @Column()
+  genre: string;
+
   @CreateDateColumn()
   registration_date: Date;
 
