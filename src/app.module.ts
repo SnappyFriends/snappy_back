@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { StoriesModule } from './stories/stories.module';
 import { PurchasesModule } from './purchases/purchases.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -39,6 +40,11 @@ import { PurchasesModule } from './purchases/purchases.module';
     PollResponseModule,
     StoriesModule,
     PurchasesModule,
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: "12h" }
+    })
   ],
   controllers: [],
   providers: [],
