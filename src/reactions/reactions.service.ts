@@ -4,7 +4,6 @@ import { CreateReactionDto, UpdateReactionDto } from './dto/reaction.dto';
 @Injectable()
 export class ReactionsService {
   create(id: string, createReactionDto: CreateReactionDto) {
-    console.log(createReactionDto.reaction_type);
     if (createReactionDto.reaction_type === 'comment') {
       return 'crea reaction a un comentario';
     } else return 'crea una reaccion a un post.';

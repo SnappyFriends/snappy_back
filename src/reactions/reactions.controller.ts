@@ -15,7 +15,7 @@ import { CreateReactionDto, UpdateReactionDto } from './dto/reaction.dto';
 export class ReactionsController {
   constructor(private readonly reactionsService: ReactionsService) {}
 
-  @Post(':id')
+  @Post(':post_id')
   create(
     @Param('id', ParseUUIDPipe) id,
     @Body() createReactionDto: CreateReactionDto,
