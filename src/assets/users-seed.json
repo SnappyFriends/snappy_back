@@ -4,8 +4,6 @@
     "username": "johndoe",
     "email": "johndoe@example.com",
     "password": "securePassword123",
-    "user_type": "admin",
-    "status": "active",
     "profile_image": "https://example.com/profile1.jpg",
     "location": "New York"
   },
@@ -14,8 +12,6 @@
     "username": "janesmith",
     "email": "janesmith@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile2.jpg",
     "location": "Los Angeles"
   },
@@ -24,8 +20,6 @@
     "username": "michaeljohnson",
     "email": "michael@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "inactive",
     "profile_image": "https://example.com/profile3.jpg",
     "location": "Chicago"
   },
@@ -34,8 +28,6 @@
     "username": "sarahwilliams",
     "email": "sarah@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile4.jpg",
     "location": "Miami"
   },
@@ -44,8 +36,6 @@
     "username": "davidbrown",
     "email": "david@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile5.jpg",
     "location": "San Francisco"
   },
@@ -54,8 +44,6 @@
     "username": "emilydavis",
     "email": "emily@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile6.jpg",
     "location": "Austin"
   },
@@ -64,8 +52,6 @@
     "username": "williammartinez",
     "email": "william@example.com",
     "password": "securePassword123",
-    "user_type": "admin",
-    "status": "active",
     "profile_image": "https://example.com/profile7.jpg",
     "location": "Dallas"
   },
@@ -74,8 +60,6 @@
     "username": "oliviawilson",
     "email": "olivia@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "inactive",
     "profile_image": "https://example.com/profile8.jpg",
     "location": "Phoenix"
   },
@@ -84,8 +68,6 @@
     "username": "liammoore",
     "email": "liam@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile9.jpg",
     "location": "Philadelphia"
   },
@@ -94,8 +76,6 @@
     "username": "sophiataylor",
     "email": "sophia@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile10.jpg",
     "location": "Seattle"
   },
@@ -104,8 +84,6 @@
     "username": "jacksonlee",
     "email": "jackson@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile11.jpg",
     "location": "San Diego"
   },
@@ -114,8 +92,6 @@
     "username": "ameliaharris",
     "email": "amelia@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "inactive",
     "profile_image": "https://example.com/profile12.jpg",
     "location": "Boston"
   },
@@ -124,8 +100,6 @@
     "username": "masonclark",
     "email": "mason@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile13.jpg",
     "location": "Denver"
   },
@@ -134,8 +108,6 @@
     "username": "isabellayoung",
     "email": "isabella@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "inactive",
     "profile_image": "https://example.com/profile14.jpg",
     "location": "Boston"
   },
@@ -144,8 +116,6 @@
     "username": "jamesking",
     "email": "james@example.com",
     "password": "securePassword123",
-    "user_type": "user",
-    "status": "active",
     "profile_image": "https://example.com/profile15.jpg",
     "location": "Las Vegas"
   }

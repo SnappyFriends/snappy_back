@@ -22,6 +22,17 @@ import { Chat_Groups } from 'src/messages/entities/chatGroup.entity';
 import { Group_Members } from 'src/messages/entities/groupMembers.entity';
 import { Message_Receiver } from 'src/messages/entities/message_Receiver.entity';
 
+export enum userType {
+  REGULAR = "regular",
+  PREMIUM = "premium",
+  ADMIN = "admin"
+}
+
+enum userStatus {
+  ACTIVE = "active",
+  BLOCKED = "blocked"
+}
+
 @Entity({
   name: 'Users',
 })
@@ -49,7 +60,6 @@ export class User {
   })
   password: string;
 
-  //Cambié el decorador para que se genere de forma automaGica.
   @CreateDateColumn()
   registration_date: Date;
 
@@ -57,22 +67,30 @@ export class User {
   last_login_date: Date;
 
   @Column({
+    type: "enum",
+    enum: userType,
     nullable: false,
+    default: userType.REGULAR
   })
-  user_type: string;
+  user_type: userType;
+
+  @Column({
+    type: "enum",
+    enum: userStatus,
+    nullable: false,
+    default: userStatus.ACTIVE
+  })
+  status: userStatus;
 
   @Column({
     nullable: false,
-  })
-  status: string;
-
-  @Column({
-    nullable: false,
+    default: "no_img.png"
   })
   profile_image: string;
 
   @Column({
     nullable: false,
+    default: "no-location"
   })
   location: string;
 
@@ -95,7 +113,7 @@ export class User {
   friendships2: Friendship[];
 
   @OneToMany(() => PollResponse, (response) => response.user)
-  responses: Response[];
+  responses: PollResponse[];
 
   @OneToMany(() => Report, (report) => report.reported_user)
   reportedReports: Report[];

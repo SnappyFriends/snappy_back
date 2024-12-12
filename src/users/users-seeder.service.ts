@@ -27,8 +27,6 @@ export class UsersSeederService implements OnModuleInit {
             username: element.username,
             email: element.email,
             password: element.password,
-            user_type: element.user_type,
-            status: element.status,
             profile_image: element.profile_image,
             location: element.location,
         }));
