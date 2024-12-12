@@ -32,12 +32,15 @@ export class PostsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
     return this.postsService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.postsService.remove(id);
   }
 }

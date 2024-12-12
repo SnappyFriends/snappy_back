@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdatePostDto } from './dto/update-post-dto';
 import { CreatePostDto } from './dto/create-post-dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -63,11 +67,45 @@ export class PostsService {
     }
   }
 
-  update(id: string, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(
+    id: string,
+    updatePostDto: UpdatePostDto,
+  ): Promise<Post | string> {
+    try {
+      const post = await this.postsRepository.findOne({
+        where: { post_id: id },
+      });
+
+      if (!post) {
+        throw new NotFoundException(`Post with id ${id} not found`);
+      }
+
+      Object.assign(post, updatePostDto);
+
+      return await this.postsRepository.save(post);
+    } catch (error) {
+      if (error.name === 'QueryFailedError') {
+        throw new BadRequestException(
+          'Ocurrió un error al actualizar el post. Por favor, verifique los datos.',
+        );
+      }
+
+      throw error;
+    }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} post`;
+  async remove(id: string): Promise<{ message: string }> {
+    try {
+      const post = await this.postsRepository.findOne({
+        where: { post_id: id },
+      });
+      if (!post) {
+        throw new BadRequestException('Post not found.');
+      }
+      await this.postsRepository.remove(post);
+      return { message: `Post with id ${id} deleted successfully` };
+    } catch {
+      throw new BadRequestException('Post not found');
+    }
   }
 }
