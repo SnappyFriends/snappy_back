@@ -49,15 +49,32 @@ export class PollResponseService {
     }
   }
 
-  findAll() {
-    return `This action returns all pollResponse`;
+  async findOne(id: string): Promise<PollResponse> {
+    try {
+      const pollResponse = await this.pollResponseRepository.findOne({
+        where: { response_id: id },
+      });
+      if (!pollResponse) {
+        throw new BadRequestException('Poll Response not found.');
+      }
+      return pollResponse;
+    } catch {
+      throw new BadRequestException('Poll Response not found.');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pollResponse`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} pollResponse`;
+  async remove(id: string): Promise<{ message: string }> {
+    try {
+      const pollResponse = await this.pollResponseRepository.findOne({
+        where: { response_id: id },
+      });
+      if (!pollResponse) {
+        throw new BadRequestException('Poll Response not found.');
+      }
+      await this.pollResponseRepository.remove(pollResponse);
+      return { message: `Poll Response with id ${id} deleted successfully` };
+    } catch {
+      throw new BadRequestException('Poll Response not found');
+    }
   }
 }
