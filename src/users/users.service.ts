@@ -15,7 +15,6 @@ export class UsersService {
     try {
       const newUser = this.usersRepository.create(createUserDto);
 
-      console.log(newUser);
       return await this.usersRepository.save(newUser);
     } catch {
       throw new BadRequestException(
@@ -24,19 +23,19 @@ export class UsersService {
     }
   }
 
-  findAll() {
+  getUsers() {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
+  getUserById(id: number) {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, userData: UpdateUserDTO) {
+  updateUser(id: number, userData: UpdateUserDTO) {
     return `This action updates a #${id} user. ${userData}`;
   }
 
-  remove(id: number) {
+  deleteUser(id: number) {
     return `This action removes a #${id} user`;
   }
 }
