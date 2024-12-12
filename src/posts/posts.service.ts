@@ -32,7 +32,6 @@ export class PostsService {
         user,
       });
 
-      console.log(newPost);
       return await this.postsRepository.save(newPost);
     } catch {
       throw new BadRequestException(
