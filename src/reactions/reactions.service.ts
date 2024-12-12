@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CreateReactionDto } from './dto/create-reaction.dto';
-import { UpdateReactionDto } from './dto/update-reaction.dto';
+import { CreateReactionDto, UpdateReactionDto } from './dto/reaction.dto';
 
 @Injectable()
 export class ReactionsService {
-  create(createReactionDto: CreateReactionDto) {
-    return 'This action adds a new reaction';
+  create(id: string, createReactionDto: CreateReactionDto) {
+    console.log(createReactionDto.reaction_type);
+    if (createReactionDto.reaction_type === 'comment') {
+      return 'crea reaction a un comentario';
+    } else return 'crea una reaccion a un post.';
   }
 
   findAll() {
     return `This action returns all reactions`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} reaction`;
   }
 
-  update(id: number, updateReactionDto: UpdateReactionDto) {
+  update(id: string, updateReactionDto: UpdateReactionDto) {
     return `This action updates a #${id} reaction`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} reaction`;
   }
 }
