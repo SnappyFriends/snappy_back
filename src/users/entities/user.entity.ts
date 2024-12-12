@@ -114,8 +114,6 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
-<<<<<<< HEAD
-=======
 
   @OneToMany(() => Group_Members, (groupMember) => groupMember.user)
   groupMembers: Group_Members[];
@@ -123,8 +121,9 @@ export class User {
   @OneToMany(() => Chat_Groups, (chatGroup) => chatGroup.creator)
   userChatGroup: Chat_Groups[];
 
-  @OneToMany(() => Message_Receiver, (messageReceiver) => messageReceiver.receiver)
+  @OneToMany(
+    () => Message_Receiver,
+    (messageReceiver) => messageReceiver.receiver,
+  )
   userMessageReceivers: Message_Receiver[];
-
->>>>>>> 5d54fc6a5532a4b2cc2b3cce5dcf85a4becc8986
 }
