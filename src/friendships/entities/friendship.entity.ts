@@ -29,11 +29,11 @@ export class Friendship {
   @CreateDateColumn()
   request_date: Date;
 
-  @ManyToOne(() => User, (user) => user.friendships1)
+  @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'user_id_1' })
   user1: User;
 
-  @ManyToOne(() => User, (user) => user.friendships2)
+  @ManyToOne(() => User, (user) => user.id)
   @JoinColumn({ name: 'user_id_2' })
   user2: User;
 }
