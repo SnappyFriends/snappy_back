@@ -1,5 +1,5 @@
 import { PickType } from "@nestjs/mapped-types";
-import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class registerUserDTO {
     @IsNotEmpty()
@@ -30,6 +30,14 @@ export class registerUserDTO {
         message: 'La contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).',
     })
     password: string;
+
+    @IsNotEmpty()
+    @IsDateString()
+    birthdate: string;
+
+    @IsNotEmpty()
+    @IsString()
+    genre: string;
 }
 
 export class LoginUserDTO extends PickType(registerUserDTO, [

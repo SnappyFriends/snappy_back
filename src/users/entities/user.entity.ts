@@ -1,6 +1,5 @@
 import { Reaction } from 'src/reactions/entities/reaction.entity';
 import { Privacy } from 'src/privacy/entities/privacy.entity';
-import { Friendship } from 'src/friendships/entities/friendship.entity';
 import { PollResponse } from 'src/poll-response/entities/poll-response.entity';
 import { Report } from 'src/reports/entities/report.entity';
 import { Poll } from 'src/polls/entities/poll.entity';
@@ -59,6 +58,15 @@ export class User {
     nullable: true,
   })
   password: string;
+
+  @Column({
+    type: 'date',
+    nullable: false,
+  })
+  birthdate: Date;
+
+  @Column()
+  genre: string;
 
   @CreateDateColumn()
   registration_date: Date;

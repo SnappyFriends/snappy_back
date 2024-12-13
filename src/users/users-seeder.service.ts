@@ -29,6 +29,8 @@ export class UsersSeederService implements OnModuleInit {
             password: element.password,
             profile_image: element.profile_image,
             location: element.location,
+            birthdate: element.birthdate,
+            genre: element.genre
         }));
 
         await this.userRepository
