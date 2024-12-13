@@ -4,7 +4,7 @@ export function loggerGlobal(req: Request, res: Response, next: NextFunction) {
   const currentDate = new Date().toISOString();
   res.on('finish', () => {
     console.log(
-      `Method/${req.method} Route/${req.url} Date/${currentDate} Status/${res.statusCode}`,
+      `Method/${req.method} Route(${req.url}) Date/${currentDate} Status/${res.statusCode}`,
     );
   });
 

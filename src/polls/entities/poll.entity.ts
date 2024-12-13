@@ -27,8 +27,15 @@ export class Poll {
   })
   type: 'group' | 'post';
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({
+    type: 'timestamp',
+    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP + INTERVAL 7 DAY',
+  })
   closing_date: Date;
+
+  @Column('text', { array: true, nullable: false })
+  options: string[];
 
   @OneToMany(() => PollResponse, (pollResponse) => pollResponse.poll)
   responses: PollResponse[];

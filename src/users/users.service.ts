@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user-dto';
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
@@ -11,31 +12,47 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) { }
 
-  async create(createUserDto: CreateUserDto) {
-    try {
-      const newUser = this.usersRepository.create(createUserDto);
-
-      return await this.usersRepository.save(newUser);
-    } catch {
-      throw new BadRequestException(
-        'Ocurrió un error inesperado al crear el user. Inténtelo de nuevo. ',
-      );
-    }
-  }
-
   async getUsers() {
-    return await this.usersRepository.find();
+    const usersFound = await this.usersRepository.find({
+      relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
+    });
+
+    const usersWithoutPassword = usersFound.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+
+    return usersWithoutPassword;
   }
 
-  getUserById(id: number) {
-    return `This action returns a #${id} user`;
+  async getUserById(id: string) {
+    const userFound = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
+    })
+
+    if (!userFound) throw new NotFoundException(`No se encontró un usuario con el ID ${id}`);
+
+    const { password, ...userWithoutPassword } = userFound;
+    return userWithoutPassword;
   }
 
-  updateUser(id: number, userData: UpdateUserDTO) {
-    return `This action updates a #${id} user. ${userData}`;
+  async updateUser(id: string, userData: UpdateUserDTO) {
+    if (userData.password) {
+      userData.password = await bcrypt.hash(userData, 10);
+    }
+
+    const result = await this.usersRepository.update(id, userData);
+    if (result.affected === 0) throw new NotFoundException(`No se encontró un usuario con el ID ${id}`);
+
+    const updatedUser = await this.usersRepository.findOne({ where: { id } })
+
+    const { password, ...userWithoutPassword } = updatedUser;
+
+    return userWithoutPassword;
   }
 
-  deleteUser(id: number) {
-    return `This action removes a #${id} user`;
+  async deleteUser(id: string) {
+    const result = await this.usersRepository.delete(id);
+    if(result.affected === 0) throw new NotFoundException(`No se encontró un usuario con el ID ${id}`);
+
+    return "Usuario eliminado correctamente.";
   }
 }

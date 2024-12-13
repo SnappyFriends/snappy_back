@@ -1,34 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { PollResponseService } from './poll-response.service';
 import { CreatePollResponseDto } from './dto/create-poll-response.dto';
-import { UpdatePollResponseDto } from './dto/update-poll-response.dto';
 
 @Controller('poll-response')
 export class PollResponseController {
   constructor(private readonly pollResponseService: PollResponseService) {}
 
-  @Post()
-  create(@Body() createPollResponseDto: CreatePollResponseDto) {
-    return this.pollResponseService.create(createPollResponseDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.pollResponseService.findAll();
+  @Post(':poll_id')
+  create(
+    @Param('poll_id', ParseUUIDPipe) poll_id: string,
+    @Body() createPollResponseDto: CreatePollResponseDto,
+  ) {
+    return this.pollResponseService.create(poll_id, createPollResponseDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pollResponseService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePollResponseDto: UpdatePollResponseDto) {
-    return this.pollResponseService.update(+id, updatePollResponseDto);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.pollResponseService.findOne(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.pollResponseService.remove(+id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.pollResponseService.remove(id);
   }
 }

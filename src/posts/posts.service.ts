@@ -32,7 +32,6 @@ export class PostsService {
         user,
       });
 
-      console.log(newPost);
       return await this.postsRepository.save(newPost);
     } catch {
       throw new BadRequestException(
@@ -41,11 +40,19 @@ export class PostsService {
     }
   }
 
-  async findAll(): Promise<Post[]> {
+  async findAll() {
     try {
-      return await this.postsRepository.find({
+      const posts = await this.postsRepository.find({
         relations: ['reactions', 'user'],
       });
+
+      const responseObject = posts.map((post) => ({
+        ...post,
+        user: {
+          id: post.user.id,
+        },
+      }));
+      return responseObject;
     } catch {
       throw new BadRequestException(
         'Ocurrió un error inesperado al traer todos los posts. Inténtelo nuevamente.',
@@ -53,15 +60,23 @@ export class PostsService {
     }
   }
 
-  async findOne(id: string): Promise<Post | undefined> {
+  async findOne(id: string) {
     try {
       const post = await this.postsRepository.findOne({
         where: { post_id: id },
+        relations: ['user'],
       });
       if (!post) {
         throw new BadRequestException('Post not found.');
       }
-      return post;
+      const responseObject = {
+        ...post,
+        user: {
+          id: post.user.id,
+        },
+      };
+
+      return responseObject;
     } catch {
       throw new BadRequestException('Post not found.');
     }
