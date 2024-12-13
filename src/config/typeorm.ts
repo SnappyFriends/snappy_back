@@ -19,6 +19,7 @@ const configTypeORM = {
   logging: false,
 };
 
+
 export default registerAs('typeorm', () => configTypeORM);
 export const connectionSource = new DataSource(
   configTypeORM as DataSourceOptions,

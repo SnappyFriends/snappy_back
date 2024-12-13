@@ -1,7 +1,6 @@
 import { Post } from "src/posts/entities/post.entity";
-import { Report } from "src/reports/entities/report.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
 @Entity({
@@ -11,10 +10,10 @@ export class Comment {
     @PrimaryGeneratedColumn('uuid')
     comment_id: string;
 
-    @Column({ type: "varchar", length: 250 })
+    @Column({ type: "varchar", length: 250, nullable: false })
     content: string;
 
-    @Column({ type: Date })
+    @CreateDateColumn()
     comment_date: Date
 
     @ManyToOne(() => User, (user) => user.comments, { nullable: false, onDelete: 'CASCADE' })
