@@ -13,7 +13,7 @@ export class UsersService {
 
   async getUsers() {
     const foundUsers = await this.usersRepository.find({
-      relations: ['stories', 'interests', 'privacy', 'friendships1', 'friendships2', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
+      relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
     });
 
     const usersWithoutPassword = foundUsers.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
