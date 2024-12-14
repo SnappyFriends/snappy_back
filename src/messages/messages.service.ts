@@ -16,15 +16,17 @@ export class MessagesService {
 
   }
 
-  findAll() {
-    return `This action returns all messages`;
+  async findAllMessage() {
+    return this.messageRepository.find()
   }
 
-  findOneMessage(id: string) {
-    return `This action returns a #${id} message`;
+  async findOneMessage(id: string) {
+    return await this.messageRepository.findOne({
+      where: { id }
+    })
   }
 
-  update(id: string, updateMessageDto: UpdateMessageDto) {
+  updateMessage(id: string, updateMessageDto: UpdateMessageDto) {
     return `This action updates a #${id} message`;
   }
 

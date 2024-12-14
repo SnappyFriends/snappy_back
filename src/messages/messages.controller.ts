@@ -8,23 +8,23 @@ export class MessagesController {
   constructor(private readonly messagesService: MessagesService) { }
 
   @Post()
-  create(@Body() Message: Partial<Message>) {
-    return this.messagesService.create(Message);
+  create(@Body() message: Partial<Message>) {
+    return this.messagesService.createMessage(message);
   }
 
   @Get()
-  findAll() {
-    return this.messagesService.findAll();
+  findAllMessage() {
+    return this.messagesService.findAllMessage();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOneMessage(@Param('id') id: string) {
     return this.messagesService.findOneMessage(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() Message: Partial<Message>) {
-    return this.messagesService.update(id, Message);
+  updateMessage(@Param('id') id: string, @Body() Message: Partial<Message>) {
+    return this.messagesService.updateMessage(id, Message);
   }
 
   @Delete(':id')
