@@ -1,15 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+// src/interests/interest.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
-@Entity({
-  name: 'interests',
-})
-export class Interests {
+@Entity('interests')
+export class Interest {
   @PrimaryGeneratedColumn('uuid')
-  interest_id: string = uuid();
+  interest_id: string;
 
-  @Column({
-    nullable: false,
-  })
+  @Column()
   name: string;
+
+  @ManyToMany(() => User, (user) => user.interests)
+  users: User[];
 }

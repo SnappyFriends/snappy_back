@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { CreateInterestDto } from './dto/create-interest.dto';
-import { UpdateInterestDto } from './dto/update-interest.dto';
+// src/interests/interests.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Interest } from './entities/interests.entity';
+import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
 
 @Injectable()
 export class InterestsService {
-  create(createInterestDto: CreateInterestDto) {
-    return 'This action adds a new interest';
+  constructor(
+    @InjectRepository(Interest) private interestsRepository: Repository<Interest>,
+  ) {}
+
+  async create(interestData: CreateInterestDTO): Promise<Interest> {
+    const interest = this.interestsRepository.create(interestData);
+    return this.interestsRepository.save(interest);
   }
 
-  findAll() {
-    return `This action returns all interests`;
+  async getAll(): Promise<Interest[]> {
+    return this.interestsRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} interest`;
+  async getById(id: string): Promise<Interest> {
+    const interest = await this.interestsRepository.findOne({ where: { interest_id: id } });
+    if (!interest) {
+      throw new NotFoundException(`No se encontró el interés con el ID ${id}`);
+    }
+    return interest;
   }
 
-  update(id: number, updateInterestDto: UpdateInterestDto) {
-    return `This action updates a #${id} interest`;
+  async update(id: string, interestData: UpdateInterestDTO): Promise<Interest> {
+    const interest = await this.getById(id);
+    if (interestData.name) {
+      interest.name = interestData.name;
+    }
+
+    return this.interestsRepository.save(interest);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} interest`;
+  async remove(id: string): Promise<void> {
+    const result = await this.interestsRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`No se encontró el interés con el ID ${id}`);
+    }
   }
 }

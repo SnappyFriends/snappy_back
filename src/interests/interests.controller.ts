@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseUUIDPipe } from '@nestjs/common';
 import { InterestsService } from './interests.service';
-import { CreateInterestDto } from './dto/create-interest.dto';
-import { UpdateInterestDto } from './dto/update-interest.dto';
+import { Interest } from './entities/interests.entity';
+import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
 
 @Controller('interests')
 export class InterestsController {
   constructor(private readonly interestsService: InterestsService) {}
 
-  @Post()
-  create(@Body() createInterestDto: CreateInterestDto) {
-    return this.interestsService.create(createInterestDto);
-  }
-
   @Get()
-  findAll() {
-    return this.interestsService.findAll();
+  getAllInterests(): Promise<Interest[]> {
+    return this.interestsService.getAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.interestsService.findOne(+id);
+  getInterestById(@Param('id', ParseUUIDPipe) id: string): Promise<Interest> {
+    return this.interestsService.getById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInterestDto: UpdateInterestDto) {
-    return this.interestsService.update(+id, updateInterestDto);
+  @Post()
+  createInterest(@Body() createInterestDTO: CreateInterestDTO): Promise<Interest> {
+    return this.interestsService.create(createInterestDTO);
+  }
+
+  @Put(':id')
+  updateInterest(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateInterestDTO: UpdateInterestDTO,
+  ): Promise<Interest> {
+    return this.interestsService.update(id, updateInterestDTO);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.interestsService.remove(+id);
+  deleteInterest(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.interestsService.remove(id);
   }
 }
