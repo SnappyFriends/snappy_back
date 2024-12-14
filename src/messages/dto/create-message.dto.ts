@@ -1,3 +1,5 @@
+import { IsEnum, IsNotEmpty } from "class-validator";
+
 export enum MessageType {
   TEXT = 'text',
   IMAGE = 'image',
@@ -10,6 +12,12 @@ export enum MessageReceiver {
   UNREAD = 'unread',
 }
 
-export class MessageTypeDto {}
+export class CreateMessageDto {
+  @IsNotEmpty()
+  content: string;
 
-export class CreateMessageDto {}
+  @IsNotEmpty()
+  @IsEnum(MessageType)
+  type: MessageType;
+
+}

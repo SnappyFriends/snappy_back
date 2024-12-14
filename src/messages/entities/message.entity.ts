@@ -23,7 +23,8 @@ export class Message {
     @Column({
         type: 'enum',
         enum: MessageType,
-        default: MessageType.TEXT
+        default: MessageType.TEXT,
+        nullable: false
     })
     type: MessageType
 
