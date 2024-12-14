@@ -9,17 +9,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { Purchase_Log } from 'src/purchases/entities/purchase_log.entity';
-import { User_Interests } from 'src/interests/entities/user_interests.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Chat_Groups } from 'src/messages/entities/chatGroup.entity';
 import { Group_Members } from 'src/messages/entities/groupMembers.entity';
 import { Message_Receiver } from 'src/messages/entities/message_Receiver.entity';
+import { Interest } from 'src/interests/entities/interests.entity';
 
 export enum userType {
   REGULAR = 'regular',
@@ -108,8 +110,9 @@ export class User {
   @OneToMany(() => Purchase_Log, (purchase) => purchase.user_id)
   purchases: Purchase_Log[];
 
-  @OneToMany(() => User_Interests, (interest) => interest.user_id)
-  interests: User_Interests[];
+  @ManyToMany(() => Interest, (interest) => interest.users)
+  @JoinTable()
+  interests: Interest[];
 
   @OneToMany(() => Privacy, (privacy) => privacy.user)
   privacy: Privacy[];
