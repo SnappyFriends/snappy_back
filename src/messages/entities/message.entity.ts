@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { MessageType } from "../dto/create-message.dto";
 import { User } from "src/users/entities/user.entity";
 import { Message_Receiver } from "./message_Receiver.entity";
@@ -14,7 +14,7 @@ export class Message {
     @Column({ type: "varchar", length: 50, nullable: false })
     content: string;
 
-    @Column({ type: Date })
+    @CreateDateColumn()
     send_date: Date;
 
     @Column({ type: "boolean" })
