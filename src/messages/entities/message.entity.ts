@@ -28,7 +28,10 @@ export class Message {
     })
     type: MessageType
 
-    @ManyToOne(() => User, (user) => user.id)
+    @ManyToOne(() => User, (user) => user.id, {
+        nullable: false,
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({
         name: 'User_Id'
     })

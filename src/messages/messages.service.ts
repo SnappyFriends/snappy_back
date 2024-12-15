@@ -35,8 +35,6 @@ export class MessagesService {
 
       return savedMessage;
 
-
-
     } catch (error) {
       throw new BadRequestException('Ocurrió un error inesperado al crear un message. Inténtelo de nuevo.',
       );
@@ -45,28 +43,53 @@ export class MessagesService {
 
   async findAllMessage(): Promise<Message[]> {
     try {
-      return await this.messageRepository.find({
-        relations: ['user', 'messageReceivers']
+      const message = await this.messageRepository.find({
+        relations: ['messageReceivers', 'messageReceivers.receiver'],
       })
+
+      const messageReceivers = message.map((message) => ({
+        ...message,
+        messageReceivers: message.messageReceivers.map((messageReceivers) => ({
+          ...messageReceivers,
+          user: {
+            id: messageReceivers.receiver.id
+          },
+        })),
+      }));
+
+      return messageReceivers;
     } catch (error) {
       throw new BadRequestException('Ocurrió un error inesperado al traer todos los Messages. Inténtelo nuevamente.',
       );
     }
   }
 
-  async findOneMessage(idMessage: string): Promise<Message | undefined> {
+  async findOneMessage(idMessage: string) {
     try {
-      const getAllMessage = await this.messageRepository.findOne({
+      const getAllMessage = await this.messageRepository.find({
         where: { id: idMessage },
-        relations: ['user', 'messageReceivers']
+        relations: ['messageReceivers', 'messageReceivers.receiver']
       })
 
-      if (!getAllMessage) {
-        throw new NotFoundException(`Message with ${idMessage} not Found`)
+      if (!getAllMessage || getAllMessage.length === 0) {
+        throw new NotFoundException(`No se encuentra el mensaje con Id ${idMessage}`)
       }
-      return getAllMessage;
+
+      const messageObject = getAllMessage.map((message) => ({
+        ...message,
+        messageReceivers: message.messageReceivers.map((messageReceivers) => ({
+          ...message,
+          user: {
+            id: messageReceivers.receiver.id,
+            name: messageReceivers.receiver.fullname
+          },
+        })),
+      }));
+
+      return messageObject;
+
     } catch (error) {
-      throw new BadRequestException('Comment not found.');
+      throw new BadRequestException('No se logro traer todos los mensajes.');
     }
 
   }

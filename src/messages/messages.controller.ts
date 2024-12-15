@@ -18,14 +18,9 @@ export class MessagesController {
     return this.messagesService.findAllMessage();
   }
 
-  @Get(':id')
-  findOneMessage(@Param('id') id: string) {
+  @Get(':message_id')
+  findOneMessage(@Param('message_id') id: string) {
     return this.messagesService.findOneMessage(id);
-  }
-
-  @Put(':id')
-  updateMessage(@Param('id') id: string, @Body() Message: Partial<Message>) {
-    return this.messagesService.updateMessage(id, Message);
   }
 
   @Delete(':id')
