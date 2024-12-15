@@ -6,6 +6,7 @@ import {
   Delete,
   ParseUUIDPipe,
   Put,
+  Post,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDTO } from './dto/user.dto';
@@ -15,22 +16,30 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getUsers() {
+  async getUsers() {
     return this.usersService.getUsers();
   }
 
   @Get(':id')
-  getUserById(@Param('id', ParseUUIDPipe) id: string) {
+  async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserById(id);
   }
 
   @Put(':id')
-  updateUser(@Param('id', ParseUUIDPipe) id: string, @Body() userData: UpdateUserDTO) {
+  async updateUser(@Param('id', ParseUUIDPipe) id: string, @Body() userData: UpdateUserDTO) {
     return this.usersService.updateUser(id, userData);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id', ParseUUIDPipe) id: string) {
+  async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
+  }
+
+  @Post(':userId/assign-interest/:interestId')
+  async assignInterestToUser(
+    @Param('userId', ParseUUIDPipe) userId: string,
+    @Param('interestId', ParseUUIDPipe) interestId: string,
+  ) {
+    return this.usersService.assignInterestToUser(userId, interestId);
   }
 }

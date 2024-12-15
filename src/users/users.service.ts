@@ -5,11 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
+import { Interest } from 'src/interests/entities/interests.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(Interest) private interestsRepository: Repository<Interest>
   ) { }
 
   async getUsers() {
@@ -51,8 +53,33 @@ export class UsersService {
 
   async deleteUser(id: string) {
     const result = await this.usersRepository.delete(id);
-    if(result.affected === 0) throw new NotFoundException(`No se encontró un usuario con el ID ${id}`);
+    if (result.affected === 0) throw new NotFoundException(`No se encontró un usuario con el ID ${id}`);
 
     return "Usuario eliminado correctamente.";
+  }
+
+  async assignInterestToUser(userId: string, interestId: string) {
+    const user = await this.usersRepository.findOne({ where: { id: userId }, relations: ['interests'] });
+    if (!user) {
+      throw new NotFoundException(`No se encontró el usuario con el ID ${userId}`);
+    }
+
+    const interest = await this.interestsRepository.findOne({ where: { interest_id: interestId } });
+    if (!interest) {
+      throw new NotFoundException(`No se encontró el interés con el ID ${interestId}`);
+    }
+
+    if (user.interests.some((existingInterest) => existingInterest.interest_id === interestId)) {
+      throw new NotFoundException(`El usuario ya tiene este interés`);
+    }
+
+    user.interests.push(interest);
+    await this.usersRepository.save(user);
+
+    return { 
+      message: 'Interés asignado exitosamente',
+      usuario: user.username,
+      interests: user.interests
+     };
   }
 }
