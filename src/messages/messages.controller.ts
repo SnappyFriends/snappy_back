@@ -18,9 +18,14 @@ export class MessagesController {
     return this.messagesService.findAllMessage();
   }
 
-  @Get(':message_id')
-  findOneMessage(@Param('message_id') id: string) {
+  @Get(':id')
+  findOneMessage(@Param('id') id: string) {
     return this.messagesService.findOneMessage(id);
+  }
+
+  @Put(':id')
+  updateMessage(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto): Promise<Message> {
+    return this.messagesService.updateMessage(id, updateMessageDto);
   }
 
   @Delete(':id')

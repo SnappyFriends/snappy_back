@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsUUID } from "class-validator";
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
 
 export enum MessageType {
   TEXT = 'text',
@@ -12,6 +12,7 @@ export class CreateMessageDto {
   content: string;
 
   @IsBoolean()
+  @IsOptional()
   is_anonnymous: Boolean;
 
   @IsNotEmpty()

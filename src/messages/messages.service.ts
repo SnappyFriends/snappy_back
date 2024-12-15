@@ -2,9 +2,10 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
+import { Message_Receiver } from './entities/message_Receiver.entity';
 
 
 
@@ -12,6 +13,9 @@ import { CreateMessageDto } from './dto/create-message.dto';
 export class MessagesService {
   constructor(@InjectRepository(Message) private readonly messageRepository: Repository<Message>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Message_Receiver)
+    private readonly messageReceiverRepository: Repository<Message_Receiver>,
+
   ) { }
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
@@ -94,8 +98,31 @@ export class MessagesService {
 
   }
 
-  updateMessage(id: string, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
+  async updateMessage(idUpdateMessage: string, updateMessageDto: UpdateMessageDto): Promise<Message> {
+    try {
+
+      const updateMessage = await this.messageRepository.findOne({
+        where: { content: idUpdateMessage },
+        relations: ['user', 'messageReceivers'],
+      })
+
+      if (!updateMessage) {
+        throw new NotFoundException(`Mensaje con ID ${idUpdateMessage} no encontrado`);
+
+      }
+
+      Object.assign(updateMessage,
+        {
+          ...updateMessageDto,
+          send_date: new Date()
+        })
+
+      const savedUpdateMessage = await this.messageRepository.save(updateMessage)
+      return savedUpdateMessage;
+
+    } catch (error) {
+      throw new NotFoundException('No pudo actualizar el mensaje')
+    }
   }
 
   deleteMessage(id: string) {
