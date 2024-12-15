@@ -99,7 +99,7 @@ export class CommentsService {
         throw new BadRequestException('Comment not found.');
       }
       await this.commentRepository.remove(deleteComment)
-      return { message: `Post with id ${commentId} deleted successfully` }
+      return { message: `Comment with id ${commentId} deleted successfully` }
     } catch (error) {
       throw new BadRequestException('Comment not found');
     }

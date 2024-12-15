@@ -125,7 +125,19 @@ export class MessagesService {
     }
   }
 
-  deleteMessage(id: string) {
-    return `This action removes a #${id} message`;
+  async deleteMessage(messageId: string): Promise<{ message: string }> {
+    try {
+      const deleteMessage = await this.messageRepository.findOne({
+        where: { id: messageId }
+      })
+      if (!deleteMessage) {
+        throw new BadRequestException(`Mensaje con ID ${messageId} no encontrado`)
+      }
+      await this.messageRepository.remove(deleteMessage)
+      return { message: 'Mensaje eliminado exitosamente' }
+
+    } catch (error) {
+      throw new BadRequestException('No se pudo eliminar mensaje')
+    }
   }
 }

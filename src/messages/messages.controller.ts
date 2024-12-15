@@ -29,7 +29,7 @@ export class MessagesController {
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
+  deleteMessage(@Param('id') id: string): Promise<{ message: string }> {
     return this.messagesService.deleteMessage(id);
   }
 }
