@@ -14,11 +14,10 @@ const configTypeORM = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/**/migrations/*{.ts,.js}'],
   autoLoadEntities: true,
-  dropSchema: `${process.env.DB_DROP}` || false,
+  dropSchema: false,
   synchronize: true,
   logging: `${process.env.DB_LOGGING}` || false,
 };
-
 
 export default registerAs('typeorm', () => configTypeORM);
 export const connectionSource = new DataSource(

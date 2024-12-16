@@ -17,7 +17,7 @@ export class ReactionsController {
 
   @Post(':post_id')
   create(
-    @Param('id', ParseUUIDPipe) id,
+    @Param('post_id', ParseUUIDPipe) id: string,
     @Body() createReactionDto: CreateReactionDto,
   ) {
     return this.reactionsService.create(id, createReactionDto);
@@ -29,20 +29,20 @@ export class ReactionsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.reactionsService.findOne(id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateReactionDto: UpdateReactionDto,
   ) {
     return this.reactionsService.update(id, updateReactionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.reactionsService.remove(id);
   }
 }
