@@ -10,7 +10,7 @@ import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Post } from 'src/posts/entities/post.entity';
-import { identity } from 'rxjs';
+
 
 @Injectable()
 export class CommentsService {
@@ -67,11 +67,7 @@ export class CommentsService {
       }))
       return CommentsObject;
 
-<<<<<<< HEAD
-    } catch (error) {
-=======
     } catch {
->>>>>>> 895d5ee2a6f7fd9349e1aa1f04193daa38c300f6
       throw new BadRequestException(
         'Ocurrió un error inesperado al traer todos los comments. Inténtelo nuevamente.',
       );
@@ -100,11 +96,7 @@ export class CommentsService {
       }
       return CommentObject;
 
-<<<<<<< HEAD
-    } catch (error) {
-=======
     } catch {
->>>>>>> 895d5ee2a6f7fd9349e1aa1f04193daa38c300f6
       throw new BadRequestException('Comment not found.');
     }
   }
@@ -140,15 +132,9 @@ export class CommentsService {
       if (!deleteComment) {
         throw new BadRequestException('Comment not found.');
       }
-<<<<<<< HEAD
-      await this.commentRepository.remove(deleteComment)
-      return { message: `Comment with id ${commentId} deleted successfully` }
-    } catch (error) {
-=======
       await this.commentRepository.remove(deleteComment);
       return { message: `Post with id ${commentId} deleted successfully` };
     } catch {
->>>>>>> 895d5ee2a6f7fd9349e1aa1f04193daa38c300f6
       throw new BadRequestException('Comment not found');
     }
   }
