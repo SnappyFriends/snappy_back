@@ -16,7 +16,7 @@ export class PostsService {
     @InjectRepository(Post) private postsRepository: Repository<Post>,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
-  async create(createPostDto: CreatePostDto): Promise<Post> {
+  async create(createPostDto: CreatePostDto) {
     try {
       const { userId, ...postData } = createPostDto;
 
@@ -32,7 +32,12 @@ export class PostsService {
         user,
       });
 
-      return await this.postsRepository.save(newPost);
+      const savedPost = await this.postsRepository.save(newPost);
+
+      return {
+        ...savedPost,
+        user: { id: userId },
+      };
     } catch {
       throw new BadRequestException(
         'Ocurrió un error inesperado al crear el post. Inténtelo de nuevo.',
