@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import { HttpAdapterHost } from '@nestjs/core';
 import { loggerGlobal } from './middlewares/logger.middleware';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -31,6 +32,18 @@ async function bootstrap() {
 
   io.on('connection', (socket) => {
     console.log('Cliente conectado');
+  });
+
+  const config = new DocumentBuilder()
+    .setTitle('Snappy API')
+    .setDescription('SnappyFriends API')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory, {
+    customSiteTitle: "SnappyFriends API"
   });
 
   await app.listen(process.env.APP_PORT ?? 3000);
