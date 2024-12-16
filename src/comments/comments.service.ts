@@ -6,6 +6,7 @@ import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Post } from 'src/posts/entities/post.entity';
+import { identity } from 'rxjs';
 
 
 @Injectable()
@@ -46,11 +47,23 @@ export class CommentsService {
     }
   }
 
-  async findAllComments(): Promise<Comment[]> {
+  async findAllComments() {
     try {
-      return await this.commentRepository.find({
+      const comments = await this.commentRepository.find({
         relations: ['user', 'postComment'],
       });
+
+      const CommentsObject = comments.map((comment) => ({
+        ...comment,
+        user: {
+          id: comment.user.id
+        },
+        postComment: {
+          id: comment.postComment.post_id
+        }
+      }))
+      return CommentsObject;
+
     } catch (error) {
       throw new BadRequestException(
         'Ocurrió un error inesperado al traer todos los comments. Inténtelo nuevamente.',
@@ -58,7 +71,7 @@ export class CommentsService {
     }
   }
 
-  async findOneComment(commentId: string): Promise<Comment | undefined> {
+  async findOneComment(commentId: string) {
     try {
       const getComment = await this.commentRepository.findOne({
         where: { comment_id: commentId },
@@ -68,7 +81,18 @@ export class CommentsService {
       if (!getComment) {
         throw new NotFoundException(`Comment with ${commentId} not Found`)
       }
-      return getComment;
+
+      const CommentObject = {
+        ...getComment,
+        user: {
+          id: getComment.user.id
+        },
+        postComment: {
+          id: getComment.postComment.post_id
+        }
+      }
+      return CommentObject;
+
     } catch (error) {
       throw new BadRequestException('Comment not found.');
     }
@@ -94,7 +118,9 @@ export class CommentsService {
 
   async deleteComment(commentId: string): Promise<{ message: string }> {
     try {
-      const deleteComment = await this.findOneComment(commentId)
+      const deleteComment = await this.commentRepository.findOne({
+        where: { comment_id: commentId }
+      })
       if (!deleteComment) {
         throw new BadRequestException('Comment not found.');
       }

@@ -12,10 +12,7 @@ import { Message_Receiver } from './entities/message_Receiver.entity';
 @Injectable()
 export class MessagesService {
   constructor(@InjectRepository(Message) private readonly messageRepository: Repository<Message>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Message_Receiver)
-    private readonly messageReceiverRepository: Repository<Message_Receiver>,
-
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) { }
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
