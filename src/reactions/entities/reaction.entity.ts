@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Post } from '../../posts/entities/post.entity';
 import { User } from '../../users/entities/user.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity('reactions')
 @Index(['user', 'post'], { unique: true })
@@ -30,6 +31,12 @@ export class Reaction {
     onDelete: 'CASCADE',
   })
   post: Post;
+
+  @ManyToOne(() => Comment, (comment) => comment.reactions, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  comment: Comment;
 
   @ManyToOne(() => User, (user) => user.reactions, {
     nullable: false,
