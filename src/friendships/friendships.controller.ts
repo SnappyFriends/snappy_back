@@ -1,34 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Param,
+  ParseUUIDPipe,
+  Put,
+} from '@nestjs/common';
 import { FriendshipsService } from './friendships.service';
-import { CreateFriendshipDto } from './dto/create-friendship.dto';
-import { UpdateFriendshipDto } from './dto/update-friendship.dto';
 
 @Controller('friendships')
 export class FriendshipsController {
   constructor(private readonly friendshipsService: FriendshipsService) {}
 
-  @Post()
-  create(@Body() createFriendshipDto: CreateFriendshipDto) {
-    return this.friendshipsService.create(createFriendshipDto);
+  @Post(':userId1/add-friend/:userId2')
+  async addFriend(
+    @Param('userId1', ParseUUIDPipe) userId1: string,
+    @Param('userId2', ParseUUIDPipe) userId2: string,
+  ) {
+    return this.friendshipsService.addFriend(userId1, userId2);
   }
 
-  @Get()
-  findAll() {
-    return this.friendshipsService.findAll();
+  @Get(':userId')
+  async findAllForUser(@Param('userId', ParseUUIDPipe) userId: string) {
+    return this.friendshipsService.findAllForUser(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.friendshipsService.findOne(+id);
+  @Put(':friendshipId/accept')
+  async acceptFriendship(
+    @Param('friendshipId', ParseUUIDPipe) friendshipId: string,
+  ) {
+    return this.friendshipsService.acceptFriendship(friendshipId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFriendshipDto: UpdateFriendshipDto) {
-    return this.friendshipsService.update(+id, updateFriendshipDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.friendshipsService.remove(+id);
+  @Delete(':friendshipId')
+  async removeFriendship(
+    @Param('friendshipId', ParseUUIDPipe) friendshipId: string,
+  ) {
+    return this.friendshipsService.removeFriendship(friendshipId);
   }
 }
