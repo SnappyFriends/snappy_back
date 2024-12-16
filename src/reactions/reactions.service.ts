@@ -34,7 +34,7 @@ export class ReactionsService {
       }
 
       const newReaction = this.reactionsRepository.create({
-        reaction_type: reaction,
+        reaction: reaction,
         comment,
         user: { id: user_id },
       });
@@ -51,6 +51,8 @@ export class ReactionsService {
       }
 
       const newReaction = this.reactionsRepository.create({
+        reaction: reaction,
+        post,
         user: { id: user_id },
       });
 

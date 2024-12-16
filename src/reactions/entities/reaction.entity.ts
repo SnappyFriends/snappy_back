@@ -4,14 +4,12 @@ import {
   ManyToOne,
   Column,
   CreateDateColumn,
-  Index,
 } from 'typeorm';
 import { Post } from '../../posts/entities/post.entity';
 import { User } from '../../users/entities/user.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity('reactions')
-@Index(['user', 'post'], { unique: true })
 export class Reaction {
   @PrimaryGeneratedColumn('uuid')
   reaction_id: string;
@@ -21,13 +19,13 @@ export class Reaction {
     enum: ['like', 'dislike'],
     nullable: false,
   })
-  reaction_type: 'like' | 'dislike';
+  reaction: 'like' | 'dislike';
 
   @CreateDateColumn()
   reaction_date: Date;
 
   @ManyToOne(() => Post, (post) => post.reactions, {
-    nullable: false,
+    nullable: true,
     onDelete: 'CASCADE',
   })
   post: Post;
