@@ -1,7 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { MessageReceiver } from "../dto/create-message.dto";
 import { Message } from "./message.entity";
 import { User } from "src/users/entities/user.entity";
+
+export enum MessageReceiver {
+    READ = 'read',
+    UNREAD = 'unread',
+}
 
 @Entity({
     name: 'Message_Receiver'

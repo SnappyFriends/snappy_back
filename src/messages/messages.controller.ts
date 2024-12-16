@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { Message } from './entities/message.entity';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('messages')
 export class MessagesController {
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(private readonly messagesService: MessagesService) { }
 
   @Post()
   create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
+    return this.messagesService.createMessage(createMessageDto);
   }
 
   @Get()
-  findAll() {
-    return this.messagesService.findAll();
+  findAllMessage() {
+    return this.messagesService.findAllMessage();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.messagesService.findOne(+id);
+  findOneMessage(@Param('id') id: string) {
+    return this.messagesService.findOneMessage(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto) {
-    return this.messagesService.update(+id, updateMessageDto);
+  @Put(':id')
+  updateMessage(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto): Promise<Message> {
+    return this.messagesService.updateMessage(id, updateMessageDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.messagesService.remove(+id);
+  deleteMessage(@Param('id') id: string): Promise<{ message: string }> {
+    return this.messagesService.deleteMessage(id);
   }
 }

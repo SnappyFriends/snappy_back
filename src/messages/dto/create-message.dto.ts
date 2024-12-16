@@ -1,3 +1,5 @@
+import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
+
 export enum MessageType {
   TEXT = 'text',
   IMAGE = 'image',
@@ -5,11 +7,29 @@ export enum MessageType {
   ANONYMOUS = 'anonymous',
 }
 
-export enum MessageReceiver {
-  READ = 'read',
-  UNREAD = 'unread',
+export class CreateMessageDto {
+  @IsNotEmpty()
+  content: string;
+
+  @IsBoolean()
+  @IsOptional()
+  is_anonnymous: Boolean;
+
+  @IsNotEmpty()
+  @IsEnum(MessageType)
+  type: MessageType;
+
+
+  @IsNotEmpty()
+  @IsUUID()
+  userId: string;
+
+  @IsArray()
+  @IsNotEmpty()
+  @IsUUID(undefined, { each: true })
+  messageReceivers: string[];
+
 }
 
-export class MessageTypeDto {}
 
-export class CreateMessageDto {}
+
