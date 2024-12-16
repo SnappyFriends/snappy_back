@@ -25,6 +25,11 @@ export class UsersController {
     return this.usersService.getUserById(id);
   }
 
+  @Get('username/:username')
+  async getUserByUsername(@Param('username') username: string) {
+    return this.usersService.getUserByUsername(username);
+  }
+
   @Put(':id')
   async updateUser(@Param('id', ParseUUIDPipe) id: string, @Body() userData: UpdateUserDTO) {
     return this.usersService.updateUser(id, userData);
