@@ -27,11 +27,13 @@ export enum userType {
   REGULAR = 'regular',
   PREMIUM = 'premium',
   ADMIN = 'admin',
+  SUPERADMIN = 'superadmin'
 }
 
 export enum userStatus {
   ACTIVE = 'active',
-  BLOCKED = 'blocked',
+  inactive = 'inactive',
+  BANNED = 'banned'
 }
 
 @Entity({
@@ -48,11 +50,13 @@ export class User {
 
   @Column({
     nullable: false,
+    unique: true
   })
   username: string;
 
   @Column({
     nullable: false,
+    unique: true
   })
   email: string;
 
