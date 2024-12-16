@@ -11,7 +11,7 @@ import { User } from '../../users/entities/user.entity';
 export enum FriendshipStatus {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
-  BLOCKED = 'blocked',
+  DELETED = 'deleted',
 }
 
 @Entity()
