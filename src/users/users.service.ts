@@ -36,6 +36,22 @@ export class UsersService {
     return userWithoutPassword;
   }
 
+  async getUserByUsername(username: string) {
+    const userFound = await this.usersRepository.findOne({
+      where: { username },
+      relations: [
+        'stories', 'interests', 'privacy', 'responses', 'reportedReports', 
+        'reportingReports', 'polls', 'posts', 'reactions', 'comments', 
+        'groupMembers', 'userChatGroup'
+      ]
+    });
+
+    if (!userFound) throw new NotFoundException(`No se encontró un usuario con el username ${username}`);
+
+    const { password, ...userWithoutPassword } = userFound;
+    return userWithoutPassword;
+  }
+
   async updateUser(id: string, userData: UpdateUserDTO) {
     if (userData.password) {
       userData.password = await bcrypt.hash(userData, 10);

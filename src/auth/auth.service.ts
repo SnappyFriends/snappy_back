@@ -12,9 +12,11 @@ export class AuthService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>, private jwtService: JwtService) { }
 
   async signUp(registerData: registerUserDTO) {
-    const foundUser = await this.usersRepository.findOneBy({ email: registerData.email });
+    const foundEmail = await this.usersRepository.findOneBy({ email: registerData.email });
+    if (foundEmail) throw new ConflictException('El email ya se encuentra registrado.');
 
-    if (foundUser) throw new ConflictException('El usuario ya se encuentra registrado.');
+    const foundUsername = await this.usersRepository.findOneBy({ username: registerData.username });
+    if (foundUsername) throw new ConflictException('El nombre de usuario ya está registrado.');
 
     if (registerData.password) {
       const hashedPassword = await bcrypt.hash(registerData.password, 10);
