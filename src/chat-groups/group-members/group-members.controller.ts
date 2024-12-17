@@ -51,7 +51,7 @@ export class GroupMembersController {
     return updatedRequest;
   }
 
-  @Put(':id/remove-from-admin')
+  @Put(':id/remove-from-admin/:group_id')
   removeFromAdmin(
     @Param('id', ParseUUIDPipe) id: string,
     @Param('group_id', ParseUUIDPipe) group_id: string,
@@ -59,10 +59,10 @@ export class GroupMembersController {
     return this.groupMembersService.removeFromAdmin(id, group_id);
   }
 
-  @Put(':id/leave')
-  async leaveGroup(
+  @Put(':id/leave-group/:group_id')
+  leaveGroup(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body('group_id', ParseUUIDPipe) group_id: string,
+    @Param('group_id', ParseUUIDPipe) group_id: string,
   ) {
     return this.groupMembersService.leaveGroup(id, group_id);
   }
