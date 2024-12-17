@@ -9,7 +9,7 @@ import { Message_Receiver } from './entities/message_Receiver.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Message, User, Message_Receiver]),
+    TypeOrmModule.forFeature([Message, User, Message_Receiver,]),
   ],
   controllers: [MessagesController],
   providers: [MessagesService],

@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Message } from "./message.entity";
 import { User } from "src/users/entities/user.entity";
 
-export enum MessageReceiver {
+export enum statusMessage {
     READ = 'read',
     UNREAD = 'unread',
 }
@@ -11,31 +11,27 @@ export enum MessageReceiver {
     name: 'Message_Receiver'
 })
 export class Message_Receiver {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-    @PrimaryColumn('uuid')
-    message_id: string;
-
-    @PrimaryColumn('uuid')
-    receiver_id: string;
-
-    @ManyToOne(() => Message, (messages) => messages.messageReceivers, { nullable: false, onDelete: 'CASCADE' })
-    @JoinColumn({
-        name: 'message_id'
+    @ManyToOne(() => Message, (messages) => messages.messageReceivers, {
+        nullable: false,
+        onDelete: 'CASCADE'
     })
-    message: Message
+    @JoinColumn({ name: 'message_id' })
+    message_id: Message;
+
+    @ManyToOne(() => User, (user) => user.userMessageReceivers, {
+        nullable: false,
+        onDelete: 'CASCADE'
+    })
+    @JoinColumn({ name: 'receiver_id' })
+    receiver_id: User;
 
     @Column({
         type: 'enum',
-        enum: MessageReceiver,
-        default: MessageReceiver.UNREAD,
+        enum: statusMessage,
+        default: statusMessage.UNREAD
     })
-    message_Receiver: MessageReceiver
-
-    @ManyToOne(() => User, (user) => user.userMessageReceivers, { nullable: false, onDelete: 'CASCADE' })
-    @JoinColumn({
-        name: 'receiver_id'
-    })
-    receiver: User
-
-
+    status: statusMessage;
 }

@@ -19,16 +19,14 @@ export class CreateMessageDto {
   @IsEnum(MessageType)
   type: MessageType;
 
-
   @IsNotEmpty()
   @IsUUID()
-  userId: string;
+  sender_id: string;
 
   @IsArray()
   @IsNotEmpty()
   @IsUUID(undefined, { each: true })
   messageReceivers: string[];
-
 }
 
 

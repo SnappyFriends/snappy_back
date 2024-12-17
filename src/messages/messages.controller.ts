@@ -10,11 +10,11 @@ export class MessagesController {
   constructor(private readonly messagesService: MessagesService) { }
 
   @Post()
-  create(@Body() createMessageDto: CreateMessageDto): Promise<Message> {
+  create(@Body() createMessageDto: CreateMessageDto) {
     return this.messagesService.createMessage(createMessageDto);
   }
 
-  @Get('/')
+  @Get()
   findAllMessage() {
     return this.messagesService.findAllMessage();
   }

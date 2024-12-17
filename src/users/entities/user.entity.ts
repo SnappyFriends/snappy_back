@@ -149,10 +149,7 @@ export class User {
   @OneToMany(() => Chat_Groups, (chatGroup) => chatGroup.creator)
   userChatGroup: Chat_Groups[];
 
-  @OneToMany(
-    () => Message_Receiver,
-    (messageReceiver) => messageReceiver.receiver,
-  )
+  @OneToMany(() => Message_Receiver, (messageReceiver) => messageReceiver.receiver_id)
   userMessageReceivers: Message_Receiver[];
 
   @OneToMany(() => Notification, (notification) => notification.user)
