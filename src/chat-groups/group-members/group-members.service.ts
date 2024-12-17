@@ -9,7 +9,7 @@ import {
 import { CreateGroupMemberDto } from '../dto/create-group-member.dto';
 import { UpdateGroupMemberDto } from '../dto/update-group-member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Group_Members, Role } from '../entities/groupMembers.entity';
+import { Group_Members } from '../entities/groupMembers.entity';
 import { Repository } from 'typeorm';
 import { Chat_Groups } from '../entities/chat-group.entity';
 import {
@@ -180,40 +180,34 @@ export class GroupMembersService {
   }
 
   async removeFromAdmin(id: string, group_id: string) {
-    const groupMember = await this.groupMembersRepository.findOne({
+    const groupMemberToRemove = await this.groupMembersRepository.findOne({
       where: { user_id: id, group_id },
     });
 
-    if (!groupMember) {
-      throw new NotFoundException('Miembro no encontrado en este grupo.');
+    if (!groupMemberToRemove) {
+      throw new NotFoundException(`El usuario no está en este grupo.`);
     }
 
-    if (groupMember.role !== Role.ADMIN) {
-      throw new NotFoundException(
-        'El usuario que intenta eliminar al miembro no es un ADMIN en este grupo.',
-      );
-    }
-
-    await this.groupMembersRepository.remove(groupMember);
+    await this.groupMembersRepository.remove(groupMemberToRemove);
 
     return {
-      message: `El usuario con ID ${id} ha sido eliminado del grupo ${group_id}.`,
+      message: `El usuario con ID ${id} ha sido eliminado del grupo.`,
     };
   }
 
   async leaveGroup(id: string, group_id: string) {
-    const groupMember = await this.groupMembersRepository.findOne({
+    const groupMemberToLeave = await this.groupMembersRepository.findOne({
       where: { user_id: id, group_id },
     });
 
-    if (!groupMember) {
-      throw new NotFoundException('Miembro no encontrado en este grupo.');
+    if (!groupMemberToLeave) {
+      throw new NotFoundException(`El usuario no está en este grupo.`);
     }
 
-    await this.groupMembersRepository.remove(groupMember);
+    await this.groupMembersRepository.remove(groupMemberToLeave);
 
     return {
-      message: `El usuario con ID ${id} ha dejado el grupo ${group_id}.`,
+      message: `El usuario con ID ${id} ha salido del grupo.`,
     };
   }
 }
