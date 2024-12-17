@@ -3,6 +3,7 @@ import { MessagesService } from './messages.service';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
+import { MessageDTO } from './dto/messageReceiverDto';
 
 @Controller('messages')
 export class MessagesController {

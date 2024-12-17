@@ -1,140 +1,197 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { Message_Receiver } from './entities/message_Receiver.entity';
-
-
+import {
+  Message_Receiver,
+  statusMessage,
+} from './entities/message_Receiver.entity';
 
 @Injectable()
 export class MessagesService {
-  constructor(@InjectRepository(Message) private readonly messageRepository: Repository<Message>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>
-  ) { }
+  constructor(
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Message_Receiver)
+    private readonly messageReceiverRepository: Repository<Message_Receiver>,
+  ) {}
 
-  async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
-    try {
+  async createMessage(createMessageDto: CreateMessageDto) {
+    const { sender_id, messageReceivers, ...messageData } = createMessageDto;
 
-      const { userId, messageReceivers, ...messageData } = createMessageDto;
+    const userFound = await this.userRepository.findOne({
+      where: { id: sender_id },
+    });
 
-      const userFound = await this.userRepository.findOne({
-        where: { id: userId }
-      });
+    if (!userFound) throw new NotFoundException(`User ${sender_id} not Found`);
 
-      if (!userFound) throw new NotFoundException(`User ${userId} not Found`);
+    const newMsg = this.messageRepository.create({
+      content: messageData.content,
+      send_date: new Date(),
+      type: messageData.type,
+      sender_id: userFound,
+      is_anonymous: !!messageData.is_anonymous,
+    });
 
-      const newMsg = this.messageRepository.create({
-        ...messageData,
-        user: userFound,
-        send_date: new Date(),
-      })
+    const savedMsg = await this.messageRepository.save(newMsg);
 
-      const savedMessage = await this.messageRepository.save(newMsg);
+    const msgReceiversEntities = await Promise.all(
+      messageReceivers.map(async (receiverId) => {
+        const receiverUser = await this.userRepository.findOne({
+          where: { id: receiverId },
+        });
 
-      return savedMessage;
+        if (!receiverUser) {
+          throw new NotFoundException(
+            `Receiver with ID ${receiverId} not found`,
+          );
+        }
 
-    } catch (error) {
-      throw new BadRequestException('Ocurrió un error inesperado al crear un message. Inténtelo de nuevo.',
-      );
-    }
+        const newReceiver = this.messageReceiverRepository.create({
+          message_id: savedMsg,
+          receiver_id: receiverUser,
+          status: statusMessage.UNREAD,
+        });
+
+        return newReceiver;
+      }),
+    );
+
+    await this.messageReceiverRepository.save(msgReceiversEntities);
+
+    return savedMsg;
   }
 
-  async findAllMessage(): Promise<Message[]> {
-    try {
-      const message = await this.messageRepository.find({
-        relations: ['messageReceivers', 'messageReceivers.receiver'],
-      })
+  async findAllMessage() {
+    const messages = await this.messageRepository.find({
+      relations: [
+        'sender_id',
+        'messageReceivers',
+        'messageReceivers.receiver_id',
+      ],
+    });
 
-      const messageReceivers = message.map((message) => ({
-        ...message,
-        messageReceivers: message.messageReceivers.map((messageReceivers) => ({
-          ...messageReceivers,
-          user: {
-            id: messageReceivers.receiver.id
-          },
+    const resultMessage = messages.map((message) => ({
+      message: {
+        message_id: message.message_id,
+        send_date: message.send_date,
+        type: message.type,
+        content: message.content,
+        is_anonymous: message.is_anonymous,
+        sender_id: message.sender_id.id,
+
+        receiver: message.messageReceivers.map((receiver) => ({
+          receiverId: receiver.receiver_id.id,
+          status: receiver.status,
         })),
-      }));
+      },
+    }));
 
-      return messageReceivers;
-    } catch (error) {
-      throw new BadRequestException('Ocurrió un error inesperado al traer todos los Messages. Inténtelo nuevamente.',
-      );
-    }
+    return resultMessage;
   }
 
   async findOneMessage(idMessage: string) {
     try {
-      const getAllMessage = await this.messageRepository.find({
-        where: { id: idMessage },
-        relations: ['messageReceivers', 'messageReceivers.receiver']
-      })
+      const getAllMessage = await this.messageRepository.findOne({
+        where: { message_id: idMessage },
+        relations: [
+          'sender_id',
+          'messageReceivers',
+          'messageReceivers.receiver_id',
+        ],
+      });
 
-      if (!getAllMessage || getAllMessage.length === 0) {
-        throw new NotFoundException(`No se encuentra el mensaje con Id ${idMessage}`)
+      if (!getAllMessage) {
+        throw new NotFoundException(
+          `No se encuentra el mensaje con Id ${idMessage}`,
+        );
       }
 
-      const messageObject = getAllMessage.map((message) => ({
-        ...message,
-        messageReceivers: message.messageReceivers.map((messageReceivers) => ({
-          ...message,
-          user: {
-            id: messageReceivers.receiver.id,
-            name: messageReceivers.receiver.fullname
-          },
+      const resultMessage = {
+        message_id: getAllMessage.message_id,
+        send_date: getAllMessage.send_date,
+        type: getAllMessage.type,
+        content: getAllMessage.content,
+        is_anonymous: getAllMessage.is_anonymous,
+        sender_id: getAllMessage.sender_id.id,
+
+        receiver: getAllMessage.messageReceivers.map((receiver) => ({
+          receiverId: receiver.receiver_id.id,
+          status: receiver.status,
         })),
-      }));
+      };
 
-      return messageObject;
-
-    } catch (error) {
+      return resultMessage;
+    } catch {
       throw new BadRequestException('No se logro traer todos los mensajes.');
     }
-
   }
 
-  async updateMessage(idUpdateMessage: string, updateMessageDto: UpdateMessageDto): Promise<Message> {
+  async updateMessage(
+    idUpdateMessage: string,
+    updateMessageDto: UpdateMessageDto,
+  ): Promise<Message> {
     try {
-
       const updateMessage = await this.messageRepository.findOne({
-        where: { content: idUpdateMessage },
-        relations: ['user', 'messageReceivers'],
-      })
+        where: { message_id: idUpdateMessage },
+        relations: [
+          'sender_id',
+          'messageReceivers',
+          'messageReceivers.receiver_id',
+        ],
+      });
 
       if (!updateMessage) {
-        throw new NotFoundException(`Mensaje con ID ${idUpdateMessage} no encontrado`);
-
+        throw new NotFoundException(
+          `Mensaje con ID ${idUpdateMessage} no encontrado`,
+        );
       }
 
-      Object.assign(updateMessage,
-        {
-          ...updateMessageDto,
-          send_date: new Date()
-        })
+      Object.assign(updateMessage, {
+        ...updateMessageDto,
+        send_date: new Date(),
+      });
 
-      const savedUpdateMessage = await this.messageRepository.save(updateMessage)
+      const savedUpdateMessage =
+        await this.messageRepository.save(updateMessage);
       return savedUpdateMessage;
-
-    } catch (error) {
-      throw new NotFoundException('No pudo actualizar el mensaje')
+    } catch {
+      throw new NotFoundException('No pudo actualizar el mensaje');
     }
   }
 
   async deleteMessage(messageId: string): Promise<{ message: string }> {
     try {
       const deleteMessage = await this.messageRepository.findOne({
-        where: { id: messageId }
-      })
+        where: { message_id: messageId },
+        relations: [
+          'sender_id',
+          'messageReceivers',
+          'messageReceivers.receiver_id',
+        ],
+      });
       if (!deleteMessage) {
-        throw new BadRequestException(`Mensaje con ID ${messageId} no encontrado`)
+        throw new BadRequestException(
+          `Mensaje con ID ${messageId} no encontrado`,
+        );
       }
-      await this.messageRepository.remove(deleteMessage)
-      return { message: 'Mensaje eliminado exitosamente' }
 
-    } catch (error) {
-      throw new BadRequestException('No se pudo eliminar mensaje')
+      await this.messageReceiverRepository.delete({
+        message_id: deleteMessage,
+      });
+      await this.messageRepository.delete(messageId);
+
+      return { message: 'Mensaje eliminado exitosamente' };
+    } catch {
+      throw new BadRequestException('No se pudo eliminar mensaje');
     }
   }
 }

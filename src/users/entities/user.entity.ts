@@ -18,22 +18,24 @@ import {
 import { v4 as uuid } from 'uuid';
 import { Purchase_Log } from 'src/purchases/entities/purchase_log.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
-import { Chat_Groups } from 'src/messages/entities/chatGroup.entity';
-import { Group_Members } from 'src/messages/entities/groupMembers.entity';
+import { Chat_Groups } from 'src/chat-groups/entities/chat-group.entity';
+import { Group_Members } from 'src/chat-groups/entities/groupMembers.entity';
 import { Message_Receiver } from 'src/messages/entities/message_Receiver.entity';
 import { Interest } from 'src/interests/entities/interests.entity';
+import { Notification } from 'src/notifications/entities/notification.entity';
+import { GroupJoinRequest } from 'src/chat-groups/entities/group-join-request.entity';
 
 export enum userType {
   REGULAR = 'regular',
   PREMIUM = 'premium',
   ADMIN = 'admin',
-  SUPERADMIN = 'superadmin'
+  SUPERADMIN = 'superadmin',
 }
 
 export enum userStatus {
   ACTIVE = 'active',
   inactive = 'inactive',
-  BANNED = 'banned'
+  BANNED = 'banned',
 }
 
 @Entity({
@@ -50,13 +52,13 @@ export class User {
 
   @Column({
     nullable: false,
-    unique: true
+    unique: true,
   })
   username: string;
 
   @Column({
     nullable: false,
-    unique: true
+    unique: true,
   })
   email: string;
 
@@ -146,11 +148,17 @@ export class User {
   groupMembers: Group_Members[];
 
   @OneToMany(() => Chat_Groups, (chatGroup) => chatGroup.creator)
-  userChatGroup: Chat_Groups[];
+  createdGroups: Chat_Groups[];
 
   @OneToMany(
     () => Message_Receiver,
-    (messageReceiver) => messageReceiver.receiver,
+    (messageReceiver) => messageReceiver.receiver_id,
   )
   userMessageReceivers: Message_Receiver[];
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
+
+  @OneToMany(() => GroupJoinRequest, (request) => request.user)
+  joinRequests: GroupJoinRequest[];
 }

@@ -17,6 +17,8 @@ import { PostsModule } from './posts/posts.module';
 import { StoriesModule } from './stories/stories.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { JwtModule } from '@nestjs/jwt';
+import { NotificationsModule } from './notifications/notifications.module';
+import { ChatGroupsModule } from './chat-groups/chat-groups.module';
 
 @Module({
   imports: [
@@ -44,7 +46,9 @@ import { JwtModule } from '@nestjs/jwt';
       global: true,
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: "12h" }
-    })
+    }),
+    NotificationsModule,
+    ChatGroupsModule
   ],
   controllers: [],
   providers: [],

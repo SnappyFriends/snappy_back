@@ -5,11 +5,11 @@ import { Message_Receiver } from "./message_Receiver.entity";
 
 
 @Entity({
-    name: 'Messages'
+    name: 'Messages',
 })
 export class Message {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    message_id: string;
 
     @Column({ type: "varchar", length: 50, nullable: false })
     content: string;
@@ -17,27 +17,24 @@ export class Message {
     @CreateDateColumn()
     send_date: Date;
 
-    @Column({ type: "boolean" })
-    is_anonymous: boolean;
-
     @Column({
         type: 'enum',
         enum: MessageType,
         default: MessageType.TEXT,
-        nullable: false
+        nullable: false,
     })
-    type: MessageType
+    type: MessageType;
 
     @ManyToOne(() => User, (user) => user.id, {
         nullable: false,
         onDelete: 'CASCADE',
     })
-    @JoinColumn({
-        name: 'User_Id'
-    })
-    user: User
+    @JoinColumn({ name: 'sender_Id' })
+    sender_id: User;
+
+    @Column({ type: "boolean" })
+    is_anonymous: boolean;
 
     @OneToMany(() => Message_Receiver, (messageReceiver) => messageReceiver.message_id)
-    messageReceivers: Message_Receiver[]
-
+    messageReceivers: Message_Receiver[];
 }

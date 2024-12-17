@@ -13,22 +13,20 @@ export class CreateMessageDto {
 
   @IsBoolean()
   @IsOptional()
-  is_anonnymous: Boolean;
+  is_anonymous: Boolean;
 
   @IsNotEmpty()
   @IsEnum(MessageType)
   type: MessageType;
 
-
   @IsNotEmpty()
   @IsUUID()
-  userId: string;
+  sender_id: string;
 
   @IsArray()
   @IsNotEmpty()
   @IsUUID(undefined, { each: true })
   messageReceivers: string[];
-
 }
 
 
