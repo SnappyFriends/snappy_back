@@ -9,7 +9,7 @@ import { Message_Receiver } from "./message_Receiver.entity";
 })
 export class Message {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    message_id: string;
 
     @Column({ type: "varchar", length: 50, nullable: false })
     content: string;

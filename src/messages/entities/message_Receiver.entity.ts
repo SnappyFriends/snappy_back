@@ -11,17 +11,23 @@ export enum MessageReceiver {
     name: 'Message_Receiver'
 })
 export class Message_Receiver {
+
     @PrimaryColumn('uuid')
-    @ManyToOne(() => Message, (messages) => messages.messageReceivers)
+    message_id: string;
+
+    @PrimaryColumn('uuid')
+    receiver_id: string;
+
+    @ManyToOne(() => Message, (messages) => messages.messageReceivers, { nullable: false, onDelete: 'CASCADE' })
     @JoinColumn({
         name: 'message_id'
     })
-    message_id: Message
+    message: Message
 
     @Column({
         type: 'enum',
         enum: MessageReceiver,
-        default: MessageReceiver.READ,
+        default: MessageReceiver.UNREAD,
     })
     message_Receiver: MessageReceiver
 

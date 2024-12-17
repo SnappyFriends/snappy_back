@@ -13,7 +13,7 @@ export class CreateMessageDto {
 
   @IsBoolean()
   @IsOptional()
-  is_anonnymous: Boolean;
+  is_anonymous: Boolean;
 
   @IsNotEmpty()
   @IsEnum(MessageType)

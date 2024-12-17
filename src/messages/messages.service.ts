@@ -5,14 +5,15 @@ import { Message } from './entities/message.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { Message_Receiver } from './entities/message_Receiver.entity';
+import { Message_Receiver, MessageReceiver } from './entities/message_Receiver.entity';
 
 
 
 @Injectable()
 export class MessagesService {
   constructor(@InjectRepository(Message) private readonly messageRepository: Repository<Message>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Message_Receiver) private readonly messageReceiverRepository: Repository<Message_Receiver>
   ) { }
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
@@ -27,14 +28,46 @@ export class MessagesService {
       if (!userFound) throw new NotFoundException(`User ${userId} not Found`);
 
       const newMsg = this.messageRepository.create({
-        ...messageData,
+        content: messageData.content,
+        type: messageData.type,
+        is_anonymous: !!messageData.is_anonymous,
         user: userFound,
         send_date: new Date(),
-      })
+      });
 
-      const savedMessage = await this.messageRepository.save(newMsg);
+      const savedMsg = await this.messageRepository.save(newMsg);
 
-      return savedMessage;
+      const msgReceiversEntities = await Promise.all(
+        messageReceivers.map(async (receiverId) => {
+
+          const receiverUser = await this.userRepository.findOne({
+            where: { id: receiverId }
+          });
+
+          if (!receiverUser) {
+            throw new NotFoundException(`Receiver with ID ${receiverId} not found`);
+          }
+
+          const newReceiver = this.messageReceiverRepository.create({
+            message: { message_id: savedMsg.message_id },
+            receiver: { id: receiverUser.id },
+            message_Receiver: MessageReceiver.UNREAD,
+          });
+
+          return newReceiver;
+
+        })
+      );
+
+      const validReceivers = msgReceiversEntities.filter((receiver) => receiver !== null);
+
+      if (validReceivers.length === 0) {
+        throw new BadRequestException('No se encontraron receptores válidos.');
+      }
+
+      await this.messageReceiverRepository.save(validReceivers);
+
+      return savedMsg;
 
     } catch (error) {
       throw new BadRequestException('Ocurrió un error inesperado al crear un message. Inténtelo de nuevo.',
@@ -42,23 +75,22 @@ export class MessagesService {
     }
   }
 
-  async findAllMessage(): Promise<Message[]> {
-    try {
-      const message = await this.messageRepository.find({
-        relations: ['messageReceivers', 'messageReceivers.receiver'],
-      })
+  async findAllMessage() {
 
-      const messageReceivers = message.map((message) => ({
+    try {
+      const messages = await this.messageRepository.find({
+        relations: ['user'],
+      });
+
+      const resultMessage = messages.map((message) => ({
         ...message,
-        messageReceivers: message.messageReceivers.map((messageReceivers) => ({
-          ...messageReceivers,
-          user: {
-            id: messageReceivers.receiver.id
-          },
-        })),
+        user: {
+          id: message.user.id,
+        },
       }));
 
-      return messageReceivers;
+      return resultMessage;
+
     } catch (error) {
       throw new BadRequestException('Ocurrió un error inesperado al traer todos los Messages. Inténtelo nuevamente.',
       );
@@ -68,7 +100,7 @@ export class MessagesService {
   async findOneMessage(idMessage: string) {
     try {
       const getAllMessage = await this.messageRepository.find({
-        where: { id: idMessage },
+        where: { message_id: idMessage },
         relations: ['messageReceivers', 'messageReceivers.receiver']
       })
 
@@ -125,7 +157,7 @@ export class MessagesService {
   async deleteMessage(messageId: string): Promise<{ message: string }> {
     try {
       const deleteMessage = await this.messageRepository.findOne({
-        where: { id: messageId }
+        where: { message_id: messageId }
       })
       if (!deleteMessage) {
         throw new BadRequestException(`Mensaje con ID ${messageId} no encontrado`)
