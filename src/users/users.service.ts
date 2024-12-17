@@ -16,7 +16,7 @@ export class UsersService {
 
   async getUsers() {
     const usersFound = await this.usersRepository.find({
-      relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
+      relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers']
     });
 
     const usersWithoutPassword = usersFound.map(({ password, ...userWithoutPassword }) => userWithoutPassword);
@@ -27,7 +27,7 @@ export class UsersService {
   async getUserById(id: string) {
     const userFound = await this.usersRepository.findOne({
       where: { id },
-      relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers', 'userChatGroup']
+      relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers']
     })
 
     if (!userFound) throw new NotFoundException(`No se encontró un usuario con el ID ${id}`);
@@ -42,7 +42,7 @@ export class UsersService {
       relations: [
         'stories', 'interests', 'privacy', 'responses', 'reportedReports', 
         'reportingReports', 'polls', 'posts', 'reactions', 'comments', 
-        'groupMembers', 'userChatGroup'
+        'groupMembers'
       ]
     });
 
