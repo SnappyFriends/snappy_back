@@ -22,18 +22,19 @@ import { Chat_Groups } from 'src/messages/entities/chatGroup.entity';
 import { Group_Members } from 'src/messages/entities/groupMembers.entity';
 import { Message_Receiver } from 'src/messages/entities/message_Receiver.entity';
 import { Interest } from 'src/interests/entities/interests.entity';
+import { Notification } from 'src/notifications/entities/notification.entity';
 
 export enum userType {
   REGULAR = 'regular',
   PREMIUM = 'premium',
   ADMIN = 'admin',
-  SUPERADMIN = 'superadmin'
+  SUPERADMIN = 'superadmin',
 }
 
 export enum userStatus {
   ACTIVE = 'active',
   inactive = 'inactive',
-  BANNED = 'banned'
+  BANNED = 'banned',
 }
 
 @Entity({
@@ -50,13 +51,13 @@ export class User {
 
   @Column({
     nullable: false,
-    unique: true
+    unique: true,
   })
   username: string;
 
   @Column({
     nullable: false,
-    unique: true
+    unique: true,
   })
   email: string;
 
@@ -153,4 +154,7 @@ export class User {
     (messageReceiver) => messageReceiver.receiver,
   )
   userMessageReceivers: Message_Receiver[];
+
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
 }
