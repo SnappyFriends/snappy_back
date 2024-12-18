@@ -19,6 +19,8 @@ import { PurchasesModule } from './purchases/purchases.module';
 import { JwtModule } from '@nestjs/jwt';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ChatGroupsModule } from './chat-groups/chat-groups.module';
+import { ChatGateway } from './chat.gateway';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 @Module({
   imports: [
@@ -45,12 +47,12 @@ import { ChatGroupsModule } from './chat-groups/chat-groups.module';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: "12h" }
+      signOptions: { expiresIn: '12h' },
     }),
     NotificationsModule,
-    ChatGroupsModule
+    ChatGroupsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [ChatGateway, AuthGuard],
 })
 export class AppModule {}
