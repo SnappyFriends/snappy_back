@@ -22,11 +22,10 @@ export class Post {
   creation_date: Date;
 
   @Column({
-    type: 'enum',
-    enum: ['text', 'image', 'video'],
-    nullable: false,
+    type: 'text',
+    nullable: true,
   })
-  type: 'text' | 'image' | 'video';
+  fileUrl: string;
 
   @OneToMany(() => Reaction, (reaction) => reaction.post)
   reactions: Reaction[];
@@ -39,5 +38,4 @@ export class Post {
 
   @OneToMany(() => Comment, (comment) => comment.postComment)
   comments: Comment[];
-
 }
