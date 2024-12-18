@@ -222,6 +222,16 @@ export class UsersController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
   @ApiOkResponse({ description: 'User deleted successfully.', schema: { example: 'Usuario eliminado correctamente.' } })
+  @ApiBadRequestResponse({
+    description: 'Some input value is not found. (uuid is expected)',
+    schema: {
+      example: {
+        "message": "Validation failed (uuid is expected)",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    }
+  })
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }
