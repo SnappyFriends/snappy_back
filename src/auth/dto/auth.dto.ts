@@ -80,4 +80,5 @@ export class LoginUserDTO extends PickType(registerUserDTO, [
         description: 'La contraseña debe tener minimo 8 caracteres, máximo 8 caracteres y debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).'
     })
     password: string;
+
 }
