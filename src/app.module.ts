@@ -21,6 +21,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ChatGroupsModule } from './chat-groups/chat-groups.module';
 import { ChatGateway } from './chat.gateway';
 import { AuthGuard } from './auth/guards/auth.guard';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
     }),
     NotificationsModule,
     ChatGroupsModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [ChatGateway, AuthGuard],
