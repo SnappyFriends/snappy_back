@@ -1,7 +1,12 @@
 import { PickType } from "@nestjs/mapped-types";
+import { ApiProperty } from "@nestjs/swagger";
 import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class registerUserDTO {
+    @ApiProperty({
+        example: 'Abigail Contreras',
+        description: 'Nombre completo del usuario, solo letras y espacios. Min: 3, Max: 80 caracteres',
+    })
     @IsNotEmpty()
     @IsString()
     @MinLength(3)
@@ -11,6 +16,10 @@ export class registerUserDTO {
     })
     fullname: string;
 
+    @ApiProperty({
+        example: 'abiContreras',
+        description: 'El username del usuario, sin espacios ni caracteres especiales',
+    })
     @IsNotEmpty()
     @IsString()
     @Matches(/^[A-Za-z0-9_]+$/, {
@@ -18,11 +27,19 @@ export class registerUserDTO {
     })
     username: string;
 
+    @ApiProperty({
+        example: 'abi@mail.com',
+        description: 'Correo electrónico válido del usuario',
+    })
     @IsNotEmpty()
     @IsString()
     @IsEmail()
     email: string;
 
+    @ApiProperty({
+        example: 'AbiContrera$2024',
+        description: 'La contraseña debe tener minimo 8 caracteres, máximo 8 caracteres y debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).'
+    })
     @IsOptional()
     @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres.' })
     @MaxLength(20, { message: 'La contraseña debe tener como máximo 20 caracteres.' })
@@ -31,10 +48,18 @@ export class registerUserDTO {
     })
     password: string;
 
+    @ApiProperty({
+        example: '1995-05-15',
+        description: 'Fecha de nacimiento del usuario en formato ISO (YYYY-MM-DD)',
+    })
     @IsNotEmpty()
     @IsDateString()
     birthdate: string;
 
+    @ApiProperty({
+        example: 'female',
+        description: 'Género del usuario, puede ser male, female u otros',
+    })
     @IsNotEmpty()
     @IsString()
     genre: string;
