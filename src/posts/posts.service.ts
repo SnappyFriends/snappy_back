@@ -15,7 +15,7 @@ export class PostsService {
   constructor(
     @InjectRepository(Post) private postsRepository: Repository<Post>,
     @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
+  ) { }
   async create(createPostDto: CreatePostDto) {
     try {
       const { userId, ...postData } = createPostDto;
@@ -24,7 +24,7 @@ export class PostsService {
         where: { id: userId },
       });
       if (!user) {
-        throw new BadRequestException('El usuario no existe');
+        throw new NotFoundException('El usuario no existe');
       }
 
       const newPost = this.postsRepository.create({
@@ -72,7 +72,7 @@ export class PostsService {
         relations: ['user'],
       });
       if (!post) {
-        throw new BadRequestException('Post not found.');
+        throw new NotFoundException('Post not found.');
       }
       const responseObject = {
         ...post,
@@ -83,7 +83,7 @@ export class PostsService {
 
       return responseObject;
     } catch {
-      throw new BadRequestException('Post not found.');
+      throw new NotFoundException('Post not found.');
     }
   }
 
