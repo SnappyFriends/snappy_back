@@ -19,6 +19,7 @@ import { PurchasesModule } from './purchases/purchases.module';
 import { JwtModule } from '@nestjs/jwt';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ChatGroupsModule } from './chat-groups/chat-groups.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { ChatGroupsModule } from './chat-groups/chat-groups.module';
       signOptions: { expiresIn: "12h" }
     }),
     NotificationsModule,
-    ChatGroupsModule
+    ChatGroupsModule,
+    FilesModule
   ],
   controllers: [],
   providers: [],
