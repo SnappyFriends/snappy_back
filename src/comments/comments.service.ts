@@ -83,19 +83,18 @@ export class CommentsService {
 
       if (!getComment) {
         throw new NotFoundException(`Comment with ${commentId} not Found`);
-      }
-
-      const CommentObject = {
-        ...getComment,
-        user: {
-          id: getComment.user.id
-        },
-        postComment: {
-          id: getComment.postComment.post_id
+      } else {
+        const CommentObject = {
+          ...getComment,
+          user: {
+            id: getComment.user.id
+          },
+          postComment: {
+            id: getComment.postComment.post_id
+          }
         }
+        return CommentObject;
       }
-      return CommentObject;
-
     } catch {
       throw new BadRequestException('Comment not found.');
     }

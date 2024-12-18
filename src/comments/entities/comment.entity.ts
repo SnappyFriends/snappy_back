@@ -18,7 +18,7 @@ export class Comment {
   @PrimaryGeneratedColumn('uuid')
   comment_id: string;
 
-  @Column({ type: 'varchar', length: 250, nullable: false })
+  @Column({ type: 'varchar', nullable: false })
   content: string;
 
   @CreateDateColumn()
