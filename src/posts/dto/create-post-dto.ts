@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreatePostDto {
   @IsUUID()
@@ -9,7 +9,6 @@ export class CreatePostDto {
   @IsNotEmpty()
   content: string;
 
-  @IsEnum(['text', 'video', 'image'])
-  @IsNotEmpty()
-  type: 'text' | 'video' | 'image';
+  @IsString()
+  fileUrl: string;
 }
