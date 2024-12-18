@@ -11,7 +11,7 @@ import { userType } from 'src/users/entities/user.entity';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(private jwtServices: JwtService) {}
-
+  //Agregando un comentario para poder hacer el pull sin romper nadaaaa..
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
