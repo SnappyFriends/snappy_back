@@ -40,6 +40,21 @@ export class AuthController {
       }
     }
   })
+  @ApiBadRequestResponse({
+    description: 'invalid input',
+    schema: {
+      example: {
+        "message": [
+          "property user should not exist",
+          "El nombre de usuario no debe contener espacios ni caracteres especiales.",
+          "username must be a string",
+          "username should not be empty"
+        ],
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    }
+  })
 
   signUp(@Body() userData: registerUserDTO) {
     return this.authService.signUp(userData);
