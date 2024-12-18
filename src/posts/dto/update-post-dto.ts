@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdatePostDto {
   @IsUUID()
@@ -9,7 +9,6 @@ export class UpdatePostDto {
   @IsOptional()
   content?: string;
 
-  @IsEnum(['text', 'video', 'image'])
-  @IsOptional()
-  type?: 'text' | 'video' | 'image';
+  @IsString()
+  fileUrl?: string;
 }
