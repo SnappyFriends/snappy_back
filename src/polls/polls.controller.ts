@@ -19,7 +19,7 @@ export class PollsController {
   @Post(':id')
   @ApiOperation({ summary: 'Create Polls' })
   @ApiCreatedResponse({
-    description: '',
+    description: 'Created Polls',
     schema: {
       example: {
         "content": "¿Cual es tu color favorito?",
@@ -51,7 +51,7 @@ export class PollsController {
     }
   })
   @ApiBadRequestResponse({
-    description: 'Unexpected error',
+    description: 'unexpected error creating polls',
     schema: {
       example: {
         "message": [
