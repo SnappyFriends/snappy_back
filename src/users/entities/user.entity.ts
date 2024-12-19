@@ -24,6 +24,7 @@ import { Message_Receiver } from 'src/messages/entities/message_Receiver.entity'
 import { Interest } from 'src/interests/entities/interests.entity';
 import { Notification } from 'src/notifications/entities/notification.entity';
 import { GroupJoinRequest } from 'src/chat-groups/entities/group-join-request.entity';
+import { Chat } from 'src/chat-groups/entities/chat.entity';
 
 export enum userType {
   REGULAR = 'regular',
@@ -161,4 +162,12 @@ export class User {
 
   @OneToMany(() => GroupJoinRequest, (request) => request.user)
   joinRequests: GroupJoinRequest[];
+
+  @ManyToMany(() => Chat, (chat) => chat.participants)
+  @JoinTable({
+    name: 'user_chats',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' }, // Clave foránea de User
+    inverseJoinColumn: { name: 'chat_id', referencedColumnName: 'id' }, // Clave foránea de Chat
+  })
+  chats: Chat[];
 }

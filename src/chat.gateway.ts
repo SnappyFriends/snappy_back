@@ -4,12 +4,24 @@ import {
   OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-import { Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { ChatGroupsService } from './chat-groups/chat-groups.service';
+import { MessagesService } from './messages/messages.service';
+import { GroupMembersService } from './chat-groups/group-members/group-members.service';
+import { CreateMessageDto } from './messages/dto/create-message.dto';
+import { UsersService } from './users/users.service';
 
 dotenv.config({ path: './.env' });
 @WebSocketGateway({
@@ -29,6 +41,9 @@ export class ChatGateway
   constructor(
     private jwtAuthService: AuthGuard,
     private jwtService: JwtService,
+    private groupMemberService: GroupMembersService,
+    private messageService: MessagesService,
+    private usersService: UsersService,
   ) {}
 
   afterInit() {
@@ -48,6 +63,9 @@ export class ChatGateway
       return;
     }
     try {
+      const decoded = this.jwtService.verify(token);
+      console.log('Token decodificado:', decoded);
+
       const context = {
         switchToWs: () => ({
           getClient: () => client,
@@ -62,6 +80,13 @@ export class ChatGateway
 
       if (!isValid) {
         client.emit('error', 'Token inválido');
+        client.disconnect();
+        return;
+      }
+
+      const user = await this.usersService.getUserById(decoded.sub);
+      if (!user) {
+        client.emit('error', 'Usuario no encontrado');
         client.disconnect();
         return;
       }
@@ -110,6 +135,31 @@ export class ChatGateway
         `Error en handleDisconnect: ${client.id}`,
         error.message,
       );
+    }
+  }
+
+  @SubscribeMessage('message')
+  async handleNewMessage(
+    @MessageBody() payload: CreateMessageDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      if (!payload.chatId && !payload.groupId) {
+        throw new BadRequestException('Debe especificar un chatId o groupId');
+      }
+
+      const message = await this.messageService.createMessage(payload);
+
+      if (payload.groupId) {
+        this.server.to(payload.groupId).emit('receiveGroupMessage', message);
+      } else if (payload.chatId) {
+        payload.messageReceivers.forEach((receiverId) => {
+          this.server.to(receiverId).emit('receivePrivateMessage', message);
+        });
+      }
+    } catch (error) {
+      console.error('Error al manejar el mensaje:', error.message);
+      client.emit('error', error.message);
     }
   }
 }
