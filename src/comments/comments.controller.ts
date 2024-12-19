@@ -9,6 +9,7 @@ import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkRe
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) { }
 
+  @Post()
   @ApiOperation({ summary: 'Create Comment' })
   @ApiCreatedResponse({
     description: 'Comment Created.',
@@ -51,11 +52,9 @@ export class CommentsController {
       }
     }
   })
-  @Post()
   create(@Body() createCommentDto: CreateCommentDto) {
     return this.commentsService.createComment(createCommentDto);
   }
-
 
   @Get()
   @ApiOperation({ summary: 'Get all Comments' })
