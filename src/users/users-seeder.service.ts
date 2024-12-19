@@ -4,12 +4,13 @@ import { Repository } from 'typeorm';
 import { User, userType } from './entities/user.entity';
 import * as data from '../assets/users-seed.json';
 import * as bcrypt from "bcrypt";
+import { Interest } from 'src/interests/entities/interests.entity';
 
 @Injectable()
 export class UsersSeederService implements OnModuleInit {
     constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(Interest) private readonly interestRepository: Repository<Interest>,
     ) { }
 
     async onModuleInit() {
@@ -43,23 +44,30 @@ export class UsersSeederService implements OnModuleInit {
 
         await this.userRepository.save(superadmin);
 
-        const users = data.map((element) => ({
-            fullname: element.fullname,
-            username: element.username,
-            email: element.email,
-            password: element.password,
-            profile_image: element.profile_image,
-            location: element.location,
-            birthdate: element.birthdate,
-            genre: element.genre
-        }));
+        const allInterests = await this.interestRepository.find();
 
-        await this.userRepository
-            .createQueryBuilder()
-            .insert()
-            .into(User)
-            .values(users)
-            .execute();
+        const users = [];
+        for (const element of data) {
+            const interests = allInterests.filter(interest =>
+                element.interests.includes(interest.name)
+            );
+
+            const user = this.userRepository.create({
+                fullname: element.fullname,
+                username: element.username,
+                email: element.email,
+                password: element.password,
+                profile_image: element.profile_image,
+                location: element.location,
+                birthdate: element.birthdate,
+                genre: element.genre,
+                interests: interests,
+            });
+
+            users.push(user);
+        }
+
+        await this.userRepository.save(users);
 
         console.log('Usuarios precargados exitosamente.');
     }

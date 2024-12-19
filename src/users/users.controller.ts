@@ -7,11 +7,11 @@ import {
   ParseUUIDPipe,
   Put,
   Post,
-  HttpCode,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDTO } from './dto/user.dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GetUsersFiltersDTO, UpdateUserDTO } from './dto/user.dto';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
 @ApiTags('Users')
@@ -53,8 +53,8 @@ export class UsersController {
       }]
     }
   })
-  async getUsers() {
-    return this.usersService.getUsers();
+  async getUsers(@Query() filters: GetUsersFiltersDTO) {
+    return this.usersService.getUsers(filters);
   }
 
   @Get(':id')
