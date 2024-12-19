@@ -1,4 +1,4 @@
-import { IsUUID, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsUUID, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
 import { Role } from '../entities/groupMembers.entity';
 
 export class CreateGroupMemberDto {
@@ -10,6 +10,7 @@ export class CreateGroupMemberDto {
   @IsNotEmpty()
   user_id: string;
 
+  @IsOptional()
   @IsEnum(Role)
-  role?: Role;
+  role: Role;
 }
