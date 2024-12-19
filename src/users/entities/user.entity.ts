@@ -38,9 +38,7 @@ export enum userStatus {
   BANNED = 'banned',
 }
 
-@Entity({
-  name: 'Users',
-})
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid();
@@ -113,9 +111,6 @@ export class User {
   @OneToMany(() => Stories, (story) => story.user_id)
   stories: Stories[];
 
-  @OneToMany(() => Purchase_Log, (purchase) => purchase.user_id)
-  purchases: Purchase_Log[];
-
   @ManyToMany(() => Interest, (interest) => interest.users)
   @JoinTable()
   interests: Interest[];
@@ -137,6 +132,9 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Purchase_Log, (purchase) => purchase.user)
+  purchases: Purchase_Log[];
 
   @OneToMany(() => Reaction, (reaction) => reaction.user)
   reactions: Reaction[];
