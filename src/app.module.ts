@@ -22,6 +22,8 @@ import { ChatGroupsModule } from './chat-groups/chat-groups.module';
 import { ChatGateway } from './chat.gateway';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { FilesModule } from './files/files.module';
+import { GroupMembersModule } from './chat-groups/group-members/group-members.module';
+import { ChatModule } from './chat-groups/chat.module';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { FilesModule } from './files/files.module';
         configTypeORM.get('typeorm'),
     }),
     AuthModule,
+    InterestsModule,
     UsersModule,
     PostsModule,
     ReactionsModule,
@@ -39,7 +42,6 @@ import { FilesModule } from './files/files.module';
     PollsModule,
     ReportsModule,
     PrivacyModule,
-    InterestsModule,
     FriendshipsModule,
     MessagesModule,
     PollResponseModule,
@@ -53,6 +55,8 @@ import { FilesModule } from './files/files.module';
     NotificationsModule,
     ChatGroupsModule,
     FilesModule,
+    GroupMembersModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [ChatGateway, AuthGuard],

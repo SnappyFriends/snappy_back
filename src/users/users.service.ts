@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateUserDTO } from './dto/user.dto';
+import { GetUsersFiltersDTO, UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import { Interest } from 'src/interests/entities/interests.entity';
 
@@ -14,8 +14,21 @@ export class UsersService {
     @InjectRepository(Interest) private interestsRepository: Repository<Interest>
   ) { }
 
-  async getUsers() {
-    const usersFound = await this.usersRepository.find({
+  async getUsers(filters: GetUsersFiltersDTO) {
+    const { page = 1, limit = 5, interests } = filters;
+
+    const where: any = {};
+
+    if (interests && interests.length > 0) {
+      where.interests = {
+        name: In(interests), 
+      };
+    }
+
+    const [usersFound] = await this.usersRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
       relations: ['stories', 'interests', 'privacy', 'responses', 'reportedReports', 'reportingReports', 'polls', 'posts', 'reactions', 'comments', 'groupMembers']
     });
 
@@ -40,8 +53,8 @@ export class UsersService {
     const userFound = await this.usersRepository.findOne({
       where: { username },
       relations: [
-        'stories', 'interests', 'privacy', 'responses', 'reportedReports', 
-        'reportingReports', 'polls', 'posts', 'reactions', 'comments', 
+        'stories', 'interests', 'privacy', 'responses', 'reportedReports',
+        'reportingReports', 'polls', 'posts', 'reactions', 'comments',
         'groupMembers'
       ]
     });
@@ -54,7 +67,7 @@ export class UsersService {
 
   async updateUser(id: string, userData: UpdateUserDTO) {
     if (userData.password) {
-      userData.password = await bcrypt.hash(userData, 10);
+      userData.password = await bcrypt.hash(userData.password, 10);
     }
 
     const result = await this.usersRepository.update(id, userData);
@@ -92,10 +105,10 @@ export class UsersService {
     user.interests.push(interest);
     await this.usersRepository.save(user);
 
-    return { 
+    return {
       message: 'Interés asignado exitosamente',
       usuario: user.username,
       interests: user.interests
-     };
+    };
   }
 }
