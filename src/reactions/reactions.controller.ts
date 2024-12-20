@@ -87,7 +87,6 @@ export class ReactionsController {
         }
       }
     }
-
   })
   findAll() {
     return this.reactionsService.findAll();
