@@ -164,8 +164,8 @@ export class User {
   @ManyToMany(() => Chat, (chat) => chat.participants)
   @JoinTable({
     name: 'user_chats',
-    joinColumn: { name: 'user_id', referencedColumnName: 'id' }, // Clave foránea de User
-    inverseJoinColumn: { name: 'chat_id', referencedColumnName: 'id' }, // Clave foránea de Chat
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'chat_id', referencedColumnName: 'id' },
   })
   chats: Chat[];
 }

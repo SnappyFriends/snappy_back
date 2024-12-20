@@ -2,7 +2,7 @@ import { io } from 'socket.io-client';
 
 // Token válido para la conexión
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUzYTk3MzMzLWE5ZmYtNDkxYS1hZWNlLTkyYzY4MWFmMDNhYyIsImVtYWlsIjoianVhblBlcmV6QG1haWwuY29tIiwidXNlcl90eXBlIjoicmVndWxhciIsImlhdCI6MTczNDYzOTE3OCwiZXhwIjoxNzM0NjgyMzc4fQ.Yalk92iazvWc2GdZpxPT-kB8FVNRM6Wek9EzST74484'; // Reemplaza con un token válido
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcwYjA5ZmZkLTViNzMtNGVjNy1hODMzLTkwOThmNWU0NDA4OSIsImVtYWlsIjoiYWJpQG1haWwuY29tIiwidXNlcl90eXBlIjoicmVndWxhciIsImlhdCI6MTczNDY0NjA0NCwiZXhwIjoxNzM0Njg5MjQ0fQ.xmd1vXM76IDtduhfDtl5MMycXy0PxYs7R59Dpszf_8I'; // Reemplaza con un token válido
 
 // Conectar al servidor WebSocket
 const socket = io('http://localhost:3000/chats', {
@@ -30,9 +30,9 @@ socket.on('connect', () => {
   // Enviar un mensaje a un chat individual
   const privateMessagePayload = {
     content: 'Hola, chat privado!',
-    sender_id: '9fb9c573-04a8-45a4-bf65-012060939a4d', // Cambia al ID del usuario remitente
-    chatId: '42986961-e229-4eaf-9d12-49608c46c9c9', // Cambia al ID de un chat existente
-    messageReceivers: ['b1fda537-e3fa-4d57-9c16-fc1e3d4b366d'], // Cambia al ID del usuario receptor
+    sender_id: 'fa94d580-fdc5-47ac-82f6-44e2b387ca27', // Cambia al ID del usuario remitente
+    chatId: '5895cc3f-fae2-4d69-8043-7e7f5a0f1f77', // Cambia al ID de un chat existente
+    messageReceivers: ['e39cf5a5-0741-4b37-a4ec-861c406b8a80'], // Cambia al ID del usuario receptor
     type: 'text',
     is_anonymous: false,
   };
