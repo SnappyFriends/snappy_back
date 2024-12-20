@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { PaymentMethod, PaymentStatus, Purchase_Log } from "./entities/purchase_log.entity";
-import { User, userType } from "src/users/entities/user.entity";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import {
+  PaymentMethod,
+  PaymentStatus,
+  Purchase_Log,
+} from './entities/purchase_log.entity';
+import { User, userType } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class PurchasesService {
@@ -10,9 +14,13 @@ export class PurchasesService {
     @InjectRepository(Purchase_Log)
     private readonly purchaseRepository: Repository<Purchase_Log>,
     @InjectRepository(User) private usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
-  async createInitialPurchase(userId: string, amount: number, sessionId: string) {
+  async createInitialPurchase(
+    userId: string,
+    amount: number,
+    sessionId: string,
+  ) {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
     });
