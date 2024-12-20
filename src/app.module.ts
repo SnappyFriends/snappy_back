@@ -15,7 +15,6 @@ import { PollResponseModule } from './poll-response/poll-response.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { StoriesModule } from './stories/stories.module';
-import { PurchasesModule } from './purchases/purchases.module';
 import { JwtModule } from '@nestjs/jwt';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ChatGroupsModule } from './chat-groups/chat-groups.module';
@@ -46,7 +45,6 @@ import { ChatModule } from './chat-groups/chat.module';
     MessagesModule,
     PollResponseModule,
     StoriesModule,
-    PurchasesModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
