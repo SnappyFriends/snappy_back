@@ -18,10 +18,7 @@ export class Report {
   @ManyToOne(() => User, (user) => user.reportingReports)
   reporting_user: User;
 
-  @Column({ length: 100 })
-  report_type: string;
-
-  @Column()
+  @Column({ length: 120 })
   description: string;
 
   @CreateDateColumn()
