@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { GetUsersFiltersDTO, UpdateUserDTO } from './dto/user.dto';
+import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
@@ -53,7 +53,7 @@ export class UsersController {
       }]
     }
   })
-  async getUsers(@Query() filters: GetUsersFiltersDTO) {
+  async getUsers(@Query() filters: GetUsersDTO) {
     return this.usersService.getUsers(filters);
   }
 

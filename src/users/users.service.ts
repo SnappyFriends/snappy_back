@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GetUsersFiltersDTO, UpdateUserDTO } from './dto/user.dto';
+import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
@@ -15,8 +15,8 @@ export class UsersService {
     private interestsRepository: Repository<Interest>,
   ) {}
 
-  async getUsers(filters: GetUsersFiltersDTO) {
-    const { page = 1, limit = 5, interests } = filters;
+  async getUsers(filters: GetUsersDTO) {
+    const { page = 1, limit = 5, interests, username } = filters;
 
     const queryBuilder = this.usersRepository
       .createQueryBuilder('user')
@@ -24,23 +24,19 @@ export class UsersService {
       .skip((page - 1) * limit)
       .take(limit);
 
-    // Asegurarnos de que 'interests' es siempre un arreglo, incluso si solo se pasa un valor
     if (interests && Array.isArray(interests) && interests.length > 0) {
       queryBuilder.andWhere('interest.name IN (:...interests)', { interests });
     } else if (interests && !Array.isArray(interests)) {
-      // Si interests es un solo valor, lo convertimos en un arreglo
       queryBuilder.andWhere('interest.name IN (:...interests)', {
         interests: [interests],
       });
     }
 
+    if(username) queryBuilder.andWhere('user.username LIKE :username', { username: `%${username}%` });
+
     const usersFound = await queryBuilder.getMany();
 
-    // Si no se encuentran usuarios, devolver un array vacío
-    if (!usersFound || usersFound.length === 0) {
-      console.log('No users found');
-      return [];
-    }
+    if (!usersFound || usersFound.length === 0) return [];
 
     const usersWithoutPassword = usersFound.map(
       ({ password, ...userWithoutPassword }) => userWithoutPassword,
