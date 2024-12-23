@@ -171,6 +171,7 @@ export class ReactionsController {
     return this.reactionsService.update(id, updateReactionDto);
   }
 
+  @Delete(':id')
   @ApiOperation({ summary: 'Delete a Reaction' })
   @ApiOkResponse({ description: 'Reaction deleted successfully.', schema: { example: 'Reacción con ID ${id} eliminada correctamente' } })
   @ApiBadRequestResponse({
@@ -193,7 +194,6 @@ export class ReactionsController {
       }
     }
   })
-  @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.reactionsService.remove(id);
   }
