@@ -7,11 +7,19 @@ import {
   ParseUUIDPipe,
   Put,
   Post,
+<<<<<<< HEAD
   HttpCode,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDTO } from './dto/user.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+=======
+  Query,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+>>>>>>> fb992eb17e8c262351388ae87a194520e70b7321
 
 
 @ApiTags('Users')
@@ -53,8 +61,13 @@ export class UsersController {
       }]
     }
   })
+<<<<<<< HEAD
   async getUsers() {
     return this.usersService.getUsers();
+=======
+  async getUsers(@Query() filters: GetUsersDTO) {
+    return this.usersService.getUsers(filters);
+>>>>>>> fb992eb17e8c262351388ae87a194520e70b7321
   }
 
   @Get(':id')
@@ -222,6 +235,19 @@ export class UsersController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
   @ApiOkResponse({ description: 'User deleted successfully.', schema: { example: 'Usuario eliminado correctamente.' } })
+<<<<<<< HEAD
+=======
+  @ApiBadRequestResponse({
+    description: 'Some input value is not found. (uuid is expected)',
+    schema: {
+      example: {
+        "message": "Validation failed (uuid is expected)",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    }
+  })
+>>>>>>> fb992eb17e8c262351388ae87a194520e70b7321
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }

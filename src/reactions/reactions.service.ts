@@ -18,7 +18,7 @@ export class ReactionsService {
     @InjectRepository(Post)
     private readonly postsRepository: Repository<Post>,
     @InjectRepository(Comment) private commentsRepository: Repository<Comment>,
-  ) {}
+  ) { }
 
   async create(id: string, createReactionDto: CreateReactionDto) {
     const { reaction_type, reaction, user_id } = createReactionDto;
@@ -64,17 +64,32 @@ export class ReactionsService {
     );
   }
 
-  async findAll(): Promise<Reaction[]> {
+  async findAll() {
     const reactions = await this.reactionsRepository.find({
       relations: ['post', 'user'],
     });
     if (reactions.length === 0) {
       throw new NotFoundException('No hay reacciones disponibles.');
     }
-    return reactions;
+
+    const resulReactions = reactions.map((reaction) => ({
+      reaction: {
+        ...reaction,
+        post: {
+          post: reaction.post.post_id,
+          content: reaction.post.content,
+          creation_date: reaction.post.creation_date,
+          fileUrl: reaction.post.fileUrl
+        },
+        user: {
+          user: reaction.user.id
+        }
+      }
+    }))
+    return resulReactions;
   }
 
-  async findOne(id: string): Promise<Reaction> {
+  async findOne(id: string) {
     const reaction = await this.reactionsRepository.findOne({
       where: { reaction_id: id },
       relations: ['post', 'user'],
@@ -82,7 +97,22 @@ export class ReactionsService {
     if (!reaction) {
       throw new NotFoundException(`No se encontró la reacción con ID ${id}`);
     }
-    return reaction;
+
+    const resulReactions = {
+      reaction: {
+        ...reaction,
+        post: {
+          post: reaction.post.post_id,
+          content: reaction.post.content,
+          creation_date: reaction.post.creation_date,
+          fileUrl: reaction.post.fileUrl
+        },
+        user: {
+          user: reaction.user.id
+        }
+      }
+    }
+    return resulReactions;
   }
 
   async update(

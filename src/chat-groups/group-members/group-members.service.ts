@@ -9,7 +9,7 @@ import {
 import { CreateGroupMemberDto } from '../dto/create-group-member.dto';
 import { UpdateGroupMemberDto } from '../dto/update-group-member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Group_Members } from '../entities/groupMembers.entity';
+import { Group_Members, Role } from '../entities/groupMembers.entity';
 import { Repository } from 'typeorm';
 import { Chat_Groups } from '../entities/chat-group.entity';
 import {
@@ -100,13 +100,13 @@ export class GroupMembersService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(group_id: string, user_id: string) {
     try {
-      const groupMembers = await this.groupMembersRepository.find({
-        where: { group_id: id },
+      const groupMember = await this.groupMembersRepository.find({
+        where: { group_id, user_id },
       });
 
-      return groupMembers;
+      return groupMember;
     } catch {
       throw new InternalServerErrorException(
         `Error en la solicitud. Por favor inténtelo nuevamente.`,

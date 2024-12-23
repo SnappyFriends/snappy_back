@@ -24,6 +24,7 @@ import { Message_Receiver } from 'src/messages/entities/message_Receiver.entity'
 import { Interest } from 'src/interests/entities/interests.entity';
 import { Notification } from 'src/notifications/entities/notification.entity';
 import { GroupJoinRequest } from 'src/chat-groups/entities/group-join-request.entity';
+import { Chat } from 'src/chat-groups/entities/chat.entity';
 
 export enum userType {
   REGULAR = 'regular',
@@ -38,9 +39,7 @@ export enum userStatus {
   BANNED = 'banned',
 }
 
-@Entity({
-  name: 'Users',
-})
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string = uuid();
@@ -75,6 +74,11 @@ export class User {
 
   @Column()
   genre: string;
+
+  @Column({
+    nullable: true
+  })
+  description: string;
 
   @CreateDateColumn()
   registration_date: Date;
@@ -113,9 +117,6 @@ export class User {
   @OneToMany(() => Stories, (story) => story.user_id)
   stories: Stories[];
 
-  @OneToMany(() => Purchase_Log, (purchase) => purchase.user_id)
-  purchases: Purchase_Log[];
-
   @ManyToMany(() => Interest, (interest) => interest.users)
   @JoinTable()
   interests: Interest[];
@@ -137,6 +138,9 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @OneToMany(() => Purchase_Log, (purchase) => purchase.user)
+  purchases: Purchase_Log[];
 
   @OneToMany(() => Reaction, (reaction) => reaction.user)
   reactions: Reaction[];
@@ -161,4 +165,12 @@ export class User {
 
   @OneToMany(() => GroupJoinRequest, (request) => request.user)
   joinRequests: GroupJoinRequest[];
+
+  @ManyToMany(() => Chat, (chat) => chat.participants)
+  @JoinTable({
+    name: 'user_chats',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'chat_id', referencedColumnName: 'id' },
+  })
+  chats: Chat[];
 }

@@ -25,9 +25,12 @@ export class GroupMembersController {
     return this.groupMembersService.findAll();
   }
 
-  @Get(':group_id')
-  findOne(@Param('group_id', ParseUUIDPipe) id: string) {
-    return this.groupMembersService.findOne(id);
+  @Get(':group_id/user_id')
+  findOne(
+    @Param('group_id', ParseUUIDPipe) group_id: string,
+    @Param('group_id', ParseUUIDPipe) user_id: string,
+  ) {
+    return this.groupMembersService.findOne(group_id, user_id);
   }
 
   @Put(':id/role/:group_id')

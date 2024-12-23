@@ -1,20 +1,30 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
 import { userType } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtServices: JwtService) { }
-
+  constructor(private jwtServices: JwtService) {}
+  //Agregando un comentario para poder hacer el pull sin romper nadaaaa..
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const isWs = context.getType() === 'ws';
 
-    const token = request.headers.authorization?.split(" ")[1]
+    const token = isWs
+      ? context.switchToWs().getData().token
+      : context
+          .switchToHttp()
+          .getRequest()
+          .headers.authorization?.split(' ')[1];
 
-    if (!token) throw new UnauthorizedException("Token no encontrado.");
+    if (!token) throw new UnauthorizedException('Token no encontrado.');
 
     try {
       const secret = process.env.JWT_SECRET;
@@ -24,13 +34,18 @@ export class AuthGuard implements CanActivate {
       user.iat = new Date(user.iat * 1000);
 
       if (user.isAdmin) {
-        user.roles = [userType.ADMIN]
+        user.roles = [userType.ADMIN];
       } else {
         user.roles = [userType.REGULAR];
       }
-      request.user = user;
+
+      if (!isWs) {
+        context.switchToHttp().getRequest().user = user;
+      }
 
       return true;
-    } catch { throw new UnauthorizedException("Token invalido."); }
+    } catch {
+      throw new UnauthorizedException('Token inválido.');
+    }
   }
 }

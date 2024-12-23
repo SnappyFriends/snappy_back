@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePollResponseDto } from './dto/create-poll-response.dto';
 import { PollResponse } from './entities/poll-response.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,7 +14,7 @@ export class PollResponseService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(PollResponse)
     private pollResponseRepository: Repository<PollResponse>,
-  ) {}
+  ) { }
 
   async create(
     poll_id: string,
@@ -25,14 +25,14 @@ export class PollResponseService {
 
       const poll = await this.pollsRepository.findOne({ where: { poll_id } });
       if (!poll) {
-        throw new BadRequestException('Encuesta no encontrada');
+        throw new NotFoundException('Encuesta no encontrada');
       }
 
       const user = await this.usersRepository.findOne({
         where: { id: user_id },
       });
       if (!user) {
-        throw new BadRequestException('Usuario no encontrado');
+        throw new NotFoundException('Usuario no encontrado');
       }
 
       const newResponse = this.pollResponseRepository.create({
@@ -43,7 +43,7 @@ export class PollResponseService {
 
       return await this.pollResponseRepository.save(newResponse);
     } catch {
-      throw new BadRequestException(
+      throw new NotFoundException(
         'Ocurrió un error al crear la respuesta de la encuesta',
       );
     }
@@ -55,11 +55,11 @@ export class PollResponseService {
         where: { response_id: id },
       });
       if (!pollResponse) {
-        throw new BadRequestException('Poll Response not found.');
+        throw new NotFoundException('Poll Response not found.');
       }
       return pollResponse;
     } catch {
-      throw new BadRequestException('Poll Response not found.');
+      throw new NotFoundException('Poll Response not found.');
     }
   }
 
@@ -69,12 +69,12 @@ export class PollResponseService {
         where: { response_id: id },
       });
       if (!pollResponse) {
-        throw new BadRequestException('Poll Response not found.');
+        throw new NotFoundException('Poll Response not found.');
       }
       await this.pollResponseRepository.remove(pollResponse);
       return { message: `Poll Response with id ${id} deleted successfully` };
     } catch {
-      throw new BadRequestException('Poll Response not found');
+      throw new NotFoundException('Poll Response not found');
     }
   }
 }

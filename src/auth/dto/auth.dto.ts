@@ -63,9 +63,19 @@ export class registerUserDTO {
     @IsNotEmpty()
     @IsString()
     genre: string;
+
+    @ApiProperty({
+        type: String,
+        description: 'Descripción del usuario, máximo 255 caracteres.',
+        example: 'Soy una persona muy alegre y me gusta mucho bailar.',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    description: string;
 }
 
 export class LoginUserDTO extends PickType(registerUserDTO, [
     'email',
-    'password'
-]) { }
+    'password']) { }
+

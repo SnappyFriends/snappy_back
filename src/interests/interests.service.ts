@@ -8,7 +8,7 @@ import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
 export class InterestsService {
   constructor(
     @InjectRepository(Interest) private interestsRepository: Repository<Interest>,
-  ) {}
+  ) { }
 
   async create(interestData: CreateInterestDTO): Promise<Interest> {
     const interest = this.interestsRepository.create(interestData);
@@ -36,10 +36,12 @@ export class InterestsService {
     return this.interestsRepository.save(interest);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<{ message: string }> {
     const result = await this.interestsRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`No se encontró el interés con el ID ${id}`);
     }
+    return { message: `Interest con ID ${id} eliminada correctamente` };
+
   }
 }
