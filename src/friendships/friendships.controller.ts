@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { FriendshipsService } from './friendships.service';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Friendships')
 @Controller('friendships')
@@ -17,7 +17,7 @@ export class FriendshipsController {
 
   @Post(':userId1/add-friend/:userId2')
   @ApiOperation({ summary: 'Create Friendships' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Friendships',
     schema: {
       example: {
