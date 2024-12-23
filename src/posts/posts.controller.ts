@@ -7,11 +7,22 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { UpdatePostDto } from './dto/update-post-dto';
 import { CreatePostDto } from './dto/create-post-dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiConsumes,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -24,16 +35,16 @@ export class PostsController {
     description: 'Posts List.',
     schema: {
       example: {
-        "post_id": "5b744369-3866-499d-b152-817d6f579bc9",
-        "content": "Hola, buenos días. ¿Cómo estás?",
-        "creation_date": "2024-12-18T18:03:12.173Z",
-        "fileUrl": "https://example.com/image.png",
-        "reactions": [],
-        "user": {
-          "id": "168bde23-b10d-4af9-807e-7d6405d378a7"
-        }
-      }
-    }
+        post_id: '5b744369-3866-499d-b152-817d6f579bc9',
+        content: 'Hola, buenos días. ¿Cómo estás?',
+        creation_date: '2024-12-18T18:03:12.173Z',
+        fileUrl: 'https://example.com/image.png',
+        reactions: [],
+        user: {
+          id: '168bde23-b10d-4af9-807e-7d6405d378a7',
+        },
+      },
+    },
   })
   findAll() {
     return this.postsService.findAll();
@@ -45,72 +56,75 @@ export class PostsController {
     description: 'Post search by ID found successfully.',
     schema: {
       example: {
-        "post_id": "5b744369-3866-499d-b152-817d6f579bc9",
-        "content": "Hola, buenos días. ¿Cómo estás?",
-        "creation_date": "2024-12-18T18:03:12.173Z",
-        "fileUrl": "https://example.com/image.png",
-        "user": {
-          "id": "168bde23-b10d-4af9-807e-7d6405d378a7"
-        }
-      }
-    }
+        post_id: '5b744369-3866-499d-b152-817d6f579bc9',
+        content: 'Hola, buenos días. ¿Cómo estás?',
+        creation_date: '2024-12-18T18:03:12.173Z',
+        fileUrl: 'https://example.com/image.png',
+        user: {
+          id: '168bde23-b10d-4af9-807e-7d6405d378a7',
+        },
+      },
+    },
   })
   @ApiBadRequestResponse({
     description: 'Invalid Post ID.',
     schema: {
       example: {
-        "message": "Validation failed (uuid is expected)",
-        "error": "Bad Request",
-        "statusCode": 400
-      }
-    }
+        message: 'Validation failed (uuid is expected)',
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'Post not found.',
     schema: {
       example: {
-        "message": "Post not found.",
-        "error": "Not Found",
-        "statusCode": 404
-      }
-    }
+        message: 'Post not found.',
+        error: 'Not Found',
+        statusCode: 404,
+      },
+    },
   })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.postsService.findOne(id);
   }
 
   @Post()
+  @UseInterceptors(FileInterceptor('fileImg'))
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create posts' })
   @ApiCreatedResponse({
     description: 'Post Created.',
     schema: {
       example: {
-        "content": "Estoy feliz!! Quiero compartir esta foto con uds. Espero tengan un bendecido inicio de semana ♥",
-        "fileUrl": "https://example.com/image.png",
-        "user": {
-          "id": "168bde23-b10d-4af9-807e-7d6405d378a7"
+        content:
+          'Estoy feliz!! Quiero compartir esta foto con uds. Espero tengan un bendecido inicio de semana ♥',
+        fileUrl: 'https://example.com/image.png',
+        user: {
+          id: '168bde23-b10d-4af9-807e-7d6405d378a7',
         },
-        "post_id": "53f2702d-5219-4f5a-b471-0095714ac32c",
-        "creation_date": "2024-12-18T18:43:44.743Z"
-      }
-    }
+        post_id: '53f2702d-5219-4f5a-b471-0095714ac32c',
+        creation_date: '2024-12-18T18:43:44.743Z',
+      },
+    },
   })
   @ApiBadRequestResponse({
     description: 'Some input value is not found.',
     schema: {
       example: {
-        "message": [
-          "property conten should not exist",
-          "content should not be empty",
-          "content must be a string"
+        message: [
+          'property conten should not exist',
+          'content should not be empty',
+          'content must be a string',
         ],
-        "error": "Bad Request",
-        "statusCode": 400
-      }
-    }
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
   })
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(@Body() createPostDto: CreatePostDto, @UploadedFile() fileImg: Express.Multer.File) {
+    return this.postsService.create(createPostDto, fileImg);
   }
 
   @Put(':id')
@@ -119,26 +133,23 @@ export class PostsController {
     description: 'Modified Post.',
     schema: {
       example: {
-        "post_id": "5b744369-3866-499d-b152-817d6f579bc9",
-        "content": "Hola ♥ ",
-        "creation_date": "2024-12-18T18:03:12.173Z",
-        "fileUrl": "https://example.com/image.png",
-        "userId": "b070ed7b-217e-4294-91f3-e17be09d3fb7"
-      }
-    }
+        post_id: '5b744369-3866-499d-b152-817d6f579bc9',
+        content: 'Hola ♥ ',
+        creation_date: '2024-12-18T18:03:12.173Z',
+        fileUrl: 'https://example.com/image.png',
+        userId: 'b070ed7b-217e-4294-91f3-e17be09d3fb7',
+      },
+    },
   })
   @ApiBadRequestResponse({
     description: 'your request has incorrect parameters.',
     schema: {
       example: {
-        "message": [
-          "property file should not exist",
-          "fileUrl must be a string"
-        ],
-        "error": "Bad Request",
-        "statusCode": 400
-      }
-    }
+        message: ['property file should not exist', 'fileUrl must be a string'],
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
   })
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -149,16 +160,19 @@ export class PostsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Post' })
-  @ApiOkResponse({ description: 'Post deleted successfully.', schema: { example: 'Post with id ${id} deleted successfully' } })
+  @ApiOkResponse({
+    description: 'Post deleted successfully.',
+    schema: { example: 'Post with id ${id} deleted successfully' },
+  })
   @ApiBadRequestResponse({
     description: 'Some input value is not found. (uuid is expected)',
     schema: {
       example: {
-        "message": "Validation failed (uuid is expected)",
-        "error": "Bad Request",
-        "statusCode": 400
-      }
-    }
+        message: 'Validation failed (uuid is expected)',
+        error: 'Bad Request',
+        statusCode: 400,
+      },
+    },
   })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.postsService.remove(id);

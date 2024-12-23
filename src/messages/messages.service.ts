@@ -6,13 +6,14 @@ import {
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 import {
   Message_Receiver,
   statusMessage,
 } from './entities/message_Receiver.entity';
+import { Group_Members } from 'src/chat-groups/entities/groupMembers.entity';
 
 @Injectable()
 export class MessagesService {
@@ -22,52 +23,109 @@ export class MessagesService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Message_Receiver)
     private readonly messageReceiverRepository: Repository<Message_Receiver>,
+    @InjectRepository(Group_Members)
+    private readonly groupMembersRepository: Repository<Group_Members>,
   ) {}
 
   async createMessage(createMessageDto: CreateMessageDto) {
-    const { sender_id, messageReceivers, ...messageData } = createMessageDto;
+    const { sender_id, messageReceivers, chatId, groupId, ...messageData } =
+      createMessageDto;
+
+    if (!chatId && !groupId) {
+      throw new BadRequestException('Debe especificar un chatId o groupId');
+    }
 
     const userFound = await this.userRepository.findOne({
       where: { id: sender_id },
     });
+    if (!userFound) {
+      throw new NotFoundException(`El usuario con ID ${sender_id} no existe`);
+    }
 
-    if (!userFound) throw new NotFoundException(`User ${sender_id} not Found`);
+    if (groupId) {
+      const userFoundInsideGroup = await this.groupMembersRepository.findOne({
+        where: { user_id: sender_id, group_id: groupId },
+      });
+
+      if (!userFoundInsideGroup) {
+        throw new NotFoundException(
+          `El usuario con ID ${sender_id} no pertenece al grupo con ID ${groupId}`,
+        );
+      }
+    }
 
     const newMsg = this.messageRepository.create({
       content: messageData.content,
-      send_date: new Date(),
       type: messageData.type,
       sender_id: userFound,
       is_anonymous: !!messageData.is_anonymous,
-    });
+      chatId: chatId || null,
+      groupId: groupId || null,
+    } as DeepPartial<Message>);
 
     const savedMsg = await this.messageRepository.save(newMsg);
 
-    const msgReceiversEntities = await Promise.all(
-      messageReceivers.map(async (receiverId) => {
-        const receiverUser = await this.userRepository.findOne({
-          where: { id: receiverId },
-        });
+    if (chatId) {
+      if (chatId && !messageReceivers) {
+        console.log(messageReceivers);
+        throw new BadRequestException(
+          `Debe haber al menos un receptor para un mensaje.`,
+        );
+      }
+      const msgReceiversEntities = await Promise.all(
+        messageReceivers.map(async (receiverId) => {
+          const receiverUser = await this.userRepository.findOne({
+            where: { id: receiverId },
+          });
 
-        if (!receiverUser) {
-          throw new NotFoundException(
-            `Receiver with ID ${receiverId} not found`,
-          );
-        }
+          if (!receiverUser) {
+            throw new NotFoundException(
+              `El receptor con ID ${receiverId} no existe`,
+            );
+          }
 
-        const newReceiver = this.messageReceiverRepository.create({
-          message_id: savedMsg,
-          receiver_id: receiverUser,
+          return this.messageReceiverRepository.create({
+            message_id: savedMsg as DeepPartial<Message>,
+            receiver_id: receiverUser,
+            status: statusMessage.UNREAD,
+          });
+        }),
+      );
+
+      await this.messageReceiverRepository.save(msgReceiversEntities);
+    }
+
+    if (groupId) {
+      const groupMembers = await this.groupMembersRepository.find({
+        where: { group_id: groupId },
+        relations: ['user'],
+      });
+
+      if (!groupMembers || groupMembers.length === 0) {
+        throw new NotFoundException(
+          `No se encontraron miembros para el grupo ${groupId}`,
+        );
+      }
+
+      const msgReceiversEntities = groupMembers.map((member) => {
+        return this.messageReceiverRepository.create({
+          message_id: savedMsg as DeepPartial<Message>,
+          receiver_id: member.user,
           status: statusMessage.UNREAD,
         });
+      });
 
-        return newReceiver;
-      }),
-    );
+      await this.messageReceiverRepository.save(msgReceiversEntities);
+    }
 
-    await this.messageReceiverRepository.save(msgReceiversEntities);
+    const responseObject = {
+      content: savedMsg.content,
+      type: savedMsg.type,
+      is_anonymous: savedMsg.is_anonymous,
+      sender_id: savedMsg.sender_id.id,
+    };
 
-    return savedMsg;
+    return responseObject;
   }
 
   async findAllMessage() {

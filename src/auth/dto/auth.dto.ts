@@ -4,8 +4,10 @@ import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLe
 
 export class registerUserDTO {
     @ApiProperty({
+        minLength: 3,
+        maxLength: 80,
+        description: 'Nombre completo del usuario, solo letras y espacios.',
         example: 'Abigail Contreras',
-        description: 'Nombre completo del usuario, solo letras y espacios. Min: 3, Max: 80 caracteres',
     })
     @IsNotEmpty()
     @IsString()
@@ -17,8 +19,9 @@ export class registerUserDTO {
     fullname: string;
 
     @ApiProperty({
-        example: 'abiContreras',
+        type: String,
         description: 'El username del usuario, sin espacios ni caracteres especiales',
+        example: 'abiContreras',
     })
     @IsNotEmpty()
     @IsString()
@@ -28,8 +31,9 @@ export class registerUserDTO {
     username: string;
 
     @ApiProperty({
-        example: 'abi@mail.com',
+        type: String,
         description: 'Correo electrónico válido del usuario',
+        example: 'abi@mail.com',
     })
     @IsNotEmpty()
     @IsString()
@@ -37,8 +41,11 @@ export class registerUserDTO {
     email: string;
 
     @ApiProperty({
+        minLength: 8,
+        maxLength: 20,
+        type: String,
+        description: 'Contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).',
         example: 'abiContrera$2024',
-        description: 'La contraseña debe tener minimo 8 caracteres, máximo 8 caracteres y debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).'
     })
     @IsOptional()
     @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres.' })
@@ -49,20 +56,32 @@ export class registerUserDTO {
     password: string;
 
     @ApiProperty({
-        example: '1995-05-15',
+        type: Date,
         description: 'Fecha de nacimiento del usuario en formato ISO (YYYY-MM-DD)',
+        example: '1995-05-15',
     })
     @IsNotEmpty()
     @IsDateString()
     birthdate: string;
 
     @ApiProperty({
-        example: 'female',
+        type: String,
         description: 'Género del usuario, puede ser male, female u otros',
+        example: 'female',
     })
     @IsNotEmpty()
     @IsString()
     genre: string;
+
+    @ApiProperty({
+        type: String,
+        description: 'Descripción del usuario, máximo 255 caracteres.',
+        example: 'Soy una persona muy alegre y me gusta mucho bailar.',
+    })
+    @IsOptional()
+    @IsString()
+    @MaxLength(255)
+    description: string;
 }
 
 export class LoginUserDTO extends PickType(registerUserDTO, [
@@ -70,14 +89,14 @@ export class LoginUserDTO extends PickType(registerUserDTO, [
     'password'
 ]) {
     @ApiProperty({
-        example: 'abi@mail.com',
         description: 'Correo electrónico del usuario',
+        example: 'abi@mail.com',
     })
     email: string;
 
     @ApiProperty({
+        description: 'La contraseña debe tener minimo 8 caracteres, máximo 8 caracteres y debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).',
         example: 'abiContrera$2024',
-        description: 'La contraseña debe tener minimo 8 caracteres, máximo 8 caracteres y debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).'
     })
     password: string;
 
