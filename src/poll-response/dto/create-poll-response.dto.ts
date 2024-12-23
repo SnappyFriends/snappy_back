@@ -6,7 +6,7 @@ export class CreatePollResponseDto {
   @ApiProperty({
     type: String,
     description: 'Opción a seleccionar de Poll',
-    example: 'group | post'
+    example: 'group'
   })
   @IsString()
   @IsNotEmpty()
