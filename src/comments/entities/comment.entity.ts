@@ -18,7 +18,7 @@ export class Comment {
   @PrimaryGeneratedColumn('uuid')
   comment_id: string;
 
-  @Column({ type: 'varchar', length: 250, nullable: false })
+  @Column({ type: 'varchar', nullable: false })
   content: string;
 
   @CreateDateColumn()
@@ -27,6 +27,7 @@ export class Comment {
   @ManyToOne(() => User, (user) => user.comments, {
     nullable: false,
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -34,6 +35,7 @@ export class Comment {
   @ManyToOne(() => Post, (post) => post.comments, {
     nullable: false,
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   @JoinColumn({
     name: 'post_id',

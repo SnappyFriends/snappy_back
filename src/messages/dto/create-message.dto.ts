@@ -1,4 +1,11 @@
-import { IsArray, IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
+import {
+  IsNotEmpty,
+  IsEnum,
+  IsUUID,
+  IsOptional,
+  IsBoolean,
+  IsArray,
+} from 'class-validator';
 
 export enum MessageType {
   TEXT = 'text',
@@ -13,7 +20,7 @@ export class CreateMessageDto {
 
   @IsBoolean()
   @IsOptional()
-  is_anonymous: Boolean;
+  is_anonymous: boolean;
 
   @IsNotEmpty()
   @IsEnum(MessageType)
@@ -23,11 +30,16 @@ export class CreateMessageDto {
   @IsUUID()
   sender_id: string;
 
+  @IsOptional()
+  @IsUUID()
+  chatId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  groupId?: string;
+
   @IsArray()
-  @IsNotEmpty()
   @IsUUID(undefined, { each: true })
-  messageReceivers: string[];
+  @IsOptional()
+  messageReceivers?: string[];
 }
-
-
-

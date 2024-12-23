@@ -12,5 +12,6 @@ import { GroupJoinRequest } from '../entities/group-join-request.entity';
   ],
   controllers: [GroupMembersController],
   providers: [GroupMembersService],
+  exports: [GroupMembersService],
 })
 export class GroupMembersModule {}
