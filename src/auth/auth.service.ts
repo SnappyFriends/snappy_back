@@ -51,7 +51,8 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     const userId = payload.id
+    const user_type = payload.user_type
 
-    return { userId, token, message: "Iniciaste sesión satisfactoriamente." };
+    return { userId, token, user_type, message: "Iniciaste sesión satisfactoriamente." };
   }
 }
