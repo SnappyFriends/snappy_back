@@ -11,5 +11,6 @@ import { FilesRepository } from './files.repository';
   imports: [TypeOrmModule.forFeature([User, Post])],
   controllers: [FilesController],
   providers: [FilesService, CloudinaryConfig, FilesRepository],
+  exports: [FilesRepository]
 })
 export class FilesModule {}
