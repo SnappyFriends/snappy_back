@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ReactionsService } from './reactions.service';
 import { CreateReactionDto, UpdateReactionDto } from './dto/reaction.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Reactions')
 @Controller('reactions')
@@ -19,7 +19,7 @@ export class ReactionsController {
 
   @Post(':post_id')
   @ApiOperation({ summary: 'Create Reactions' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Reaction',
     schema: {
       example: {
