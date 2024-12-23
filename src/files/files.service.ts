@@ -9,9 +9,9 @@ export class FilesService {
     constructor(private fileRepository: FilesRepository, @InjectRepository(User) private usersRepository: Repository<User>) { }
 
     async uploadImg(userId: string, fileImg: Express.Multer.File) {
-        const userFound = await this.usersRepository.findOneBy({id: userId})
+        const userFound = await this.usersRepository.findOneBy({ id: userId })
 
-        if(!userFound) throw new NotFoundException('User not found.');
+        if (!userFound) throw new NotFoundException('User not found.');
 
         const uploadFileImg = await this.fileRepository.uploadImg(fileImg);
 
