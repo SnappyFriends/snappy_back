@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put, ParseUUIDPipe } from '
 import { InterestsService } from './interests.service';
 import { Interest } from './entities/interests.entity';
 import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Interests')
 @Controller('interests')
@@ -61,7 +61,7 @@ export class InterestsController {
 
   @Post()
   @ApiOperation({ summary: 'Create Interest' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Interest',
     schema: {
       example: {

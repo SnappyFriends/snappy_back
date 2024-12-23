@@ -10,7 +10,7 @@ import {
 import { PrivacyService } from './privacy.service';
 import { CreatePrivacyDto } from './dto/create-privacy.dto';
 import { UpdatePrivacyDto } from './dto/update-privacy.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Privacy')
 @Controller('privacy')
@@ -19,7 +19,7 @@ export class PrivacyController {
 
   @Post(':userId')
   @ApiOperation({ summary: 'Create Privacy' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Privacy.',
     schema: {
       example: {
