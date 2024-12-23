@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/reports.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Reports')
 @Controller('reports')
@@ -10,7 +10,7 @@ export class ReportsController {
 
   @Post()
   @ApiOperation({ summary: 'Create Reports' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Reports',
     schema: {
       example: {
