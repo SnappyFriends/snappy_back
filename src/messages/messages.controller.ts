@@ -11,7 +11,7 @@ import { MessagesService } from './messages.service';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Messages')
 @Controller('messages')
@@ -20,7 +20,7 @@ export class MessagesController {
 
   @Post()
   @ApiOperation({ summary: 'Create Messages' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Messages',
     schema: {
       example: {
