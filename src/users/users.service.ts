@@ -13,7 +13,7 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Interest)
     private interestsRepository: Repository<Interest>,
-  ) {}
+  ) { }
 
   async getUsers(filters: GetUsersDTO) {
     const { page = 1, limit = 5, interests, username } = filters;
@@ -32,7 +32,7 @@ export class UsersService {
       });
     }
 
-    if(username) queryBuilder.andWhere('user.username LIKE :username', { username: `%${username}%` });
+    if (username) queryBuilder.andWhere('user.username LIKE :username', { username: `%${username}%` });
 
     const usersFound = await queryBuilder.getMany();
 

@@ -25,7 +25,7 @@ export class MessagesService {
     private readonly messageReceiverRepository: Repository<Message_Receiver>,
     @InjectRepository(Group_Members)
     private readonly groupMembersRepository: Repository<Group_Members>,
-  ) {}
+  ) { }
 
   async createMessage(createMessageDto: CreateMessageDto) {
     const { sender_id, messageReceivers, chatId, groupId, ...messageData } =
@@ -196,7 +196,7 @@ export class MessagesService {
   async updateMessage(
     idUpdateMessage: string,
     updateMessageDto: UpdateMessageDto,
-  ): Promise<Message> {
+  ) {
     try {
       const updateMessage = await this.messageRepository.findOne({
         where: { message_id: idUpdateMessage },
@@ -218,9 +218,24 @@ export class MessagesService {
         send_date: new Date(),
       });
 
-      const savedUpdateMessage =
-        await this.messageRepository.save(updateMessage);
-      return savedUpdateMessage;
+      await this.messageRepository.save(updateMessage);
+
+      const savedMessage = {
+        message_id: updateMessage.message_id,
+        send_date: updateMessage.send_date,
+        type: updateMessage.type,
+        content: updateMessage.content,
+        is_anonymous: updateMessage.is_anonymous,
+        sender_id: updateMessage.sender_id.id,
+
+        receiver: updateMessage.messageReceivers.map((receiver) => ({
+          receiverId: receiver.receiver_id.id,
+          status: receiver.status,
+        })),
+      };
+
+      return savedMessage;
+
     } catch {
       throw new NotFoundException('No pudo actualizar el mensaje');
     }

@@ -3,10 +3,8 @@ import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLe
 
 export class registerUserDTO {
     @ApiProperty({
-        minLength: 3,
-        maxLength: 80,
-        description: 'Nombre completo del usuario, solo letras y espacios.',
         example: 'Abigail Contreras',
+        description: 'Nombre completo del usuario, solo letras y espacios. Min: 3, Max: 80 caracteres',
     })
     @IsNotEmpty()
     @IsString()
@@ -18,9 +16,8 @@ export class registerUserDTO {
     fullname: string;
 
     @ApiProperty({
-        type: String,
-        description: 'El username del usuario, sin espacios ni caracteres especiales',
         example: 'abiContreras',
+        description: 'El username del usuario, sin espacios ni caracteres especiales',
     })
     @IsNotEmpty()
     @IsString()
@@ -30,9 +27,8 @@ export class registerUserDTO {
     username: string;
 
     @ApiProperty({
-        type: String,
-        description: 'Correo electrónico válido del usuario',
         example: 'abi@mail.com',
+        description: 'Correo electrónico válido del usuario',
     })
     @IsNotEmpty()
     @IsString()
@@ -40,11 +36,8 @@ export class registerUserDTO {
     email: string;
 
     @ApiProperty({
-        minLength: 8,
-        maxLength: 20,
-        type: String,
-        description: 'Contraseña debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).',
-        example: 'abiContrera$2024',
+        example: 'AbiContrera$2024',
+        description: 'La contraseña debe tener minimo 8 caracteres, máximo 8 caracteres y debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).'
     })
     @IsOptional()
     @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres.' })
@@ -55,18 +48,16 @@ export class registerUserDTO {
     password: string;
 
     @ApiProperty({
-        type: Date,
-        description: 'Fecha de nacimiento del usuario en formato ISO (YYYY-MM-DD)',
         example: '1995-05-15',
+        description: 'Fecha de nacimiento del usuario en formato ISO (YYYY-MM-DD)',
     })
     @IsNotEmpty()
     @IsDateString()
     birthdate: string;
 
     @ApiProperty({
-        type: String,
-        description: 'Género del usuario, puede ser male, female u otros',
         example: 'female',
+        description: 'Género del usuario, puede ser male, female u otros',
     })
     @IsNotEmpty()
     @IsString()
