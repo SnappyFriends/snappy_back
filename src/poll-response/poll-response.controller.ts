@@ -110,7 +110,7 @@ export class PollResponseController {
     schema: {
       example: {
         "response_id": "c3be0337-af90-487f-9d5d-c9d1e3e6a34b",
-        "selected_option": "group | post",
+        "selected_option": "group",
         "response_date": "2024-12-19T20:06:36.673Z"
       }
     }
