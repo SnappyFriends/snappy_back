@@ -1,9 +1,11 @@
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
-import { registerUserDTO } from 'src/auth/dto/auth.dto';
+import { PartialType } from "@nestjs/mapped-types";
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString } from "class-validator";
+import { registerUserDTO } from "src/auth/dto/auth.dto";
 
 
 export class UpdateUserDTO extends PartialType(registerUserDTO) { }
+
 
 export class GetUsersDTO {
     @ApiPropertyOptional({ description: 'The page number for pagination (default: 1)', example: 1 })
@@ -23,3 +25,4 @@ export class GetUsersDTO {
     @IsString({ each: true })
     interests?: string[];
 }
+
