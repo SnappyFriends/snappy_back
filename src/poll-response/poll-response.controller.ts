@@ -23,7 +23,7 @@ export class PollResponseController {
     description: 'Created Polls Response',
     schema: {
       example: {
-        "selected_option": "group | post",
+        "selected_option": "group",
         "poll": {
           "poll_id": "02a0f94f-821c-48fd-a237-83a9bfd9f0de",
           "content": "¿Cual es tu color favorito?",
