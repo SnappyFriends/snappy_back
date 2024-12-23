@@ -4,9 +4,9 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePrivacyDto {
   @ApiProperty({
-    enum: ['everyone', 'friends', 'no_one',],
+    enum: Permissions,
     description: 'Comment permissions',
-    example: 'everyone | friends | no_one'
+    example: Permissions.EVERYONE
   })
   @IsEnum(Permissions)
   @IsOptional()
@@ -14,9 +14,9 @@ export class CreatePrivacyDto {
 
 
   @ApiProperty({
-    enum: ['everyone', 'friends', 'no_one',],
+    enum: Permissions,
     description: 'Anonymous message permissions',
-    example: 'everyone | friends | no_one'
+    example: Permissions.EVERYONE
   })
   @IsEnum(Permissions)
   @IsOptional()
@@ -25,7 +25,7 @@ export class CreatePrivacyDto {
   @ApiProperty({
     type: Boolean,
     description: 'enable seen receipt',
-    example: 'true | false'
+    example: true
   })
   @IsBoolean()
   @IsOptional()
@@ -34,7 +34,7 @@ export class CreatePrivacyDto {
   @ApiProperty({
     type: Boolean,
     description: 'recommend users',
-    example: 'true | false'
+    example: true
   })
   @IsBoolean()
   @IsOptional()

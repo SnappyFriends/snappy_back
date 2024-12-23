@@ -1,16 +1,7 @@
-import { MessageType } from './create-message.dto';
-import { IsBoolean, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateMessageDto } from './create-message.dto';
 
-export class UpdateMessageDto {
-    @IsOptional()
-    @IsNotEmpty()
-    content?: string;
 
-    @IsOptional()
-    @IsBoolean()
-    is_anonymous?: boolean;
+export class UpdateMessageDto extends PartialType(CreateMessageDto) {
 
-    @IsOptional()
-    @IsEnum(MessageType)
-    type?: MessageType;
 }
