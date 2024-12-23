@@ -88,3 +88,4 @@ export class LoginUserDTO extends PickType(registerUserDTO, [
     'email',
     'password'
 ]) { }
+
