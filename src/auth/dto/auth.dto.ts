@@ -87,21 +87,5 @@ export class registerUserDTO {
 export class LoginUserDTO extends PickType(registerUserDTO, [
     'email',
     'password'
-<<<<<<< HEAD
 ]) { }
-=======
-]) {
-    @ApiProperty({
-        description: 'Correo electrónico del usuario',
-        example: 'abi@mail.com',
-    })
-    email: string;
 
-    @ApiProperty({
-        description: 'La contraseña debe tener minimo 8 caracteres, máximo 8 caracteres y debe contener al menos una letra minúscula, una mayúscula, un número y un carácter especial (por ejemplo, !@#$%^&*).',
-        example: 'abiContrera$2024',
-    })
-    password: string;
-
-}
->>>>>>> 9232fe629410abd918c4cb2eeb0b930a722787a8
