@@ -95,7 +95,7 @@ export class ReactionsController {
   @Get(':id')
   @ApiOperation({ summary: 'Search for Reactions by ID' })
   @ApiOkResponse({
-    description: '',
+    description: 'Reactions search by ID successfully',
     schema: {
       example: {
         "reaction_id": "dfba91c6-e9bd-42f1-9f82-e2ff19d00598",

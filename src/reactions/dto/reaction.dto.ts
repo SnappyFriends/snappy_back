@@ -32,27 +32,4 @@ export class CreateReactionDto {
   reaction_type: 'comment' | 'post';
 }
 
-export class UpdateReactionDto extends PartialType(CreateReactionDto) {
-
-  @ApiProperty({
-    type: String,
-    description: 'User UUID',
-    example: '10ab217c-f4b8-464b-bb1c-10e865e7d1ca'
-  })
-  user_id: string;
-
-  @ApiProperty({
-    enum: ['like', 'dislike'],
-    description: 'reaction',
-    example: 'like, dislike'
-  })
-  reaction?: 'like' | 'dislike';
-
-  @ApiProperty({
-    enum: ['comment', 'post'],
-    description: 'type of reaction',
-    example: 'comment | post'
-  })
-  reaction_type?: 'comment' | 'post';
-
-}
+export class UpdateReactionDto extends PartialType(CreateReactionDto) { }
