@@ -17,7 +17,7 @@ export class FriendshipsService {
     private friendshipsRepository: Repository<Friendship>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async addFriend(
     requestingUserId: string,
@@ -125,7 +125,9 @@ export class FriendshipsService {
       }
 
       eliminateUser.status = FriendshipStatus.DELETED;
-      return await this.friendshipsRepository.save(eliminateUser);
+      await this.friendshipsRepository.save(eliminateUser);
+      return { message: `Friendship con ID ${userId} eliminada correctamente` }
+
     } catch {
       throw new InternalServerErrorException(
         'Error al intentar eliminar la relación de amistad.',
