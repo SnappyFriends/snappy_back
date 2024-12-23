@@ -1,5 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateReactionDto {
@@ -15,7 +14,7 @@ export class CreateReactionDto {
   @ApiProperty({
     enum: ['like', 'dislike'],
     description: 'reaction',
-    example: 'like, dislike'
+    example: 'like'
   })
   @IsEnum(['like', 'dislike'])
   @IsNotEmpty()
@@ -24,7 +23,7 @@ export class CreateReactionDto {
   @ApiProperty({
     enum: ['comment', 'post'],
     description: 'type of reaction',
-    example: 'comment | post'
+    example: 'comment'
 
   })
   @IsEnum(['comment', 'post'])
