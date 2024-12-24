@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { UpdateMessageDto } from './dto/update-message.dto';
-import { Message } from './entities/message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -32,7 +31,7 @@ export class MessagesController {
     }
   })
   @ApiNotFoundResponse({
-    description: 'Reactions Not Found ',
+    description: 'User Not Found ',
     schema: {
       example: {
         "message": "El usuario con ID 1f452184-8889-4caa-989a-494e5b7a1e20 no existe",
@@ -106,7 +105,7 @@ export class MessagesController {
     }
   })
   @ApiNotFoundResponse({
-    description: 'Reaction Not Found',
+    description: 'Message Not Found',
     schema: {
       example: {
         "message": "No se encuentra el mensaje con Id ${idMessage}",
@@ -135,7 +134,7 @@ export class MessagesController {
       }
     }
   })
-  @ApiBadRequestResponse({
+  @ApiNotFoundResponse({
     description: 'your request has incorrect parameters.',
     schema: {
       example: {
