@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { FriendshipsService } from './friendships.service';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Friendships')
 @Controller('friendships')
@@ -33,7 +33,7 @@ export class FriendshipsController {
       }
     }
   })
-  @ApiBadRequestResponse({
+  @ApiInternalServerErrorResponse({
     description: 'Error: Bad Request',
     schema: {
       example: {
@@ -94,7 +94,7 @@ export class FriendshipsController {
       }
     }
   })
-  @ApiBadRequestResponse({
+  @ApiInternalServerErrorResponse({
     description: 'your request has incorrect parameters.',
     schema: {
       example: {
@@ -113,7 +113,7 @@ export class FriendshipsController {
   @Delete(':friendshipId')
   @ApiOperation({ summary: 'Delete a FriendShip' })
   @ApiOkResponse({ description: 'FriendShip deleted successfully.', schema: { example: 'Friendship con ID ${ID} eliminada correctamente' } })
-  @ApiBadRequestResponse({
+  @ApiInternalServerErrorResponse({
     description: 'Some input value is not found. (uuid is expected)',
     schema: {
       example: {
