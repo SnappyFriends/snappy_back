@@ -96,7 +96,7 @@ export class PollsController {
   @Get('/:poll_id')
   @ApiOperation({ summary: 'Search for Polls by ID' })
   @ApiOkResponse({
-    description: '',
+    description: 'Polls search by ID successfully.',
     schema: {
       example: {
         "poll_id": "8bec24da-0409-4c5c-b3ca-8dcdcc4af62a",
