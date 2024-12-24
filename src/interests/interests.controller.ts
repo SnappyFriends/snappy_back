@@ -25,9 +25,9 @@ export class InterestsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Search for Reactions by ID' })
+  @ApiOperation({ summary: 'Search for Interests by ID' })
   @ApiOkResponse({
-    description: 'Search for Reactions by ID.',
+    description: 'Search for Interests by ID.',
     schema: {
       example: {
         "interest_id": "ae970d38-79e5-4cc7-a2e5-93fbd16d93ec",
@@ -46,7 +46,7 @@ export class InterestsController {
     }
   })
   @ApiNotFoundResponse({
-    description: 'Reaction Not Found',
+    description: 'Interests Not Found',
     schema: {
       example: {
         "message": "No se encontró el interés con el ID ae970d38-79e5-4cc7-a2e5-93fbd16d93ee",
@@ -136,7 +136,7 @@ export class InterestsController {
     }
   })
   @ApiNotFoundResponse({
-    description: 'Reaction not found',
+    description: 'Interests not found',
     schema: {
       example: {
         "message": "No se encontró el interés con el ID 8d1c8d60-2290-42a0-a42f-57033168eb7e",
