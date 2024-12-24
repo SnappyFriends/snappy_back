@@ -53,7 +53,7 @@ export class ReportsController {
   @Get()
   @ApiOperation({ summary: 'Get all Reports.' })
   @ApiOkResponse({
-    description: 'Reactions list',
+    description: 'Reports list',
     schema: {
       example: {
         "report_id": "ae68963f-af50-41a6-bc42-9795280cba84",
@@ -77,9 +77,9 @@ export class ReportsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Search for Reports by ID' })
+  @ApiOperation({ summary: 'Search for Report by ID' })
   @ApiOkResponse({
-    description: 'Reactions search by ID successfully',
+    description: 'Report search by ID successfully',
     schema: {
       example: {
         "report_id": "ae68963f-af50-41a6-bc42-9795280cba84",
@@ -124,7 +124,7 @@ export class ReportsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Report' })
-  @ApiOkResponse({ description: 'Reaction deleted successfully.', schema: { example: 'RReport deleted successfully.' } })
+  @ApiOkResponse({ description: 'Report deleted successfully.', schema: { example: 'Report deleted successfully.' } })
   @ApiBadRequestResponse({
     description: 'Some input value is not found. (uuid is expected)',
     schema: {
@@ -136,7 +136,7 @@ export class ReportsController {
     }
   })
   @ApiNotFoundResponse({
-    description: 'Reaction not found',
+    description: 'Report not found',
     schema: {
       example: {
         "message": "Report not found.",
