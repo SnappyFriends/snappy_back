@@ -242,7 +242,7 @@ export class UsersController {
     description: 'Assigned User interests.',
     schema: {
       example: {
-        "message": "Interés asignado exitosamente",
+        "message": "Interés asignado al usuario",
         "usuario": "michaeljohnson",
         "interests": [
           {
@@ -279,5 +279,50 @@ export class UsersController {
     @Param('interestId', ParseUUIDPipe) interestId: string,
   ) {
     return this.usersService.assignInterestToUser(userId, interestId);
+  }
+
+  @Post(':userId/remove-interest/:interestId')
+  @ApiOperation({ summary: 'Remove interests to User' })
+  @ApiCreatedResponse({
+    description: 'Remove User interests.',
+    schema: {
+      example: {
+        "message": "Interés removido del usuario",
+        "usuario": "michaeljohnson",
+        "interests": [
+          {
+            "interest_id": "fcfe5ef4-4e39-4f8b-ba68-e7e28f0e9574",
+            "name": "Música"
+          }
+        ]
+      }
+    }
+
+  })
+  @ApiBadRequestResponse({
+    description: 'invalid input values.',
+    schema: {
+      example: {
+        "message": "Validation failed (uuid is expected)",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    }
+  })
+  @ApiNotFoundResponse({
+    description: 'Some input value is not found.',
+    schema: {
+      example: {
+        "message": "Cannot POST /users/168bde23-b10d-4af9-807e-7d6405d378a7/fcfe5ef4-4e39-4f8b-ba68-e7e28f0e9574",
+        "error": "Not Found",
+        "statusCode": 404
+      }
+    }
+  })
+  async removeInterestToUser(
+    @Param('userId', ParseUUIDPipe) userId: string,
+    @Param('interestId', ParseUUIDPipe) interestId: string,
+  ) {
+    return this.usersService.removeInterestToUser(userId, interestId);
   }
 }
