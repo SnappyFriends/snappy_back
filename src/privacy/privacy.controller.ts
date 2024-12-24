@@ -115,7 +115,7 @@ export class PrivacyController {
     }
   })
   @ApiBadRequestResponse({
-    description: 'your request has incorrect parameters.',
+    description: 'Error: Bad Request',
     schema: {
       example: {
         "message": [
@@ -128,12 +128,12 @@ export class PrivacyController {
   })
 
   @ApiNotFoundResponse({
-    description: 'your request has incorrect parameters.',
+    description: 'Validation failed (uuid is expected)',
     schema: {
       example: {
         "message": "Validation failed (uuid is expected)",
         "error": "Bad Request",
-        "statusCode": 400
+        "statusCode": 404
       },
     },
   })
