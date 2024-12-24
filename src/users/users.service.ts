@@ -126,34 +126,42 @@ export class UsersService {
       where: { id: userId },
       relations: ['interests'],
     });
-    if (!user) {
-      throw new NotFoundException(
-        `No se encontró el usuario con el ID ${userId}`,
-      );
-    }
+    if (!user) throw new NotFoundException(`No se encontró el usuario con el ID ${userId}`);
 
-    const interest = await this.interestsRepository.findOne({
-      where: { interest_id: interestId },
-    });
-    if (!interest) {
-      throw new NotFoundException(
-        `No se encontró el interés con el ID ${interestId}`,
-      );
-    }
+    const interest = await this.interestsRepository.findOne({ where: { interest_id: interestId } });
+    if (!interest) throw new NotFoundException(`No se encontró el interés con el ID ${interestId}`);
 
-    if (
-      user.interests.some(
-        (existingInterest) => existingInterest.interest_id === interestId,
-      )
-    ) {
-      throw new NotFoundException(`El usuario ya tiene este interés`);
-    }
+    if (user.interests.some((existingInterest) => existingInterest.interest_id === interestId)) throw new NotFoundException(`El usuario ya tiene este interés`);
 
     user.interests.push(interest);
     await this.usersRepository.save(user);
 
     return {
-      message: 'Interés asignado exitosamente',
+      message: 'Interés asignado al usuario',
+      usuario: user.username,
+      interests: user.interests,
+    };
+  }
+
+  async removeInterestToUser(userId: string, interestId: string) {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['interests'],
+    });
+    if (!user) throw new NotFoundException(`No se encontró el usuario con el ID ${userId}`);
+
+    const interest = await this.interestsRepository.findOne({ where: { interest_id: interestId } });
+    if (!interest) throw new NotFoundException(`No se encontró el interés con el ID ${interestId}`);
+
+    const userInterest = user.interests.findIndex((existingInterest) => existingInterest.interest_id === interestId);
+    if (userInterest === -1) throw new NotFoundException(`El usuario no tiene este interés asignado`);
+
+    user.interests.splice(userInterest, 1);
+
+    await this.usersRepository.save(user);
+
+    return {
+      message: 'Interés removido del usuario',
       usuario: user.username,
       interests: user.interests,
     };
