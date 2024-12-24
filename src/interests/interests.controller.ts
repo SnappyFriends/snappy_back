@@ -145,6 +145,7 @@ export class InterestsController {
       }
     }
   })
+
   deleteInterest(@Param('id', ParseUUIDPipe) id: string) {
     return this.interestsService.remove(id);
   }
