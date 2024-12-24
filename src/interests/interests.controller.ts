@@ -124,7 +124,7 @@ export class InterestsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete Interest' })
-  @ApiOkResponse({ description: 'Reaction deleted successfully.', schema: { example: 'Reacción con ID ${id} eliminada correctamente' } })
+  @ApiOkResponse({ description: 'Interest deleted successfully.', schema: { example: 'Interest con ID ${id} eliminada correctamente' } })
   @ApiBadRequestResponse({
     description: 'Some input value is not found. (uuid is expected)',
     schema: {
