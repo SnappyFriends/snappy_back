@@ -104,7 +104,7 @@ export class User {
 
   @Column({
     nullable: false,
-    default: 'no_img.png',
+    default: '/no_img.png',
   })
   profile_image: string;
 
