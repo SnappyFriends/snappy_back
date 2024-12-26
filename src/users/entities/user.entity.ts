@@ -75,6 +75,11 @@ export class User {
   @Column()
   genre: string;
 
+  @Column({
+    nullable: true
+  })
+  description: string;
+
   @CreateDateColumn()
   registration_date: Date;
 

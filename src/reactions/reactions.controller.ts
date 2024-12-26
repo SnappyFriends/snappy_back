@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ReactionsService } from './reactions.service';
 import { CreateReactionDto, UpdateReactionDto } from './dto/reaction.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Reactions')
 @Controller('reactions')
@@ -19,7 +19,7 @@ export class ReactionsController {
 
   @Post(':post_id')
   @ApiOperation({ summary: 'Create Reactions' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Reaction',
     schema: {
       example: {
@@ -171,6 +171,7 @@ export class ReactionsController {
     return this.reactionsService.update(id, updateReactionDto);
   }
 
+  @Delete(':id')
   @ApiOperation({ summary: 'Delete a Reaction' })
   @ApiOkResponse({ description: 'Reaction deleted successfully.', schema: { example: 'Reacción con ID ${id} eliminada correctamente' } })
   @ApiBadRequestResponse({
@@ -193,7 +194,6 @@ export class ReactionsController {
       }
     }
   })
-  @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.reactionsService.remove(id);
   }

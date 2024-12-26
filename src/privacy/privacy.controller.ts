@@ -10,7 +10,7 @@ import {
 import { PrivacyService } from './privacy.service';
 import { CreatePrivacyDto } from './dto/create-privacy.dto';
 import { UpdatePrivacyDto } from './dto/update-privacy.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Privacy')
 @Controller('privacy')
@@ -19,7 +19,7 @@ export class PrivacyController {
 
   @Post(':userId')
   @ApiOperation({ summary: 'Create Privacy' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Privacy.',
     schema: {
       example: {
@@ -115,7 +115,7 @@ export class PrivacyController {
     }
   })
   @ApiBadRequestResponse({
-    description: 'your request has incorrect parameters.',
+    description: 'Error: Bad Request',
     schema: {
       example: {
         "message": [
@@ -128,12 +128,12 @@ export class PrivacyController {
   })
 
   @ApiNotFoundResponse({
-    description: 'your request has incorrect parameters.',
+    description: 'Validation failed (uuid is expected)',
     schema: {
       example: {
         "message": "Validation failed (uuid is expected)",
         "error": "Bad Request",
-        "statusCode": 400
+        "statusCode": 404
       },
     },
   })

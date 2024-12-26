@@ -1,12 +1,51 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
+import { ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Chats')
 @Controller('chats')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(private readonly chatService: ChatService) { }
 
   @Post()
+  @ApiOperation({ summary: 'Create Chat' })
+  @ApiCreatedResponse({
+    description: 'Created Chat',
+    schema: {
+      example: {
+        "id": "00b262ae-e5c1-4a7b-8093-1dfc87db0053",
+        "key": "1f0aae07-270c-4ad7-9062-a15a866dccd1-29e11391-6ab0-4ef7-a055-3f3e2024f198",
+        "participants": [
+          {
+            "id": "29e11391-6ab0-4ef7-a055-3f3e2024f198"
+          },
+          {
+            "id": "1f0aae07-270c-4ad7-9062-a15a866dccd1"
+          }
+        ]
+      }
+    }
+  })
+  @ApiNotFoundResponse({
+    description: 'User Not Found ',
+    schema: {
+      example: {
+        "message": "Algunos usuarios no fueron encontrados.",
+        "error": "Not Found",
+        "statusCode": 404
+      }
+    }
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Some parameter is not correct',
+    schema: {
+      example: {
+        "statusCode": 500,
+        "message": "Internal server error"
+      }
+    }
+  })
   @HttpCode(HttpStatus.CREATED)
   async createChat(@Body() createChatDto: CreateChatDto) {
     const { userIds } = createChatDto;
@@ -20,7 +59,9 @@ export class ChatController {
     return {
       id: newChat.id,
       key: newChat.key,
-      participants: newChat.participants,
+      participants: newChat.participants.map((userIds) => ({
+        id: userIds.id
+      })),
     };
   }
 }

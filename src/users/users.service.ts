@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GetUsersFiltersDTO, UpdateUserDTO } from './dto/user.dto';
+import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
@@ -13,10 +13,10 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Interest)
     private interestsRepository: Repository<Interest>,
-  ) {}
+  ) { }
 
-  async getUsers(filters: GetUsersFiltersDTO) {
-    const { page = 1, limit = 5, interests } = filters;
+  async getUsers(filters: GetUsersDTO) {
+    const { page = 1, limit = 5, interests, username } = filters;
 
     const queryBuilder = this.usersRepository
       .createQueryBuilder('user')
@@ -24,23 +24,19 @@ export class UsersService {
       .skip((page - 1) * limit)
       .take(limit);
 
-    // Asegurarnos de que 'interests' es siempre un arreglo, incluso si solo se pasa un valor
     if (interests && Array.isArray(interests) && interests.length > 0) {
       queryBuilder.andWhere('interest.name IN (:...interests)', { interests });
     } else if (interests && !Array.isArray(interests)) {
-      // Si interests es un solo valor, lo convertimos en un arreglo
       queryBuilder.andWhere('interest.name IN (:...interests)', {
         interests: [interests],
       });
     }
 
+    if (username) queryBuilder.andWhere('user.username LIKE :username', { username: `%${username}%` });
+
     const usersFound = await queryBuilder.getMany();
 
-    // Si no se encuentran usuarios, devolver un array vacío
-    if (!usersFound || usersFound.length === 0) {
-      console.log('No users found');
-      return [];
-    }
+    if (!usersFound || usersFound.length === 0) return [];
 
     const usersWithoutPassword = usersFound.map(
       ({ password, ...userWithoutPassword }) => userWithoutPassword,
@@ -130,34 +126,42 @@ export class UsersService {
       where: { id: userId },
       relations: ['interests'],
     });
-    if (!user) {
-      throw new NotFoundException(
-        `No se encontró el usuario con el ID ${userId}`,
-      );
-    }
+    if (!user) throw new NotFoundException(`No se encontró el usuario con el ID ${userId}`);
 
-    const interest = await this.interestsRepository.findOne({
-      where: { interest_id: interestId },
-    });
-    if (!interest) {
-      throw new NotFoundException(
-        `No se encontró el interés con el ID ${interestId}`,
-      );
-    }
+    const interest = await this.interestsRepository.findOne({ where: { interest_id: interestId } });
+    if (!interest) throw new NotFoundException(`No se encontró el interés con el ID ${interestId}`);
 
-    if (
-      user.interests.some(
-        (existingInterest) => existingInterest.interest_id === interestId,
-      )
-    ) {
-      throw new NotFoundException(`El usuario ya tiene este interés`);
-    }
+    if (user.interests.some((existingInterest) => existingInterest.interest_id === interestId)) throw new NotFoundException(`El usuario ya tiene este interés`);
 
     user.interests.push(interest);
     await this.usersRepository.save(user);
 
     return {
-      message: 'Interés asignado exitosamente',
+      message: 'Interés asignado al usuario',
+      usuario: user.username,
+      interests: user.interests,
+    };
+  }
+
+  async removeInterestToUser(userId: string, interestId: string) {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['interests'],
+    });
+    if (!user) throw new NotFoundException(`No se encontró el usuario con el ID ${userId}`);
+
+    const interest = await this.interestsRepository.findOne({ where: { interest_id: interestId } });
+    if (!interest) throw new NotFoundException(`No se encontró el interés con el ID ${interestId}`);
+
+    const userInterest = user.interests.findIndex((existingInterest) => existingInterest.interest_id === interestId);
+    if (userInterest === -1) throw new NotFoundException(`El usuario no tiene este interés asignado`);
+
+    user.interests.splice(userInterest, 1);
+
+    await this.usersRepository.save(user);
+
+    return {
+      message: 'Interés removido del usuario',
       usuario: user.username,
       interests: user.interests,
     };

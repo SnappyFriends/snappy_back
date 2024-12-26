@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put, ParseUUIDPipe } from '
 import { InterestsService } from './interests.service';
 import { Interest } from './entities/interests.entity';
 import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
-import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Interests')
 @Controller('interests')
@@ -25,9 +25,9 @@ export class InterestsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Search for Reactions by ID' })
+  @ApiOperation({ summary: 'Search for Interests by ID' })
   @ApiOkResponse({
-    description: 'Search for Reactions by ID.',
+    description: 'Search for Interests by ID.',
     schema: {
       example: {
         "interest_id": "ae970d38-79e5-4cc7-a2e5-93fbd16d93ec",
@@ -46,7 +46,7 @@ export class InterestsController {
     }
   })
   @ApiNotFoundResponse({
-    description: 'Reaction Not Found',
+    description: 'Interests Not Found',
     schema: {
       example: {
         "message": "No se encontró el interés con el ID ae970d38-79e5-4cc7-a2e5-93fbd16d93ee",
@@ -61,7 +61,7 @@ export class InterestsController {
 
   @Post()
   @ApiOperation({ summary: 'Create Interest' })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     description: 'Created Interest',
     schema: {
       example: {
@@ -124,7 +124,7 @@ export class InterestsController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete Interest' })
-  @ApiOkResponse({ description: 'Reaction deleted successfully.', schema: { example: 'Reacción con ID ${id} eliminada correctamente' } })
+  @ApiOkResponse({ description: 'Interest deleted successfully.', schema: { example: 'Interest con ID ${id} eliminada correctamente' } })
   @ApiBadRequestResponse({
     description: 'Some input value is not found. (uuid is expected)',
     schema: {
@@ -136,7 +136,7 @@ export class InterestsController {
     }
   })
   @ApiNotFoundResponse({
-    description: 'Reaction not found',
+    description: 'Interests not found',
     schema: {
       example: {
         "message": "No se encontró el interés con el ID 8d1c8d60-2290-42a0-a42f-57033168eb7e",
@@ -145,6 +145,7 @@ export class InterestsController {
       }
     }
   })
+
   deleteInterest(@Param('id', ParseUUIDPipe) id: string) {
     return this.interestsService.remove(id);
   }

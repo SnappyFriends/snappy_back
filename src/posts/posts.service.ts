@@ -9,40 +9,40 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { FilesRepository } from 'src/files/files.repository';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post) private postsRepository: Repository<Post>,
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private filesRepository: FilesRepository,
   ) { }
-  async create(createPostDto: CreatePostDto) {
-    try {
-      const { userId, ...postData } = createPostDto;
+  async create(createPostDto: CreatePostDto, fileImg: Express.Multer.File) {
+    const { userId, ...postData } = createPostDto;
 
-      const user = await this.usersRepository.findOne({
-        where: { id: userId },
-      });
-      if (!user) {
-        throw new NotFoundException('El usuario no existe');
-      }
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
 
-      const newPost = this.postsRepository.create({
-        ...postData,
-        user,
-      });
+    if (!user) throw new NotFoundException('El usuario no existe');
 
-      const savedPost = await this.postsRepository.save(newPost);
-
-      return {
-        ...savedPost,
-        user: { id: userId },
-      };
-    } catch {
-      throw new BadRequestException(
-        'Ocurrió un error inesperado al crear el post. Inténtelo de nuevo.',
-      );
+    let fileUrl = null;
+    if (fileImg) {
+      const uploadedFile = await this.filesRepository.uploadImg(fileImg);
+      fileUrl = uploadedFile.secure_url;
     }
+
+    const newPost = this.postsRepository.create({
+      ...postData,
+      user,
+      fileUrl,
+    });
+
+    const savedPost = await this.postsRepository.save(newPost);
+
+    return {
+      ...savedPost,
+      user: { id: userId },
+    };
   }
 
   async findAll() {

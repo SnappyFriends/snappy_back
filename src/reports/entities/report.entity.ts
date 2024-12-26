@@ -3,7 +3,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
@@ -13,20 +12,15 @@ export class Report {
   @PrimaryGeneratedColumn('uuid')
   report_id: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  report_type: string;
+  @ManyToOne(() => User, (user) => user.reportedReports)
+  reported_user: User;
 
-  @Column({ type: 'text' })
+  @ManyToOne(() => User, (user) => user.reportingReports)
+  reporting_user: User;
+
+  @Column({ length: 120 })
   description: string;
 
   @CreateDateColumn()
   report_date: Date;
-
-  @ManyToOne(() => User, (user) => user.reportedReports)
-  @JoinColumn({ name: 'reported_user_id' })
-  reported_user: User;
-
-  @ManyToOne(() => User, (user) => user.reportingReports)
-  @JoinColumn({ name: 'reporting_user_id' })
-  reporting_user: User;
 }

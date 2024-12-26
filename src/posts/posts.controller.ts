@@ -7,23 +7,27 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { UpdatePostDto } from './dto/update-post-dto';
 import { CreatePostDto } from './dto/create-post-dto';
 import {
   ApiBadRequestResponse,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) { }
 
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
@@ -87,6 +91,8 @@ export class PostsController {
   }
 
   @Post()
+  @UseInterceptors(FileInterceptor('fileImg'))
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create posts' })
   @ApiCreatedResponse({
     description: 'Post Created.',
@@ -117,8 +123,8 @@ export class PostsController {
       },
     },
   })
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  create(@Body() createPostDto: CreatePostDto, @UploadedFile() fileImg: Express.Multer.File) {
+    return this.postsService.create(createPostDto, fileImg);
   }
 
   @Put(':id')

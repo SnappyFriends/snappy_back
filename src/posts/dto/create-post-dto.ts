@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -22,9 +22,10 @@ export class CreatePostDto {
 
   @ApiProperty({
     type: String,
-    description: 'URL o link del video o imagen a postear',
-    example: 'https://example.com/image.png'
+    format: 'binary',
+    required: false,
+    default: null
   })
-  @IsString()
-  fileUrl: string;
+  @IsOptional()
+  fileImg?: Express.Multer.File;
 }
