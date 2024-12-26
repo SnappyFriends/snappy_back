@@ -9,19 +9,19 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-import {
-  BadRequestException,
-  ForbiddenException,
-  Logger,
-} from '@nestjs/common';
+import { BadRequestException, Logger } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
-import { ChatGroupsService } from './chat-groups/chat-groups.service';
 import { MessagesService } from './messages/messages.service';
 import { GroupMembersService } from './chat-groups/group-members/group-members.service';
 import { CreateMessageDto } from './messages/dto/create-message.dto';
 import { UsersService } from './users/users.service';
+import {
+  NotificationType,
+  NotificationStatus,
+} from './notifications/entities/notification.entity';
+import { NotificationsService } from './notifications/notifications.service';
 
 dotenv.config({ path: './.env' });
 @WebSocketGateway({
@@ -44,6 +44,7 @@ export class ChatGateway
     private groupMemberService: GroupMembersService,
     private messageService: MessagesService,
     private usersService: UsersService,
+    private notificationsService: NotificationsService,
   ) {}
 
   afterInit() {
@@ -51,6 +52,7 @@ export class ChatGateway
   }
 
   async handleConnection(client: Socket) {
+    console.log('🟢 Cliente conectado:', client.id);
     client.data = {};
 
     const token = client.handshake.auth.token;
@@ -66,22 +68,17 @@ export class ChatGateway
       const decoded = this.jwtService.verify(token);
       console.log('Token decodificado:', decoded);
 
-      const context = {
-        switchToWs: () => ({
-          getClient: () => client,
-          getData: () => ({ token }),
-        }),
-        getHandler: () => null,
-        getClass: () => null,
-        getType: () => 'ws',
-      };
+      client.join(decoded.id);
+      console.log(`Usuario ${decoded.id} unido a su sala personal`);
 
-      const isValid = await this.jwtAuthService.canActivate(context as any);
-
-      if (!isValid) {
-        client.emit('error', 'Token inválido');
-        client.disconnect();
-        return;
+      const userGroups = await this.groupMemberService.findGroupsByUserId(
+        decoded.id,
+      );
+      if (userGroups && userGroups.length > 0) {
+        userGroups.forEach((group) => {
+          client.join(group.id);
+          console.log(`Usuario ${decoded.id} unido al grupo ${group.id}`);
+        });
       }
 
       const user = await this.usersService.getUserById(decoded.sub);
@@ -100,6 +97,7 @@ export class ChatGateway
   }
 
   async handleDisconnect(client: Socket) {
+    console.log('🔴 Cliente desconectado:', client.id);
     try {
       const token = client.handshake.auth.token;
 
@@ -143,6 +141,14 @@ export class ChatGateway
     @MessageBody() payload: CreateMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
+    console.log('📨 Mensaje recibido desde', client.id);
+    console.log('📝 Contenido:', payload);
+    console.log('ℹ️ Información del cliente:', {
+      id: client.id,
+      handshake: client.handshake,
+      rooms: client.rooms,
+    });
+
     try {
       if (!payload.chatId && !payload.groupId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
@@ -156,9 +162,99 @@ export class ChatGateway
         payload.messageReceivers.forEach((receiverId) => {
           this.server.to(receiverId).emit('receivePrivateMessage', message);
         });
+        this.server
+          .to(payload.sender_id)
+          .emit('receivePrivateMessage', message);
       }
     } catch (error) {
       console.error('Error al manejar el mensaje:', error.message);
+      client.emit('error', error.message);
+    }
+  }
+
+  @SubscribeMessage('notification')
+  async handleNotification(
+    @MessageBody()
+    payload: {
+      type: NotificationType;
+      content: string;
+      userId: string;
+      // Campos adicionales según el tipo
+      friendRequestId?: string;
+      messageId?: string;
+      postId?: string;
+      commentId?: string;
+      groupId?: string;
+      purchaseId?: string;
+    },
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('📨 Notificación recibida:', payload);
+
+    try {
+      const notification = {
+        content: payload.content,
+        type: payload.type,
+        user_id: payload.userId,
+        status: NotificationStatus.UNREAD,
+      };
+
+      // Guardar la notificación en la base de datos
+      const savedNotification =
+        await this.notificationsService.create(notification);
+
+      // Emitir según el tipo de notificación
+      switch (payload.type) {
+        case NotificationType.FRIEND_REQUEST:
+          this.server.to(payload.userId).emit('friendRequestNotification', {
+            ...savedNotification,
+            friendRequestId: payload.friendRequestId,
+          });
+          break;
+
+        case NotificationType.MESSAGE:
+          this.server.to(payload.userId).emit('messageNotification', {
+            ...savedNotification,
+            messageId: payload.messageId,
+          });
+          break;
+
+        case NotificationType.POST_REACTION:
+          this.server.to(payload.userId).emit('postReactionNotification', {
+            ...savedNotification,
+            postId: payload.postId,
+          });
+          break;
+
+        case NotificationType.COMMENT:
+          this.server.to(payload.userId).emit('commentNotification', {
+            ...savedNotification,
+            commentId: payload.commentId,
+          });
+          break;
+
+        case NotificationType.GROUP_INVITATION:
+          this.server.to(payload.userId).emit('groupInvitationNotification', {
+            ...savedNotification,
+            groupId: payload.groupId,
+          });
+          break;
+
+        case NotificationType.PURCHASE:
+          this.server.to(payload.userId).emit('purchaseNotification', {
+            ...savedNotification,
+            purchaseId: payload.purchaseId,
+          });
+          break;
+
+        case NotificationType.SYSTEM:
+          this.server
+            .to(payload.userId)
+            .emit('systemNotification', savedNotification);
+          break;
+      }
+    } catch (error) {
+      console.error('Error al manejar la notificación:', error.message);
       client.emit('error', error.message);
     }
   }

@@ -12,15 +12,14 @@ import {
   NotificationStatus,
 } from './entities/notification.entity';
 import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class NotificationsService {
   constructor(
     @InjectRepository(Notification)
-    private notificationsRepository: Repository<Notification>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private notificationRepository: Repository<Notification>,
+    private usersService: UsersService,
   ) {}
 
   async create(
@@ -28,21 +27,21 @@ export class NotificationsService {
   ): Promise<Notification> {
     const { user_id, content, type } = createNotificationDto;
 
-    const user = await this.usersRepository.findOne({ where: { id: user_id } });
+    const user = await this.usersService.getUserById(user_id);
     if (!user) {
       throw new NotFoundException(
         `El usuario con el id ${user_id} no fue encontrado.`,
       );
     }
 
-    const newNotification = this.notificationsRepository.create({
+    const newNotification = this.notificationRepository.create({
       content,
       type,
       status: NotificationStatus.UNREAD,
       user: { id: user_id },
     });
     try {
-      return await this.notificationsRepository.save(newNotification);
+      return await this.notificationRepository.save(newNotification);
     } catch (error) {
       throw new BadRequestException(
         'Hubo un error al guardar la notificación',
@@ -53,7 +52,7 @@ export class NotificationsService {
 
   async findAll() {
     try {
-      const notifications = await this.notificationsRepository.find({
+      const notifications = await this.notificationRepository.find({
         relations: ['user'],
       });
 
@@ -73,7 +72,7 @@ export class NotificationsService {
 
   async findOne(id: string) {
     try {
-      const notifications = await this.notificationsRepository.findOne({
+      const notifications = await this.notificationRepository.findOne({
         where: { notification_id: id },
         relations: ['user'],
       });
@@ -100,7 +99,7 @@ export class NotificationsService {
     updateNotificationDto: UpdateNotificationDto,
   ): Promise<Notification | string> {
     try {
-      const notifications = await this.notificationsRepository.findOne({
+      const notifications = await this.notificationRepository.findOne({
         where: { notification_id: id },
       });
 
@@ -110,7 +109,7 @@ export class NotificationsService {
 
       Object.assign(notifications, updateNotificationDto);
 
-      return await this.notificationsRepository.save(notifications);
+      return await this.notificationRepository.save(notifications);
     } catch (error) {
       if (error.name === 'QueryFailedError') {
         throw new BadRequestException(
@@ -123,7 +122,7 @@ export class NotificationsService {
   }
 
   async markAsRead(id: string) {
-    const notification = await this.notificationsRepository.findOne({
+    const notification = await this.notificationRepository.findOne({
       where: { notification_id: id },
     });
 
@@ -132,14 +131,14 @@ export class NotificationsService {
     }
 
     notification.status = NotificationStatus.READ;
-    await this.notificationsRepository.save(notification);
+    await this.notificationRepository.save(notification);
 
     return notification;
   }
 
   async remove(id: string): Promise<{ message: string }> {
     try {
-      const notification = await this.notificationsRepository.findOne({
+      const notification = await this.notificationRepository.findOne({
         where: { notification_id: id },
       });
       if (!notification) {
@@ -147,7 +146,7 @@ export class NotificationsService {
           `La notificación con el id ${id} no fue encontrada.`,
         );
       }
-      await this.notificationsRepository.remove(notification);
+      await this.notificationRepository.remove(notification);
       return { message: `Notificación con id ${id} borrada correctamente.` };
     } catch {
       throw new InternalServerErrorException(
