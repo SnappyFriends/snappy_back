@@ -9,7 +9,7 @@ import {
 import { CreateGroupMemberDto } from '../dto/create-group-member.dto';
 import { UpdateGroupMemberDto } from '../dto/update-group-member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Group_Members, Role } from '../entities/groupMembers.entity';
+import { Group_Members } from '../entities/groupMembers.entity';
 import { Repository } from 'typeorm';
 import { Chat_Groups } from '../entities/chat-group.entity';
 import {
@@ -209,5 +209,17 @@ export class GroupMembersService {
     return {
       message: `El usuario con ID ${id} ha salido del grupo.`,
     };
+  }
+
+  async findGroupsByUserId(userId: string) {
+    const groupMembers = await this.groupMembersRepository.find({
+      where: { user_id: userId },
+      relations: ['group'],
+    });
+
+    return groupMembers.map((member) => ({
+      id: member.group.group_id,
+      ...member.group,
+    }));
   }
 }
