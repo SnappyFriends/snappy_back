@@ -24,6 +24,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { FilesModule } from './files/files.module';
 import { GroupMembersModule } from './chat-groups/group-members/group-members.module';
 import { ChatModule } from './chat-groups/chat.module';
+import { NodemailerModule } from './nodemailer/nodemailer.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { ChatModule } from './chat-groups/chat.module';
     FilesModule,
     GroupMembersModule,
     ChatModule,
+    NodemailerModule,
   ],
   controllers: [],
   providers: [ChatGateway, AuthGuard],
