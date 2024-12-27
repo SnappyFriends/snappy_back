@@ -55,6 +55,8 @@ export class PostsService {
         ...post,
         user: {
           id: post.user.id,
+          username: post.user.username,
+          profile_image: post.user.profile_image
         },
       }));
       return responseObject;
@@ -78,6 +80,8 @@ export class PostsService {
         ...post,
         user: {
           id: post.user.id,
+          username: post.user.username,
+          profile_image: post.user.profile_image
         },
       };
 
