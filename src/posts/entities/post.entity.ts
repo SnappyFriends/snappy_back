@@ -22,7 +22,6 @@ export class Post {
   creation_date: Date;
 
   @Column({
-    type: 'text',
     nullable: true,
   })
   fileUrl: string;
