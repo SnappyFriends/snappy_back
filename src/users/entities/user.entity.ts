@@ -114,7 +114,7 @@ export class User {
   })
   location: string;
 
-  @OneToMany(() => Stories, (story) => story.user_id)
+  @OneToMany(() => Stories, (story) => story.user)
   stories: Stories[];
 
   @ManyToMany(() => Interest, (interest) => interest.users)
