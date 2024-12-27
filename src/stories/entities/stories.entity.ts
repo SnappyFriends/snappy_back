@@ -15,7 +15,7 @@ export class Stories {
     user: User;
 
     @Column({
-        nullable: false
+        nullable: true
     })
     content: string;
 
