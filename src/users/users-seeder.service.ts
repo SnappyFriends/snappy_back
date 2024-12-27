@@ -35,7 +35,7 @@ export class UsersSeederService implements OnModuleInit {
             username: superadminUsername,
             email: superadminEmail,
             password: hashedPassword,
-            profile_image: 'snappyfriends.png',
+            profile_image: '/no_img.png',
             location: 'Argentina',
             birthdate: '2000-01-01',
             genre: 'SNAPPY',
