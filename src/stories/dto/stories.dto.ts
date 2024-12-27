@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsNotEmpty, IsOptional, IsUUID } from "class-validator";
 
 export class CreateStoryDTO {
     @ApiProperty({
@@ -16,8 +16,7 @@ export class CreateStoryDTO {
         description: 'Contenido del post, de tipo string',
         example: 'Hoy estuve en la playa y aprendí como surfear!'
       })
-      @IsString()
-      @IsNotEmpty()
+      @IsOptional()
       content: string;
     
       @ApiProperty({
