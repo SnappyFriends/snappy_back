@@ -2,7 +2,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, userType } from './entities/user.entity';
-import * as data from '../assets/users-seed.json';
+import * as dataInterests from '../assets/interests-seed.json';
+import * as dataUsers from '../assets/users-seed.json';
 import * as bcrypt from "bcrypt";
 import { Interest } from 'src/interests/entities/interests.entity';
 
@@ -14,7 +15,29 @@ export class UsersSeederService implements OnModuleInit {
     ) { }
 
     async onModuleInit() {
+        await this.seedInterests();
         await this.seedUsers();
+    }
+
+    async seedInterests() {
+        const interestCount = await this.interestRepository.count();
+        if (interestCount > 0) {
+            console.log('Ya existen intereses en la base de datos.');
+            return;
+        }
+
+        const interests = dataInterests.map((element) => ({
+            name: element.name,
+        }));
+
+        await this.interestRepository
+            .createQueryBuilder()
+            .insert()
+            .into(Interest)
+            .values(interests)
+            .execute();
+
+        console.log('Intereses precargados exitosamente.');
     }
 
     async seedUsers() {
@@ -35,7 +58,7 @@ export class UsersSeederService implements OnModuleInit {
             username: superadminUsername,
             email: superadminEmail,
             password: hashedPassword,
-            profile_image: 'snappyfriends.png',
+            profile_image: '/no_img.png',
             location: 'Argentina',
             birthdate: '2000-01-01',
             genre: 'SNAPPY',
@@ -47,7 +70,7 @@ export class UsersSeederService implements OnModuleInit {
         const allInterests = await this.interestRepository.find();
 
         const users = [];
-        for (const element of data) {
+        for (const element of dataUsers) {
             const interests = allInterests.filter(interest =>
                 element.interests.includes(interest.name)
             );
