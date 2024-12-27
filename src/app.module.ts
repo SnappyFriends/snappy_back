@@ -24,6 +24,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { FilesModule } from './files/files.module';
 import { GroupMembersModule } from './chat-groups/group-members/group-members.module';
 import { ChatModule } from './chat-groups/chat.module';
+import { NodemailerModule } from './nodemailer/nodemailer.module';
 
 @Module({
   imports: [
@@ -57,8 +58,9 @@ import { ChatModule } from './chat-groups/chat.module';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '12h' },
     }),
+    NodemailerModule,
   ],
   controllers: [],
   providers: [ChatGateway, AuthGuard],
 })
-export class AppModule {}
+export class AppModule { }
