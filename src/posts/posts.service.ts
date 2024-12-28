@@ -48,7 +48,7 @@ export class PostsService {
   async findAll() {
     try {
       const posts = await this.postsRepository.find({
-        relations: ['reactions', 'user'],
+        relations: ['user', 'reactions', 'comments', 'comments.user'],
       });
 
       const responseObject = posts.map((post) => ({
@@ -58,6 +58,15 @@ export class PostsService {
           username: post.user.username,
           profile_image: post.user.profile_image
         },
+        comments: post.comments.map((comment) => ({
+          id: comment.comment_id,
+          content: comment.content,
+          user: {
+            id: comment.user.id,
+            username: comment.user.username,
+            profile_image: comment.user.profile_image
+          },
+        }))
       }));
       return responseObject;
     } catch {
@@ -71,7 +80,7 @@ export class PostsService {
     try {
       const post = await this.postsRepository.findOne({
         where: { post_id: id },
-        relations: ['user'],
+        relations: ['user', 'reactions', 'comments', 'comments.user'],
       });
       if (!post) {
         throw new NotFoundException('Post not found.');
@@ -83,6 +92,15 @@ export class PostsService {
           username: post.user.username,
           profile_image: post.user.profile_image
         },
+        comments: post.comments.map((comment) => ({
+          id: comment.comment_id,
+          content: comment.content,
+          user: {
+            id: comment.user.id,
+            username: comment.user.username,
+            profile_image: comment.user.profile_image
+          },
+        }))
       };
 
       return responseObject;
