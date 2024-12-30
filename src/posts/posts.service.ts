@@ -48,7 +48,7 @@ export class PostsService {
   async findAll() {
     try {
       const posts = await this.postsRepository.find({
-        relations: ['user', 'reactions', 'comments', 'comments.user'],
+        relations: ['user', 'reactions', 'reactions.user', 'comments', 'comments.user'],
       });
 
       const responseObject = posts.map((post) => ({
@@ -58,6 +58,14 @@ export class PostsService {
           username: post.user.username,
           profile_image: post.user.profile_image
         },
+        reactions: post.reactions.map((reaction) => ({
+          id: reaction.reaction_id,
+          user: {
+            id: reaction.user.id,
+            username: reaction.user.username,
+            profile_image: reaction.user.profile_image
+          }
+        })),
         comments: post.comments.map((comment) => ({
           id: comment.comment_id,
           content: comment.content,
@@ -80,7 +88,7 @@ export class PostsService {
     try {
       const post = await this.postsRepository.findOne({
         where: { post_id: id },
-        relations: ['user', 'reactions', 'comments', 'comments.user'],
+        relations: ['user', 'reactions', 'reactions.user', 'comments', 'comments.user'],
       });
       if (!post) {
         throw new NotFoundException('Post not found.');
@@ -92,6 +100,14 @@ export class PostsService {
           username: post.user.username,
           profile_image: post.user.profile_image
         },
+        reactions: post.reactions.map((reaction) => ({
+          id: reaction.reaction_id,
+          user: {
+            id: reaction.user.id,
+            username: reaction.user.username,
+            profile_image: reaction.user.profile_image
+          }
+        })),
         comments: post.comments.map((comment) => ({
           id: comment.comment_id,
           content: comment.content,

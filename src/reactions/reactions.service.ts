@@ -33,6 +33,13 @@ export class ReactionsService {
         );
       }
 
+      const existingReaction = await this.reactionsRepository.findOne({
+        where: { comment, user: { id: user_id } },
+      });
+      if (existingReaction) {
+        throw new BadRequestException('Ya has reaccionado a este comentario!');
+      }
+
       const newReaction = this.reactionsRepository.create({
         reaction: reaction,
         comment,
@@ -48,6 +55,13 @@ export class ReactionsService {
       });
       if (!post) {
         throw new NotFoundException(`No se encontró el post con ID ${id}`);
+      }
+
+      const existingReaction = await this.reactionsRepository.findOne({
+        where: { post, user: { id: user_id } },
+      });
+      if (existingReaction) {
+        throw new BadRequestException('Ya has reaccionado a esta publicación!');
       }
 
       const newReaction = this.reactionsRepository.create({
