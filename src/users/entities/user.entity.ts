@@ -114,6 +114,9 @@ export class User {
   })
   location: string;
 
+  @Column({ nullable: true, unique: true })
+  googleId: string;
+
   @OneToMany(() => Stories, (story) => story.user)
   stories: Stories[];
 
