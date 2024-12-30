@@ -27,7 +27,7 @@ dotenv.config({ path: './.env' });
 @WebSocketGateway({
   namespace: 'chats',
   cors: {
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.DOMAIN_FRONT,
   },
 })
 export class ChatGateway
@@ -141,14 +141,6 @@ export class ChatGateway
     @MessageBody() payload: CreateMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('📨 Mensaje recibido desde', client.id);
-    console.log('📝 Contenido:', payload);
-    console.log('ℹ️ Información del cliente:', {
-      id: client.id,
-      handshake: client.handshake,
-      rooms: client.rooms,
-    });
-
     try {
       if (!payload.chatId && !payload.groupId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
@@ -161,7 +153,21 @@ export class ChatGateway
       } else if (payload.chatId) {
         payload.messageReceivers.forEach((receiverId) => {
           this.server.to(receiverId).emit('receivePrivateMessage', message);
+
+          this.notificationsService
+            .create({
+              content: 'Nuevo mensaje privado',
+              type: NotificationType.MESSAGE,
+              user_id: receiverId,
+            })
+            .then((notification) => {
+              this.server.to(receiverId).emit('messageNotification', {
+                notification,
+                message,
+              });
+            });
         });
+
         this.server
           .to(payload.sender_id)
           .emit('receivePrivateMessage', message);
@@ -179,7 +185,6 @@ export class ChatGateway
       type: NotificationType;
       content: string;
       userId: string;
-      // Campos adicionales según el tipo
       friendRequestId?: string;
       messageId?: string;
       postId?: string;
@@ -199,11 +204,9 @@ export class ChatGateway
         status: NotificationStatus.UNREAD,
       };
 
-      // Guardar la notificación en la base de datos
       const savedNotification =
         await this.notificationsService.create(notification);
 
-      // Emitir según el tipo de notificación
       switch (payload.type) {
         case NotificationType.FRIEND_REQUEST:
           this.server.to(payload.userId).emit('friendRequestNotification', {

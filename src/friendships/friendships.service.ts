@@ -8,25 +8,22 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Friendship, FriendshipStatus } from './entities/friendship.entity';
 import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class FriendshipsService {
   constructor(
     @InjectRepository(Friendship)
     private friendshipsRepository: Repository<Friendship>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) { }
+    private usersService: UsersService,
+  ) {}
 
   async addFriend(
     requestingUserId: string,
     targetUserId: string,
   ): Promise<Friendship | { message: string; friendship: Friendship }> {
     try {
-      const targetUser = await this.usersRepository.findOne({
-        where: { id: targetUserId },
-      });
+      const targetUser = await this.usersService.getUserById(targetUserId);
 
       if (!targetUser) {
         throw new NotFoundException(
@@ -126,8 +123,7 @@ export class FriendshipsService {
 
       eliminateUser.status = FriendshipStatus.DELETED;
       await this.friendshipsRepository.save(eliminateUser);
-      return { message: `Friendship con ID ${userId} eliminada correctamente` }
-
+      return { message: `Friendship con ID ${userId} eliminada correctamente` };
     } catch {
       throw new InternalServerErrorException(
         'Error al intentar eliminar la relación de amistad.',
