@@ -7,11 +7,16 @@ import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { registerUserDTO } from './dto/auth.dto';
 import { OAuth2Client } from 'google-auth-library';
+import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 
 @Injectable()
 export class AuthService {
 
-  constructor(@InjectRepository(User) private usersRepository: Repository<User>, private jwtService: JwtService) { }
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    private jwtService: JwtService,
+    private nodemailerService: NodemailerService
+  ) { }
 
   private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -29,9 +34,24 @@ export class AuthService {
       await this.usersRepository.save(newUser);
 
       const { password, ...userWithoutPassword } = newUser;
+
+      await this.nodemailerService.sendEmail(
+        userWithoutPassword.email,
+        registerData.email,
+        'Bienvenido A snappyFriends!',
+        'Gracias por registrarte en nuestra plataforma. Esperamos que tengas la mejor experiencia ☺'
+      );
+
       return userWithoutPassword;
+
     } else {
       await this.usersRepository.save(registerData);
+
+      await this.nodemailerService.sendEmail(
+        registerData.email,
+        'Bienvenido A snappyFriends!',
+        'Gracias por registrarte en nuestra plataforma. Esperamos que tengas la mejor experiencia ☺'
+      );
 
       return registerData;
     }
