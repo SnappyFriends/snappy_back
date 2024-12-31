@@ -81,6 +81,26 @@ export class StoriesService {
     };
   }
 
+  async findByUser(id:string) {
+    const userFound = await this.usersRepository.findOne({ where: { id } });
+    if(!userFound) throw new NotFoundException('User not found.');
+
+    const stories = await this.storiesRepository.find({ 
+      where: { user: { id } },
+      relations: ['user']
+    })
+
+    return stories.map(story => ({
+      ...story,
+      user: {
+        userId: story.user.id,
+        username: story.user.username,
+        fullname: story.user.fullname,
+        profile_image: story.user.profile_image,
+      },
+    }));
+  }
+
   async remove(id: string) {
     const storyFound = await this.storiesRepository.findOne({ where: { story_id: id } });
     if (!storyFound) throw new NotFoundException('Story not found.');
