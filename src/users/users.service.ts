@@ -13,10 +13,10 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Interest)
     private interestsRepository: Repository<Interest>,
-  ) { }
+  ) {}
 
   async getUsers(filters: GetUsersDTO) {
-    const { page = 1, limit = 5, interests, username } = filters;
+    const { page = 1, limit = 10, interests, username } = filters;
 
     const queryBuilder = this.usersRepository
       .createQueryBuilder('user')
@@ -32,7 +32,10 @@ export class UsersService {
       });
     }
 
-    if (username) queryBuilder.andWhere('user.username LIKE :username', { username: `%${username}%` });
+    if (username)
+      queryBuilder.andWhere('user.username LIKE :username', {
+        username: `%${username}%`,
+      });
 
     const usersFound = await queryBuilder.getMany();
 
@@ -126,12 +129,25 @@ export class UsersService {
       where: { id: userId },
       relations: ['interests'],
     });
-    if (!user) throw new NotFoundException(`No se encontró el usuario con el ID ${userId}`);
+    if (!user)
+      throw new NotFoundException(
+        `No se encontró el usuario con el ID ${userId}`,
+      );
 
-    const interest = await this.interestsRepository.findOne({ where: { interest_id: interestId } });
-    if (!interest) throw new NotFoundException(`No se encontró el interés con el ID ${interestId}`);
+    const interest = await this.interestsRepository.findOne({
+      where: { interest_id: interestId },
+    });
+    if (!interest)
+      throw new NotFoundException(
+        `No se encontró el interés con el ID ${interestId}`,
+      );
 
-    if (user.interests.some((existingInterest) => existingInterest.interest_id === interestId)) throw new NotFoundException(`El usuario ya tiene este interés`);
+    if (
+      user.interests.some(
+        (existingInterest) => existingInterest.interest_id === interestId,
+      )
+    )
+      throw new NotFoundException(`El usuario ya tiene este interés`);
 
     user.interests.push(interest);
     await this.usersRepository.save(user);
@@ -148,13 +164,24 @@ export class UsersService {
       where: { id: userId },
       relations: ['interests'],
     });
-    if (!user) throw new NotFoundException(`No se encontró el usuario con el ID ${userId}`);
+    if (!user)
+      throw new NotFoundException(
+        `No se encontró el usuario con el ID ${userId}`,
+      );
 
-    const interest = await this.interestsRepository.findOne({ where: { interest_id: interestId } });
-    if (!interest) throw new NotFoundException(`No se encontró el interés con el ID ${interestId}`);
+    const interest = await this.interestsRepository.findOne({
+      where: { interest_id: interestId },
+    });
+    if (!interest)
+      throw new NotFoundException(
+        `No se encontró el interés con el ID ${interestId}`,
+      );
 
-    const userInterest = user.interests.findIndex((existingInterest) => existingInterest.interest_id === interestId);
-    if (userInterest === -1) throw new NotFoundException(`El usuario no tiene este interés asignado`);
+    const userInterest = user.interests.findIndex(
+      (existingInterest) => existingInterest.interest_id === interestId,
+    );
+    if (userInterest === -1)
+      throw new NotFoundException(`El usuario no tiene este interés asignado`);
 
     user.interests.splice(userInterest, 1);
 

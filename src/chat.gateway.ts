@@ -11,7 +11,6 @@ import {
 import { Socket, Server } from 'socket.io';
 import { BadRequestException, Logger } from '@nestjs/common';
 import * as dotenv from 'dotenv';
-import { AuthGuard } from './auth/guards/auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { MessagesService } from './messages/messages.service';
 import { GroupMembersService } from './chat-groups/group-members/group-members.service';
@@ -24,10 +23,12 @@ import {
 import { NotificationsService } from './notifications/notifications.service';
 
 dotenv.config({ path: './.env' });
+
 @WebSocketGateway({
-  namespace: 'chats',
+  namespace: 'chat',
   cors: {
-    origin: process.env.DOMAIN_FRONT,
+    origin: `${process.env.DOMAIN_FRONT}`,
+    credentials: true,
   },
 })
 export class ChatGateway
@@ -39,13 +40,14 @@ export class ChatGateway
   private logger: Logger = new Logger(ChatGateway.name);
 
   constructor(
-    private jwtAuthService: AuthGuard,
     private jwtService: JwtService,
     private groupMemberService: GroupMembersService,
     private messageService: MessagesService,
     private usersService: UsersService,
     private notificationsService: NotificationsService,
-  ) {}
+  ) {
+    console.log('ChatGateway constructor');
+  }
 
   afterInit() {
     this.logger.log('🚀 Socket Server Initialized');
@@ -53,17 +55,17 @@ export class ChatGateway
 
   async handleConnection(client: Socket) {
     console.log('🟢 Cliente conectado:', client.id);
-    client.data = {};
 
-    const token = client.handshake.auth.token;
-    console.log('Token recibido en handshake:', token);
+    const cookies = client.handshake.headers.cookie;
+    const token = this.getCookieValue(cookies, 'auth_token');
 
     if (!token) {
-      this.logger.warn('Token no proporcionado');
-      client.emit('error', 'Token no proporcionado');
+      this.logger.warn('Cookie "auth_token" no proporcionada');
+      client.emit('error', 'Cookie "auth_token" no proporcionada');
       client.disconnect();
       return;
     }
+
     try {
       const decoded = this.jwtService.verify(token);
       console.log('Token decodificado:', decoded);
@@ -90,50 +92,14 @@ export class ChatGateway
 
       this.logger.log(`User connected: ${client.id}`);
     } catch (error) {
-      this.logger.error('Token inválido', error);
-      client.emit('error', 'Token inválido');
+      this.logger.error('Token inválido o expirado', error.message);
+      client.emit('error', 'Token inválido o expirado');
       client.disconnect();
     }
   }
 
   async handleDisconnect(client: Socket) {
     console.log('🔴 Cliente desconectado:', client.id);
-    try {
-      const token = client.handshake.auth.token;
-
-      if (!token) {
-        this.logger.warn(`Cliente desconectado sin token: ${client.id}`);
-        return;
-      }
-
-      const context = {
-        switchToWs: () => ({
-          getClient: () => client,
-          getData: () => ({ token }),
-        }),
-        getHandler: () => null,
-        getClass: () => null,
-        getType: () => 'ws',
-      };
-
-      const isValid = await this.jwtAuthService.canActivate(context as any);
-
-      if (!isValid) {
-        this.logger.warn(`Token inválido en desconexión: ${client.id}`);
-        return;
-      }
-
-      const decoded = this.jwtService.decode(token) as Record<string, any>;
-
-      this.logger.log(
-        `Cliente desconectado: ${client.id} - Usuario: ${decoded?.email || 'desconocido'}`,
-      );
-    } catch (error) {
-      this.logger.error(
-        `Error en handleDisconnect: ${client.id}`,
-        error.message,
-      );
-    }
   }
 
   @SubscribeMessage('message')
@@ -142,6 +108,8 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ) {
     try {
+      console.log('Datos recibidos en el Gateway:', payload);
+
       if (!payload.chatId && !payload.groupId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
       }
@@ -149,9 +117,15 @@ export class ChatGateway
       const message = await this.messageService.createMessage(payload);
 
       if (payload.groupId) {
+        console.log(`Emitiendo mensaje al grupo ${payload.groupId}`);
         this.server.to(payload.groupId).emit('receiveGroupMessage', message);
       } else if (payload.chatId) {
+        console.log(
+          `Emitiendo mensaje privado a los receptores: ${payload.messageReceivers}`,
+        );
+
         payload.messageReceivers.forEach((receiverId) => {
+          console.log(`Emitiendo mensaje a ${receiverId}`);
           this.server.to(receiverId).emit('receivePrivateMessage', message);
 
           this.notificationsService
@@ -161,21 +135,27 @@ export class ChatGateway
               user_id: receiverId,
             })
             .then((notification) => {
+              console.log(`Notificación enviada a ${receiverId}`);
               this.server.to(receiverId).emit('messageNotification', {
                 notification,
                 message,
               });
             });
         });
-
-        this.server
-          .to(payload.sender_id)
-          .emit('receivePrivateMessage', message);
       }
     } catch (error) {
       console.error('Error al manejar el mensaje:', error.message);
       client.emit('error', error.message);
     }
+  }
+
+  @SubscribeMessage('join_chat')
+  handleJoinChat(
+    @MessageBody() chatId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log(`Cliente ${client.id} se unió a la sala ${chatId}`);
+    client.join(chatId);
   }
 
   @SubscribeMessage('notification')
@@ -260,5 +240,17 @@ export class ChatGateway
       console.error('Error al manejar la notificación:', error.message);
       client.emit('error', error.message);
     }
+  }
+
+  private getCookieValue(cookies: string | undefined, cookieName: string) {
+    if (!cookies) {
+      console.log('No cookies found');
+      return null;
+    }
+    const match = cookies.match(new RegExp(`(^| )${cookieName}=([^;]+)`));
+    if (!match) {
+      console.log(`Cookie ${cookieName} no encontrada`);
+    }
+    return match ? match[2] : null;
   }
 }
