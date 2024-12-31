@@ -16,7 +16,7 @@ export class SocketIOAdapter extends IoAdapter {
     const appPort = parseInt(this.configService.get('APP_PORT'));
 
     const cors = {
-      origin: [`http://localhost:${appPort}`],
+      origin: '*',
     };
 
     this.logger.log(
