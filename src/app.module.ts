@@ -10,7 +10,6 @@ import { ReportsModule } from './reports/reports.module';
 import { PrivacyModule } from './privacy/privacy.module';
 import { MessagesModule } from './messages/messages.module';
 import { InterestsModule } from './interests/interests.module';
-import { FriendshipsModule } from './friendships/friendships.module';
 import { PollResponseModule } from './poll-response/poll-response.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
@@ -25,6 +24,7 @@ import { FilesModule } from './files/files.module';
 import { GroupMembersModule } from './chat-groups/group-members/group-members.module';
 import { ChatModule } from './chat-groups/chat.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
+import { FriendshipsModule } from './friendships/friendships.module';
 
 @Module({
   imports: [
