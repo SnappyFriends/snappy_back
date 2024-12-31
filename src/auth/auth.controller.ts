@@ -1,6 +1,6 @@
 import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginUserDTO, registerUserDTO } from './dto/auth.dto';
+import { LoginUserDTO, registerGoogleDTO, registerUserDTO } from './dto/auth.dto';
 import { ApiBadRequestResponse, ApiConflictResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
@@ -90,5 +90,10 @@ export class AuthController {
   @Post('google')
   async googleLogin(@Body('token') googleToken: string) {
     return this.authService.googleLogin(googleToken);
+  }
+
+  @Post('google/register')
+  async completeGoogleRegistration(@Body() userData: registerGoogleDTO) {
+    return this.authService.completeGoogleRegistration(userData);
   }
 }
