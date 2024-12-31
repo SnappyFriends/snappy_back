@@ -17,6 +17,7 @@ export class SocketIOAdapter extends IoAdapter {
       origin: process.env.DOMAIN_FRONT,
       methods: ['GET', 'POST'],
       allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
     };
 
     this.logger.log(
