@@ -2,15 +2,14 @@ import { User } from "src/users/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { v4 as uuid } from "uuid";
 
-@Entity({
-    name: 'Stories'
-})
+@Entity({ name: 'Stories' })
 export class Stories {
     @PrimaryGeneratedColumn('uuid')
     story_id: string = uuid();
 
     @ManyToOne(() => User, (user) => user.stories, {
-        nullable: false
+        nullable: false,
+        onDelete: 'CASCADE'
     })
     user: User;
 
