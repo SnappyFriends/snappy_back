@@ -125,6 +125,11 @@ export class StoriesController {
     return this.storiesService.findOne(id);
   }
 
+  @Get('user/:id')
+  findByUser(@Param('id', ParseUUIDPipe) id: string) {
+    return this.storiesService.findByUser(id);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Story' })
   @ApiOkResponse({

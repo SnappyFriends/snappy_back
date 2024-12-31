@@ -59,7 +59,10 @@ export class CommentsService {
       const CommentsObject = comments.map((comment) => ({
         ...comment,
         user: {
-          id: comment.user.id
+          id: comment.user.id,
+          username: comment.user.username,
+          profile_image: comment.user.profile_image,
+          user_type: comment.user.user_type
         },
         postComment: {
           id: comment.postComment.post_id
@@ -87,7 +90,10 @@ export class CommentsService {
         const CommentObject = {
           ...getComment,
           user: {
-            id: getComment.user.id
+            id: getComment.user.id,
+            username: getComment.user.username,
+            profile_image: getComment.user.profile_image,
+            user_type: getComment.user.user_type
           },
           postComment: {
             id: getComment.postComment.post_id

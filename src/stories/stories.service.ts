@@ -55,7 +55,9 @@ export class StoriesService {
       user: { 
         userId: story.user.id,
         username: story.user.username,
-        fullname: story.user.fullname
+        fullname: story.user.fullname,
+        profile_image: story.user.profile_image,
+        user_type: story.user.user_type,
       },
     }));
 
@@ -74,9 +76,32 @@ export class StoriesService {
       user: {
         userId: storyFound.user.id,
         username: storyFound.user.username,
-        fullname: storyFound.user.fullname
+        fullname: storyFound.user.fullname,
+        profile_image: storyFound.user.profile_image,
+        user_type: storyFound.user.user_type,
       },
     };
+  }
+
+  async findByUser(id:string) {
+    const userFound = await this.usersRepository.findOne({ where: { id } });
+    if(!userFound) throw new NotFoundException('User not found.');
+
+    const stories = await this.storiesRepository.find({ 
+      where: { user: { id } },
+      relations: ['user']
+    })
+
+    return stories.map(story => ({
+      ...story,
+      user: {
+        userId: story.user.id,
+        username: story.user.username,
+        fullname: story.user.fullname,
+        profile_image: story.user.profile_image,
+        user_type: story.user.user_type,
+      },
+    }));
   }
 
   async remove(id: string) {

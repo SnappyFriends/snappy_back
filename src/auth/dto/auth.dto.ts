@@ -74,6 +74,34 @@ export class registerUserDTO {
     description: string;
 }
 
+export class registerGoogleDTO {
+    @IsEmail()
+    email: string;
+
+    @IsNotEmpty()
+    @IsString()
+    fullname: string;
+
+    @IsNotEmpty()
+    @IsString()
+    username: string;
+
+    @IsNotEmpty()
+    @IsString()
+    genre: string;
+
+    @IsDateString()
+    birthdate: string;
+
+    @IsOptional()
+    @IsString()
+    profile_image: string;
+
+    @IsOptional()
+    @IsString()
+    googleId: string;
+}
+
 export class LoginUserDTO extends PickType(registerUserDTO, [
     'email',
     'password']) { }

@@ -5,13 +5,18 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { registerUserDTO } from './dto/auth.dto';
+import { registerGoogleDTO, registerUserDTO } from './dto/auth.dto';
 import { OAuth2Client } from 'google-auth-library';
+import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 
 @Injectable()
 export class AuthService {
 
-  constructor(@InjectRepository(User) private usersRepository: Repository<User>, private jwtService: JwtService) { }
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    private jwtService: JwtService,
+    private nodemailerService: NodemailerService
+  ) { }
 
   private googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -29,9 +34,24 @@ export class AuthService {
       await this.usersRepository.save(newUser);
 
       const { password, ...userWithoutPassword } = newUser;
+
+      await this.nodemailerService.sendEmail(
+        userWithoutPassword.email,
+        registerData.email,
+        'Bienvenido A snappyFriends!',
+        'Gracias por registrarte en nuestra plataforma. Esperamos que tengas la mejor experiencia ☺'
+      );
+
       return userWithoutPassword;
+
     } else {
       await this.usersRepository.save(registerData);
+
+      await this.nodemailerService.sendEmail(
+        registerData.email,
+        'Bienvenido A snappyFriends!',
+        'Gracias por registrarte en nuestra plataforma. Esperamos que tengas la mejor experiencia ☺'
+      );
 
       return registerData;
     }
@@ -83,26 +103,37 @@ export class AuthService {
 
     const { email, name, sub: googleId, picture } = payload;
 
-    let user = await this.usersRepository.findOneBy({ email });
+    const user = await this.usersRepository.findOneBy({ email });
 
-    if (!user) {
-      user = this.usersRepository.create({
-        fullname: name,
-        email,
-        username: email.split('@')[0],
-        genre: 'unknown',
-        birthdate: '1900-01-01',
-        profile_image: picture,
-        googleId,
-      });
+    if (user) {
+      const jwtPayload = {
+        id: user.id,
+        email: user.email,
+        user_type: user.user_type,
+      };
 
-      await this.usersRepository.save(user);
+      const token = this.jwtService.sign(jwtPayload);
+
+      return { userId: user.id, token, user_type: user.user_type };
     }
+
+    return { email, googleId, picture, fullname: name };
+  }
+
+  async completeGoogleRegistration(userData: registerGoogleDTO) {
+    const existingEmail = await this.usersRepository.findOneBy({ email: userData.email });
+    if (existingEmail) throw new BadRequestException('El email ya está registrado.');
+
+    const existingUser = await this.usersRepository.findOneBy({ username: userData.username });
+    if (existingUser) throw new BadRequestException('El usuario ya está registrado.');
+
+    const user = this.usersRepository.create(userData);
+    await this.usersRepository.save(user);
 
     const jwtPayload = {
       id: user.id,
       email: user.email,
-      user_type: user.user_type || 'standard',
+      user_type: user.user_type,
     };
 
     const token = this.jwtService.sign(jwtPayload);
