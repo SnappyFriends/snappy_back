@@ -55,7 +55,8 @@ export class StoriesService {
       user: { 
         userId: story.user.id,
         username: story.user.username,
-        fullname: story.user.fullname
+        fullname: story.user.fullname,
+        profile_image: story.user.profile_image,
       },
     }));
 
@@ -74,7 +75,8 @@ export class StoriesService {
       user: {
         userId: storyFound.user.id,
         username: storyFound.user.username,
-        fullname: storyFound.user.fullname
+        fullname: storyFound.user.fullname,
+        profile_image: storyFound.user.profile_image,
       },
     };
   }
