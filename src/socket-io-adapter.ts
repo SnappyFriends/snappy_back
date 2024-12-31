@@ -13,10 +13,10 @@ export class SocketIOAdapter extends IoAdapter {
   }
 
   createIOServer(port: number, options?: ServerOptions) {
-    const appPort = parseInt(this.configService.get('APP_PORT'));
-
     const cors = {
-      origin: '*',
+      origin: process.env.DOMAIN_FRONT,
+      methods: ['GET', 'POST'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
     };
 
     this.logger.log(
