@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { User } from 'src/users/entities/user.entity'; // Asegúrate de importar la entidad User
+import { User } from 'src/users/entities/user.entity';
 
 export enum NotificationType {
   FRIEND_REQUEST = 'friend_request',

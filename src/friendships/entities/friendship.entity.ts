@@ -9,12 +9,13 @@ import {
 import { User } from '../../users/entities/user.entity';
 
 export enum FriendshipStatus {
-  PENDING = 'pending',
-  ACCEPTED = 'accepted',
-  DELETED = 'deleted',
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  DELETED = 'DELETED',
 }
 
-@Entity()
+@Entity('friendships')
 export class Friendship {
   @PrimaryGeneratedColumn('uuid')
   id: string;
