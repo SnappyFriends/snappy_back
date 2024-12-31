@@ -56,14 +56,16 @@ export class PostsService {
         user: {
           id: post.user.id,
           username: post.user.username,
-          profile_image: post.user.profile_image
+          profile_image: post.user.profile_image,
+          user_type: post.user.user_type
         },
         reactions: post.reactions.map((reaction) => ({
           id: reaction.reaction_id,
           user: {
             id: reaction.user.id,
             username: reaction.user.username,
-            profile_image: reaction.user.profile_image
+            profile_image: reaction.user.profile_image,
+            user_type: post.user.user_type
           }
         })),
         comments: post.comments.map((comment) => ({
@@ -72,7 +74,8 @@ export class PostsService {
           user: {
             id: comment.user.id,
             username: comment.user.username,
-            profile_image: comment.user.profile_image
+            profile_image: comment.user.profile_image,
+            user_type: post.user.user_type
           },
         }))
       }));
@@ -98,23 +101,27 @@ export class PostsService {
         user: {
           id: post.user.id,
           username: post.user.username,
-          profile_image: post.user.profile_image
+          profile_image: post.user.profile_image,
+          user_type: post.user.user_type
         },
         reactions: post.reactions.map((reaction) => ({
           id: reaction.reaction_id,
           user: {
             id: reaction.user.id,
             username: reaction.user.username,
-            profile_image: reaction.user.profile_image
+            profile_image: reaction.user.profile_image,
+            user_type: reaction.user.user_type
           }
         })),
         comments: post.comments.map((comment) => ({
           id: comment.comment_id,
           content: comment.content,
+          comment_date: comment.comment_date,
           user: {
             id: comment.user.id,
             username: comment.user.username,
-            profile_image: comment.user.profile_image
+            profile_image: comment.user.profile_image,
+            user_type: comment.user.user_type
           },
         }))
       };

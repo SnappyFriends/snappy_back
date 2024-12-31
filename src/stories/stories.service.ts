@@ -57,6 +57,7 @@ export class StoriesService {
         username: story.user.username,
         fullname: story.user.fullname,
         profile_image: story.user.profile_image,
+        user_type: story.user.user_type,
       },
     }));
 
@@ -77,6 +78,7 @@ export class StoriesService {
         username: storyFound.user.username,
         fullname: storyFound.user.fullname,
         profile_image: storyFound.user.profile_image,
+        user_type: storyFound.user.user_type,
       },
     };
   }
@@ -97,6 +99,7 @@ export class StoriesService {
         username: story.user.username,
         fullname: story.user.fullname,
         profile_image: story.user.profile_image,
+        user_type: story.user.user_type,
       },
     }));
   }
