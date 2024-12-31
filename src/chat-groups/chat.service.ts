@@ -57,10 +57,27 @@ export class ChatService {
     return userIds.sort().join('/');
   }
 
-  async findAllMessageByChatId(userId: string): Promise<Chat[]> {
-    return this.chatRepository.find({
-      where: { participants: { id: userId } },
+  async findAllMessageByChatId(chatId: string) {
+    const chatFound = await this.chatRepository.findOne({
+      where: { id: chatId },
+      relations: ['messages', 'messages.sender_id'],
     });
+
+    const chatMaped = {
+      ...chatFound,
+      messages: chatFound.messages.map((message) => {
+        return {
+          content: message.content,
+          send_date: message.send_date,
+          sender_id: message.sender_id.id,
+          username: message.sender_id.username,
+          profile_image: message.sender_id.profile_image,
+          user_type: message.sender_id.user_type,
+        };
+      }),
+    };
+
+    return chatMaped;
   }
 
   async findAllChatsByUserId(sender_id: string, receiver_id: string) {

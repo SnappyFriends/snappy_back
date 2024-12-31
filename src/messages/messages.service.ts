@@ -14,6 +14,7 @@ import {
   statusMessage,
 } from './entities/message_Receiver.entity';
 import { Group_Members } from 'src/chat-groups/entities/groupMembers.entity';
+import { Chat } from 'src/chat-groups/entities/chat.entity';
 
 @Injectable()
 export class MessagesService {
@@ -25,12 +26,15 @@ export class MessagesService {
     private readonly messageReceiverRepository: Repository<Message_Receiver>,
     @InjectRepository(Group_Members)
     private readonly groupMembersRepository: Repository<Group_Members>,
-  ) { }
+    @InjectRepository(Chat)
+    private readonly chatRepository: Repository<Chat>,
+  ) {}
 
   async createMessage(createMessageDto: CreateMessageDto) {
     const { sender_id, messageReceivers, chatId, groupId, ...messageData } =
       createMessageDto;
 
+    console.log('Este es el chatId: ', chatId);
     if (!chatId && !groupId) {
       throw new BadRequestException('Debe especificar un chatId o groupId');
     }
@@ -54,12 +58,17 @@ export class MessagesService {
       }
     }
 
+    const chatFound = await this.chatRepository.findOne({
+      where: { id: chatId },
+    });
+    console.log('Este es el chatFound:', chatFound);
+
     const newMsg = this.messageRepository.create({
       content: messageData.content,
       type: messageData.type,
       sender_id: userFound,
       is_anonymous: !!messageData.is_anonymous,
-      chatId: chatId || null,
+      chat: chatFound,
       groupId: groupId || null,
     } as DeepPartial<Message>);
 
@@ -119,10 +128,15 @@ export class MessagesService {
     }
 
     const responseObject = {
+      username: savedMsg.sender_id.username,
+      sender_id: savedMsg.sender_id.id,
+      user_type: savedMsg.sender_id.user_type,
+      profile_image: savedMsg.sender_id.profile_image,
+      message_id: savedMsg.message_id,
       content: savedMsg.content,
+      send_date: savedMsg.send_date,
       type: savedMsg.type,
       is_anonymous: savedMsg.is_anonymous,
-      sender_id: savedMsg.sender_id.id,
     };
 
     return responseObject;
@@ -235,7 +249,6 @@ export class MessagesService {
       };
 
       return savedMessage;
-
     } catch {
       throw new NotFoundException('No pudo actualizar el mensaje');
     }
@@ -267,4 +280,17 @@ export class MessagesService {
       throw new BadRequestException('No se pudo eliminar mensaje');
     }
   }
+
+  /*   async getChatMessages(chatID: string) {
+    const chatmessages = await this.chatRepository.find({
+      where: { id: chatID },
+      relations: ['messages'],
+    });
+
+    if (!chatmessages) {
+      throw new NotFoundException(`El chat con el id ${chatID} no existe.`);
+    }
+
+    return chatmessages;
+  } */
 }

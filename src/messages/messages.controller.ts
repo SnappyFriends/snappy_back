@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -176,7 +177,14 @@ export class MessagesController {
       },
     },
   })
-  deleteMessage(@Param('id') id: string): Promise<{ message: string }> {
+  deleteMessage(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<{ message: string }> {
     return this.messagesService.deleteMessage(id);
   }
+
+  /*   @Get('chat/:id')
+  getChatMessages(@Param('id', ParseUUIDPipe) id: string) {
+    return this.messagesService.getChatMessages(id);
+  } */
 }

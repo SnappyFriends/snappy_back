@@ -10,6 +10,7 @@ import {
 import { MessageType } from '../dto/create-message.dto';
 import { User } from 'src/users/entities/user.entity';
 import { Message_Receiver } from './message_Receiver.entity';
+import { Chat } from 'src/chat-groups/entities/chat.entity';
 
 @Entity({
   name: 'Messages',
@@ -47,4 +48,7 @@ export class Message {
     (messageReceiver) => messageReceiver.message_id,
   )
   messageReceivers: Message_Receiver[];
+
+  @ManyToOne(() => Chat, (chat) => chat.messages)
+  chat: Chat;
 }

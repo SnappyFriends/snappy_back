@@ -24,6 +24,7 @@ import { GroupMembersModule } from './chat-groups/group-members/group-members.mo
 import { ChatModule } from './chat-groups/chat.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import { ChatGatewayModule } from './chat.gateway.module';
+import { FriendshipsModule } from './friendships/friendships.module';
 
 @Module({
   imports: [

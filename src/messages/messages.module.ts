@@ -7,10 +7,17 @@ import { User } from 'src/users/entities/user.entity';
 import { Message } from './entities/message.entity';
 import { Message_Receiver } from './entities/message_Receiver.entity';
 import { Group_Members } from 'src/chat-groups/entities/groupMembers.entity';
+import { Chat } from 'src/chat-groups/entities/chat.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Message, User, Message_Receiver, Group_Members]),
+    TypeOrmModule.forFeature([
+      Message,
+      User,
+      Message_Receiver,
+      Group_Members,
+      Chat,
+    ]),
   ],
   controllers: [MessagesController],
   providers: [MessagesService],
