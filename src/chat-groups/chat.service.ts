@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { In, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { Message } from 'src/messages/entities/message.entity';
 
 @Injectable()
 export class ChatService {
@@ -14,6 +15,7 @@ export class ChatService {
     @InjectRepository(Chat)
     private chatRepository: Repository<Chat>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Message) private messageRepository: Repository<Message>,
   ) {}
 
   async createChat(userIds: string[]): Promise<Chat> {
@@ -28,6 +30,14 @@ export class ChatService {
     }
 
     const chatKey = this.generateChatKey(userIds);
+
+    const existingChat = await this.chatRepository.findOne({
+      where: { key: chatKey },
+    });
+
+    if (existingChat) {
+      throw new InternalServerErrorException('El chat ya existe.');
+    }
 
     const newChat = this.chatRepository.create({
       key: chatKey,
@@ -44,6 +54,48 @@ export class ChatService {
   }
 
   private generateChatKey(userIds: string[]): string {
-    return userIds.sort().join('-');
+    return userIds.sort().join('/');
+  }
+
+  async findAllMessageByChatId(chatId: string) {
+    const chatFound = await this.chatRepository.findOne({
+      where: { id: chatId },
+      relations: ['messages', 'messages.sender_id'],
+    });
+
+    const chatMaped = {
+      ...chatFound,
+      messages: chatFound.messages.map((message) => {
+        return {
+          content: message.content,
+          send_date: message.send_date,
+          sender_id: message.sender_id.id,
+          username: message.sender_id.username,
+          profile_image: message.sender_id.profile_image,
+          user_type: message.sender_id.user_type,
+        };
+      }),
+    };
+
+    return chatMaped;
+  }
+
+  async findAllChatsByUserId(sender_id: string, receiver_id: string) {
+    if (!sender_id || !receiver_id) {
+      throw new NotFoundException('Uno de los usuarios ingresados no existe.');
+    }
+
+    const chatKey = [sender_id, receiver_id].sort().join('/');
+    const chat = await this.chatRepository.findOne({
+      where: { key: chatKey },
+    });
+
+    if (!chat) {
+      throw new NotFoundException(
+        'No se encontraron chats entre estos dos usuarios.',
+      );
+    }
+
+    return chat;
   }
 }

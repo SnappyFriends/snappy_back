@@ -18,12 +18,12 @@ import { PurchasesModule } from './purchases/purchases.module';
 import { JwtModule } from '@nestjs/jwt';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ChatGroupsModule } from './chat-groups/chat-groups.module';
-import { ChatGateway } from './chat.gateway';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { FilesModule } from './files/files.module';
 import { GroupMembersModule } from './chat-groups/group-members/group-members.module';
 import { ChatModule } from './chat-groups/chat.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
+import { ChatGatewayModule } from './chat.gateway.module';
 import { FriendshipsModule } from './friendships/friendships.module';
 
 @Module({
@@ -59,8 +59,9 @@ import { FriendshipsModule } from './friendships/friendships.module';
       signOptions: { expiresIn: '12h' },
     }),
     NodemailerModule,
+    ChatGatewayModule,
   ],
   controllers: [],
-  providers: [ChatGateway, AuthGuard],
+  providers: [AuthGuard],
 })
-export class AppModule { }
+export class AppModule {}
