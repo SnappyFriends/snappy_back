@@ -27,7 +27,7 @@ dotenv.config({ path: './.env' });
 @WebSocketGateway({
   namespace: 'chat',
   cors: {
-    origin: `${process.env.DOMAIN_FRONT}`,
+    origin: 'https://snappyfriends.vercel.app',
     credentials: true,
   },
 })
