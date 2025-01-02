@@ -15,7 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MessagesService } from './messages/messages.service';
 import { GroupMembersService } from './chat-groups/group-members/group-members.service';
 import { CreateMessageDto } from './messages/dto/create-message.dto';
-import { UsersService } from './users/users.service';
+import { UsersOnlineService, UsersService } from './users/users.service';
 import {
   NotificationType,
   NotificationStatus,
@@ -46,6 +46,7 @@ export class ChatGateway
     private messageService: MessagesService,
     private usersService: UsersService,
     private notificationsService: NotificationsService,
+    private usersOnlineService: UsersOnlineService,
   ) {
     console.log('ChatGateway constructor');
   }
@@ -72,10 +73,11 @@ export class ChatGateway
     }
 
     try {
-      const decoded = this.jwtService.verify(token);
+      const decoded = this.jwtService.verify(token as string);
       console.log('Token decodificado:', decoded);
 
       client.join(decoded.id);
+      this.usersOnlineService.addUser(client.id, decoded);
       console.log(`Usuario ${decoded.id} unido a su sala personal`);
 
       const userGroups = await this.groupMemberService.findGroupsByUserId(
@@ -105,6 +107,7 @@ export class ChatGateway
 
   async handleDisconnect(client: Socket) {
     console.log('🔴 Cliente desconectado:', client.id);
+    this.usersOnlineService.removeUser(client.id);
   }
 
   @SubscribeMessage('message')
@@ -245,6 +248,11 @@ export class ChatGateway
       console.error('Error al manejar la notificación:', error.message);
       client.emit('error', error.message);
     }
+  }
+
+  @SubscribeMessage('getConnectedUsers')
+  handleGetConnectedUsers() {
+    return this.usersOnlineService.getAllUsers();
   }
 
   private getCookieValue(cookies: string | undefined, cookieName: string) {
