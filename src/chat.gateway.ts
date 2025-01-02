@@ -59,7 +59,7 @@ export class ChatGateway
     console.log('Headers:', client.handshake.headers);
 
     const cookies = client.handshake.headers.cookie;
-    const token = this.getCookieValue(cookies, 'auth_token');
+    const token = client.handshake.query.auth_token;
 
     console.log('Cookies:', cookies);
     console.log('Token:', token);
@@ -72,7 +72,7 @@ export class ChatGateway
     }
 
     try {
-      const decoded = this.jwtService.verify(token);
+      const decoded = this.jwtService.verify(token as string);
       console.log('Token decodificado:', decoded);
 
       client.join(decoded.id);
