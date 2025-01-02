@@ -59,7 +59,7 @@ export class ChatGateway
     console.log('Headers:', client.handshake.headers);
 
     const cookies = client.handshake.headers.cookie;
-    const token = client.handshake.query.auth_token;
+    const token = client.handshake.query.token;
 
     console.log('Cookies:', cookies);
     console.log('Token:', token);
