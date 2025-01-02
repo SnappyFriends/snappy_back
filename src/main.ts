@@ -21,7 +21,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'https://snappyfriends.vercel.app',
+    origin: `${process.env.DOMAIN_FRONT}` || '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
