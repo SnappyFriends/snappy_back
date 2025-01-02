@@ -14,7 +14,7 @@ export class SocketIOAdapter extends IoAdapter {
 
   createIOServer(port: number, options?: ServerOptions) {
     const cors = {
-      origin: 'https://snappyfriends.vercel.app',
+      origin: `${process.env.DOMAIN_FRONT}`,
       methods: ['GET', 'POST'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
