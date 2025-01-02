@@ -55,9 +55,13 @@ export class ChatGateway
 
   async handleConnection(client: Socket) {
     console.log('🟢 Cliente conectado:', client.id);
+    console.log('Headers:', client.handshake.headers);
 
     const cookies = client.handshake.headers.cookie;
     const token = this.getCookieValue(cookies, 'auth_token');
+
+    console.log('Cookies:', cookies);
+    console.log('Token:', token);
 
     if (!token) {
       this.logger.warn('Cookie "auth_token" no proporcionada');
