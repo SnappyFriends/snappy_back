@@ -30,6 +30,7 @@ dotenv.config({ path: './.env' });
     origin: `${process.env.DOMAIN_FRONT}`,
     credentials: true,
   },
+  transports: ['websocket'],
 })
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
