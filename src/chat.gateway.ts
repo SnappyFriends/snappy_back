@@ -251,8 +251,16 @@ export class ChatGateway
   }
 
   @SubscribeMessage('getConnectedUsers')
-  handleGetConnectedUsers() {
-    return this.usersOnlineService.getAllUsers();
+  handleGetConnectedUsers(@ConnectedSocket() client: Socket) {
+    const onlineUsers = this.usersOnlineService.getAllUsers();
+
+    // Opcional: enviar la lista solo al cliente solicitante
+    client.emit('onlineUsers', onlineUsers);
+
+    // Si quieres emitir a todos los clientes, usa:
+    this.server.emit('onlineUsers', onlineUsers);
+
+    return onlineUsers; // Devuelve los usuarios si lo necesitas en respuesta directa
   }
 
   private getCookieValue(cookies: string | undefined, cookieName: string) {

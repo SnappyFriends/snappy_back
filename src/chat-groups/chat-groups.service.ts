@@ -21,7 +21,7 @@ export class ChatGroupsService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(createChatGroupDto) {
+  async create(createChatGroupDto: CreateChatGroupDto) {
     const { creator_id, name } = createChatGroupDto;
 
     const findCreator = await this.usersRepository.findOne({
