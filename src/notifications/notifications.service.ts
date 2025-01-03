@@ -12,27 +12,22 @@ import {
   NotificationStatus,
 } from './entities/notification.entity';
 import { Repository } from 'typeorm';
-import { UsersService } from '../users/users.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class NotificationsService {
   constructor(
-    @InjectRepository(Notification)
-    private notificationRepository: Repository<Notification>,
-    private usersService: UsersService,
-  ) {}
+    @InjectRepository(Notification) private notificationRepository: Repository<Notification>,
+    @InjectRepository(User) private usersRepository: Repository<User>,
+  ) { }
 
   async create(
     createNotificationDto: CreateNotificationDto,
   ): Promise<Notification> {
     const { user_id, content, type } = createNotificationDto;
 
-    const user = await this.usersService.getUserById(user_id);
-    if (!user) {
-      throw new NotFoundException(
-        `El usuario con el id ${user_id} no fue encontrado.`,
-      );
-    }
+    const user = await this.usersRepository.findOne({ where: { id: user_id } });
+    if (!user) throw new NotFoundException(`El usuario con el id ${user_id} no fue encontrado.`,);
 
     const newNotification = this.notificationRepository.create({
       content,
@@ -92,6 +87,17 @@ export class NotificationsService {
         'Error inesperado al procesar la notificación.',
       );
     }
+  }
+
+  async findByUser(id: string) {
+    const userFound = await this.usersRepository.findOne({ where: { id } });
+    if (!userFound) throw new NotFoundException(`Usuario con id ${id} no encontrado.`);
+
+    const notifications = await this.notificationRepository.find({
+      where: { user: { id: userFound.id } }
+    });
+
+    return notifications;
   }
 
   async update(
