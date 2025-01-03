@@ -25,6 +25,7 @@ import { Interest } from 'src/interests/entities/interests.entity';
 import { Notification } from 'src/notifications/entities/notification.entity';
 import { GroupJoinRequest } from 'src/chat-groups/entities/group-join-request.entity';
 import { Chat } from 'src/chat-groups/entities/chat.entity';
+import { Follow } from 'src/follow/entities/follow.entity';
 
 export enum userType {
   REGULAR = 'regular',
@@ -126,6 +127,12 @@ export class User {
 
   @OneToMany(() => Privacy, (privacy) => privacy.user)
   privacy: Privacy[];
+
+  @OneToMany(() => Follow, (follow) => follow.following)
+  followers: Follow[];
+
+  @OneToMany(() => Follow, (follow) => follow.follower)
+  following: Follow[];
 
   @OneToMany(() => PollResponse, (response) => response.user)
   responses: PollResponse[];

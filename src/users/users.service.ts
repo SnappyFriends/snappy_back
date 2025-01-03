@@ -13,7 +13,7 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Interest)
     private interestsRepository: Repository<Interest>,
-  ) {}
+  ) { }
 
   async getUsers(filters: GetUsersDTO) {
     const { page = 1, limit = 10, interests, username } = filters;
@@ -63,6 +63,8 @@ export class UsersService {
         'reactions',
         'comments',
         'groupMembers',
+        'followers',
+        'following',
       ],
     });
 
@@ -88,6 +90,8 @@ export class UsersService {
         'reactions',
         'comments',
         'groupMembers',
+        'followers',
+        'following',
       ],
     });
 
