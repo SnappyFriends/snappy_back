@@ -198,3 +198,20 @@ export class UsersService {
     };
   }
 }
+
+@Injectable()
+export class UsersOnlineService {
+  private connectedUsers: Map<string, any> = new Map();
+
+  addUser(socketId: string, userData: any) {
+    this.connectedUsers.set(socketId, userData);
+  }
+
+  removeUser(socketId: string) {
+    this.connectedUsers.delete(socketId);
+  }
+
+  getAllUsers() {
+    return Array.from(this.connectedUsers.values());
+  }
+}
