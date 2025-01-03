@@ -7,7 +7,6 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
@@ -122,6 +121,11 @@ export class NotificationsController {
   })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.notificationsService.findOne(id);
+  }
+
+  @Get('/user/:id')
+  findByUser(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notificationsService.findByUser(id);
   }
 
   @Put(':id/mark-as-read')
