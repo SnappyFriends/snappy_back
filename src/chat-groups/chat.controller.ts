@@ -79,6 +79,12 @@ export class ChatController {
     };
   }
 
+  @Get('user-chats/:userId')
+  async getUserChats(@Param('userId') userId: string) {
+    const chats = await this.chatService.getChatsByUserId(userId);
+    return chats; // Devolvemos los chats
+  }
+
   @Get('chat/:id')
   @ApiOperation({ summary: 'Get all Messages by Chat ID' })
   findAllMessageByChatId(@Param('id') id: string) {

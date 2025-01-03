@@ -60,7 +60,7 @@ export class ChatService {
   async findAllMessageByChatId(chatId: string) {
     const chatFound = await this.chatRepository.findOne({
       where: { id: chatId },
-      relations: ['messages', 'messages.sender_id'],
+      relations: ['participants', 'messages', 'messages.sender_id'],
     });
 
     const chatMaped = {
@@ -97,5 +97,19 @@ export class ChatService {
     }
 
     return chat;
+  }
+
+  async getChatsByUserId(userId: string): Promise<Chat[]> {
+    const chats = await this.chatRepository
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.participants', 'participant')
+      .leftJoinAndSelect('chat.messages', 'message')
+      .where(
+        'chat.id IN (SELECT chat_id FROM user_chats WHERE user_id = :userId)',
+        { userId },
+      )
+      .getMany();
+
+    return chats;
   }
 }
