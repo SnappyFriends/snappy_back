@@ -59,7 +59,6 @@ export class UsersSeederService implements OnModuleInit {
             email: superadminEmail,
             password: hashedPassword,
             profile_image: '/no_img.png',
-            location: 'Argentina',
             birthdate: '2000-01-01',
             genre: 'SNAPPY',
             user_type: userType.SUPERADMIN
@@ -81,7 +80,6 @@ export class UsersSeederService implements OnModuleInit {
                 email: element.email,
                 password: element.password,
                 profile_image: element.profile_image,
-                location: element.location,
                 birthdate: element.birthdate,
                 genre: element.genre,
                 interests: interests,

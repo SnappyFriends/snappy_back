@@ -109,11 +109,10 @@ export class User {
   })
   profile_image: string;
 
-  @Column({
-    nullable: false,
-    default: 'no-location',
+  @Column('point', {
+    nullable: true,
   })
-  location: string;
+  location: { latitude: number; longitude: number };
 
   @Column({ nullable: true, unique: true })
   googleId: string;

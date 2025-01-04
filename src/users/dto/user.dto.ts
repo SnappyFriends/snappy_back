@@ -1,8 +1,15 @@
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { registerUserDTO } from 'src/auth/dto/auth.dto';
 
-export class UpdateUserDTO extends PartialType(registerUserDTO) {}
+export class UpdateUserDTO extends PartialType(registerUserDTO) {
+  @IsOptional()
+  @IsNotEmpty()
+  location: {
+    latitude: number;
+    longitude: number;
+  }
+}
 
 export class GetUsersDTO {
   @ApiPropertyOptional({
