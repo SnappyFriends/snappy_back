@@ -207,6 +207,10 @@ export class UsersService {
       throw new NotFoundException('One or both users not found');
     }
 
+    if(!userFound1.location.x || userFound1.location.y || !userFound2.location.x || !userFound2.location.y) {
+      throw new NotFoundException('One or both users do not have location data');
+    }
+
     const distanceInMeters = getDistance(
       { latitude: userFound1.location.x, longitude: userFound1.location.y },
       { latitude: userFound2.location.x, longitude: userFound2.location.y }
