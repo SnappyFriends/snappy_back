@@ -59,11 +59,7 @@ export class ChatGateway
     console.log('🟢 Cliente conectado:', client.id);
     console.log('Headers:', client.handshake.headers);
 
-    const cookies = client.handshake.headers.cookie;
     const token = client.handshake.query.token;
-
-    console.log('Cookies:', cookies);
-    console.log('Token:', token);
 
     if (!token) {
       this.logger.warn('Cookie "auth_token" no proporcionada');
@@ -74,7 +70,6 @@ export class ChatGateway
 
     try {
       const decoded = this.jwtService.verify(token as string);
-      console.log('Token decodificado:', decoded);
 
       client.join(decoded.id);
       this.usersOnlineService.addUser(client.id, decoded);

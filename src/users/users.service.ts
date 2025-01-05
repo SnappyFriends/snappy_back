@@ -208,8 +208,8 @@ export class UsersService {
     }
 
     const distanceInMeters = getDistance(
-      { latitude: userFound1.location.latitude, longitude: userFound1.location.longitude },
-      { latitude: userFound2.location.latitude, longitude: userFound2.location.longitude }
+      { latitude: userFound1.location.x, longitude: userFound1.location.y },
+      { latitude: userFound2.location.x, longitude: userFound2.location.y }
     );
 
     if(distanceInMeters > 1000) {

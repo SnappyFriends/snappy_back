@@ -112,7 +112,7 @@ export class User {
   @Column('point', {
     nullable: true,
   })
-  location: { latitude: number; longitude: number };
+  location: { x: number; y: number };
 
   @Column({ nullable: true, unique: true })
   googleId: string;
