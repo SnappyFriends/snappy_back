@@ -92,7 +92,9 @@ export class UsersService {
         'comments',
         'groupMembers',
         'followers',
+        'followers.follower',
         'following',
+        'following.following',
       ],
     });
 
