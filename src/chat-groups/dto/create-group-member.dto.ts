@@ -33,4 +33,7 @@ export class CreateGroupMemberDto {
   @IsOptional()
   @IsEnum(Role)
   role: Role;
+
+  @IsOptional()
+  creator_id: string;
 }

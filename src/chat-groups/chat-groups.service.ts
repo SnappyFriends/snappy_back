@@ -143,4 +143,13 @@ export class ChatGroupsService {
       throw new BadRequestException('Chat de grupo no encontrado.');
     }
   }
+
+  async getAllMessagesByGroupId(group_id: string) {
+    const groupMessagesFound = await this.chatGroupsRepository.find({
+      where: { group_id },
+      relations: ['groupMembers', 'messages'],
+    });
+
+    return groupMessagesFound;
+  }
 }

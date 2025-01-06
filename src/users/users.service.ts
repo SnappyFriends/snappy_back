@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -202,23 +206,34 @@ export class UsersService {
   }
 
   async getDistanceBetweenUsers(user1: string, user2: string): Promise<string> {
-    const userFound1 = await this.usersRepository.findOne({ where: { id: user1 } });
-    const userFound2 = await this.usersRepository.findOne({ where: { id: user2 } });
+    const userFound1 = await this.usersRepository.findOne({
+      where: { id: user1 },
+    });
+    const userFound2 = await this.usersRepository.findOne({
+      where: { id: user2 },
+    });
 
     if (!userFound1 || !userFound2) {
       throw new NotFoundException('One or both users not found');
     }
 
-    if(!userFound1.location.x || userFound1.location.y || !userFound2.location.x || !userFound2.location.y) {
-      throw new NotFoundException('One or both users do not have location data');
+    if (
+      !userFound1.location.x ||
+      userFound1.location.y ||
+      !userFound2.location.x ||
+      !userFound2.location.y
+    ) {
+      throw new NotFoundException(
+        'One or both users do not have location data',
+      );
     }
 
     const distanceInMeters = getDistance(
       { latitude: userFound1.location.x, longitude: userFound1.location.y },
-      { latitude: userFound2.location.x, longitude: userFound2.location.y }
+      { latitude: userFound2.location.x, longitude: userFound2.location.y },
     );
 
-    if(distanceInMeters > 1000) {
+    if (distanceInMeters > 1000) {
       return `${distanceInMeters / 1000} km`;
     }
 
@@ -231,10 +246,22 @@ export class UsersOnlineService {
   private connectedUsers: Map<string, any> = new Map();
 
   addUser(socketId: string, userData: any) {
-    this.connectedUsers.set(socketId, userData);
+    const isUserAlreadyConnected = Array.from(
+      this.connectedUsers.values(),
+    ).some((user) => user.id === userData.id);
+    if (!isUserAlreadyConnected) {
+      this.connectedUsers.set(socketId, { ...userData, isOnline: true });
+    } else {
+      console.log(`Usuario ${userData.id} ya está conectado`);
+    }
   }
 
   removeUser(socketId: string) {
+    const user = this.connectedUsers.get(socketId);
+    if (user) {
+      user.isOnline = false;
+      this.connectedUsers.set(socketId, user);
+    }
     this.connectedUsers.delete(socketId);
   }
 
