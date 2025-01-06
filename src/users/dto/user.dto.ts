@@ -6,8 +6,8 @@ export class UpdateUserDTO extends PartialType(registerUserDTO) {
   @IsOptional()
   @IsNotEmpty()
   location: {
-    latitude: number;
-    longitude: number;
+    x: number;
+    y: number;
   }
 }
 

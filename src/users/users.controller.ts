@@ -18,6 +18,8 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -343,5 +345,26 @@ export class UsersController {
     @Param('interestId', ParseUUIDPipe) interestId: string,
   ) {
     return this.usersService.removeInterestToUser(userId, interestId);
+  }
+
+  @Get(':user1/distance/:user2')
+  @ApiOperation({ summary: 'Get the distance between two users' })
+  @ApiResponse({
+    status: 200,
+    description: 'The distance in kilometers between two users',
+    schema: {
+      type: 'object',
+      properties: {
+        distance: { type: 'number', description: 'The distance in kilometers' },
+      },
+    },
+  })
+  @ApiParam({ name: 'user1', description: 'UUID of the first user' })
+  @ApiParam({ name: 'user2', description: 'UUID of the second user' })
+  async getDistance(
+    @Param('user1', ParseUUIDPipe) user1: string,
+    @Param('user2', ParseUUIDPipe) user2: string,
+  ) {
+    return this.usersService.getDistanceBetweenUsers(user1, user2);
   }
 }

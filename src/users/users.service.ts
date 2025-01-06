@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Interest } from 'src/interests/entities/interests.entity';
+import { getDistance } from 'geolib';
 
 @Injectable()
 export class UsersService {
@@ -91,7 +92,9 @@ export class UsersService {
         'comments',
         'groupMembers',
         'followers',
+        'followers.follower',
         'following',
+        'following.following',
       ],
     });
 
@@ -196,6 +199,30 @@ export class UsersService {
       usuario: user.username,
       interests: user.interests,
     };
+  }
+
+  async getDistanceBetweenUsers(user1: string, user2: string): Promise<string> {
+    const userFound1 = await this.usersRepository.findOne({ where: { id: user1 } });
+    const userFound2 = await this.usersRepository.findOne({ where: { id: user2 } });
+
+    if (!userFound1 || !userFound2) {
+      throw new NotFoundException('One or both users not found');
+    }
+
+    if(!userFound1.location.x || userFound1.location.y || !userFound2.location.x || !userFound2.location.y) {
+      throw new NotFoundException('One or both users do not have location data');
+    }
+
+    const distanceInMeters = getDistance(
+      { latitude: userFound1.location.x, longitude: userFound1.location.y },
+      { latitude: userFound2.location.x, longitude: userFound2.location.y }
+    );
+
+    if(distanceInMeters > 1000) {
+      return `${distanceInMeters / 1000} km`;
+    }
+
+    return `${distanceInMeters} mtrs`;
   }
 }
 
