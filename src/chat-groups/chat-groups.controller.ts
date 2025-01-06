@@ -174,4 +174,6 @@ export class ChatGroupsController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.chatGroupsService.remove(id);
   }
+
+  
 }

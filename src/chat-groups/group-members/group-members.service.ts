@@ -222,4 +222,12 @@ export class GroupMembersService {
       ...member.group,
     }));
   }
+
+  async findAllMemberByGroupId(group_id: string) {
+    const groupMembers = await this.groupMembersRepository.find({
+      where: { group_id: group_id },
+    });
+
+    return groupMembers;
+  }
 }

@@ -22,7 +22,8 @@ export class ChatGroupsService {
   ) {}
 
   async create(createChatGroupDto: CreateChatGroupDto) {
-    const { creator_id, name } = createChatGroupDto;
+    console.log('DATA RECIBIDA:', createChatGroupDto);
+    const { creator_id, name, description, privacy } = createChatGroupDto;
 
     const findCreator = await this.usersRepository.findOne({
       where: { id: creator_id },
@@ -45,9 +46,9 @@ export class ChatGroupsService {
     }
 
     const newChatGroup = this.chatGroupsRepository.create({
-      name: createChatGroupDto.name,
-      description: createChatGroupDto.description,
-      privacy: createChatGroupDto.privacy,
+      name: name,
+      description: description,
+      privacy: privacy,
       creator: findCreator,
     });
 
