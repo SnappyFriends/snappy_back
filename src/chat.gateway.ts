@@ -57,13 +57,8 @@ export class ChatGateway
 
   async handleConnection(client: Socket) {
     console.log('🟢 Cliente conectado:', client.id);
-    console.log('Headers:', client.handshake.headers);
 
-    const cookies = client.handshake.headers.cookie;
     const token = client.handshake.query.token;
-
-    console.log('Cookies:', cookies);
-    console.log('Token:', token);
 
     if (!token) {
       this.logger.warn('Cookie "auth_token" no proporcionada');
@@ -74,7 +69,6 @@ export class ChatGateway
 
     try {
       const decoded = this.jwtService.verify(token as string);
-      console.log('Token decodificado:', decoded);
 
       client.join(decoded.id);
       this.usersOnlineService.addUser(client.id, decoded);
@@ -97,6 +91,10 @@ export class ChatGateway
         return;
       }
 
+      const onlineUsers = this.usersOnlineService.getAllUsers();
+      console.log('Usuarios en línea al conectar:', onlineUsers);
+
+      this.server.emit('onlineUsers', onlineUsers);
       this.logger.log(`User connected: ${client.id}`);
     } catch (error) {
       this.logger.error('Token inválido o expirado', error.message);
@@ -108,6 +106,8 @@ export class ChatGateway
   async handleDisconnect(client: Socket) {
     console.log('🔴 Cliente desconectado:', client.id);
     this.usersOnlineService.removeUser(client.id);
+    const onlineUsers = this.usersOnlineService.getAllUsers();
+    this.server.emit('onlineUsers', onlineUsers);
   }
 
   @SubscribeMessage('message')
@@ -164,6 +164,15 @@ export class ChatGateway
   ) {
     console.log(`Cliente ${client.id} se unió a la sala ${chatId}`);
     client.join(chatId);
+  }
+
+  @SubscribeMessage('join_group_chat')
+  handleJoinGroupChat(
+    @MessageBody() groupId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log(`Cliente ${client.id} se unió a la sala ${groupId}`);
+    client.join(groupId);
   }
 
   @SubscribeMessage('notification')
@@ -254,13 +263,12 @@ export class ChatGateway
   handleGetConnectedUsers(@ConnectedSocket() client: Socket) {
     const onlineUsers = this.usersOnlineService.getAllUsers();
 
-    // Opcional: enviar la lista solo al cliente solicitante
     client.emit('onlineUsers', onlineUsers);
 
-    // Si quieres emitir a todos los clientes, usa:
     this.server.emit('onlineUsers', onlineUsers);
+    console.log('Usuarios en línea emitidos:', onlineUsers);
 
-    return onlineUsers; // Devuelve los usuarios si lo necesitas en respuesta directa
+    return onlineUsers;
   }
 
   private getCookieValue(cookies: string | undefined, cookieName: string) {

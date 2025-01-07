@@ -3,7 +3,6 @@ import { Role } from '../entities/groupMembers.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateGroupMemberDto {
-
   @ApiProperty({
     type: String,
     format: 'uuid',
@@ -29,8 +28,12 @@ export class CreateGroupMemberDto {
     description: 'The role assigned to the user in the group',
     example: 'ADMIN',
     required: false,
+    default: 'MEMBER',
   })
   @IsOptional()
   @IsEnum(Role)
   role: Role;
+
+  @IsOptional()
+  creator_id: string;
 }
