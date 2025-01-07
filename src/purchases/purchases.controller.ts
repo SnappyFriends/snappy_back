@@ -1,4 +1,4 @@
-import { Controller, Post, Param, ParseUUIDPipe } from "@nestjs/common";
+import { Controller, Post, Param, ParseUUIDPipe, Get } from "@nestjs/common";
 import { StripeService } from "./stripe.service";
 import { PurchasesService } from "./purchases.service";
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
@@ -41,8 +41,6 @@ export class PurchasesController {
             }
         }
     })
-
-
     async createSubscription(@Param('id', ParseUUIDPipe) userId: string) {
         const amount = 10;
 
@@ -51,5 +49,15 @@ export class PurchasesController {
         await this.purchasesService.createInitialPurchase(userId, amount, session.id);
 
         return { url: session.url };
+    }
+
+    @Get('user/:id')
+    async getSubscriptionByUser(@Param('id', ParseUUIDPipe) userId: string) {
+        return this.purchasesService.getSubscriptionByUser(userId);
+    }
+
+    @Get()
+    async getSubscriptions() {
+        return this.purchasesService.getSubscriptions();
     }
 }

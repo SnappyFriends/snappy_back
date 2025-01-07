@@ -19,7 +19,9 @@ export class Purchase_Log {
     @PrimaryGeneratedColumn('uuid')
     purchase_id: string = uuid();
 
-    @ManyToOne(() => User, (user) => user.purchases)
+    @ManyToOne(() => User, (user) => user.purchases, {
+        onDelete: 'CASCADE'
+    })
     user: User;
 
     @CreateDateColumn()
