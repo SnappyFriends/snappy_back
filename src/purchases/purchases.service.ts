@@ -15,7 +15,7 @@ export class PurchasesService {
     private readonly purchaseRepository: Repository<Purchase_Log>,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
-
+ 
   async createInitialPurchase(
     userId: string,
     amount: number,
