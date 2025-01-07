@@ -26,6 +26,7 @@ import { NodemailerModule } from './nodemailer/nodemailer.module';
 import { ChatGatewayModule } from './chat.gateway.module';
 import { FollowModule } from './follow/follow.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
@@ -64,4 +65,4 @@ import { FollowModule } from './follow/follow.module';
   controllers: [],
   providers: [AuthGuard],
 })
-export class AppModule {}
+export class AppModule { }

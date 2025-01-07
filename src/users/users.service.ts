@@ -3,9 +3,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Interest } from 'src/interests/entities/interests.entity';
+
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,7 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Interest)
     private interestsRepository: Repository<Interest>,
-  ) {}
+  ) { }
 
   async getUsers(filters: GetUsersDTO) {
     const { page = 1, limit = 10, interests, username } = filters;
