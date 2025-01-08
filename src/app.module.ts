@@ -25,7 +25,7 @@ import { ChatModule } from './chat-groups/chat.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import { ChatGatewayModule } from './chat.gateway.module';
 import { FollowModule } from './follow/follow.module';
-import { LogsModule } from './Logs/logs.module';
+import { LogsModule } from './logsAdmin/logs.module';
 
 
 
