@@ -18,6 +18,11 @@ export class AdminController {
     return this.logsService.getLogs(filterLogsDto);
   }
 
+  @Get('user-reports')
+  async getUserReports() {
+    return this.logsService.getUsersReports()
+  }
+
   @Get('/users/metrics')
   async getLogsUsers(@Query() filterLogsDto: FilterDto) {
     return this.logsService.getLogsUsers(filterLogsDto);
