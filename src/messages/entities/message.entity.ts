@@ -54,5 +54,5 @@ export class Message {
   chat: Chat;
 
   @ManyToOne(() => Chat_Groups, (chatGroup) => chatGroup.messages)
-  group_chat: Chat_Groups[];
+  group_chat: Chat_Groups;
 }

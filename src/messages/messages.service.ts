@@ -15,6 +15,7 @@ import {
 } from './entities/message_Receiver.entity';
 import { Group_Members } from 'src/chat-groups/entities/groupMembers.entity';
 import { Chat } from 'src/chat-groups/entities/chat.entity';
+import { Chat_Groups } from 'src/chat-groups/entities/chat-group.entity';
 
 @Injectable()
 export class MessagesService {
@@ -28,13 +29,14 @@ export class MessagesService {
     private readonly groupMembersRepository: Repository<Group_Members>,
     @InjectRepository(Chat)
     private readonly chatRepository: Repository<Chat>,
+    @InjectRepository(Chat_Groups)
+    private readonly groupChatRepository: Repository<Chat_Groups>,
   ) {}
 
   async createMessage(createMessageDto: CreateMessageDto) {
     const { sender_id, messageReceivers, chatId, groupId, ...messageData } =
       createMessageDto;
 
-    console.log('Este es el chatId: ', chatId);
     if (!chatId && !groupId) {
       throw new BadRequestException('Debe especificar un chatId o groupId');
     }
@@ -58,25 +60,38 @@ export class MessagesService {
       }
     }
 
-    const chatFound = await this.chatRepository.findOne({
-      where: { id: chatId },
-    });
-    console.log('Este es el chatFound:', chatFound);
+    let newMsg;
 
-    const newMsg = this.messageRepository.create({
-      content: messageData.content,
-      type: messageData.type,
-      sender_id: userFound,
-      is_anonymous: !!messageData.is_anonymous,
-      chat: chatFound,
-      groupId: groupId || null,
-    } as DeepPartial<Message>);
+    if (chatId) {
+      const chatFound = await this.chatRepository.findOne({
+        where: { id: chatId },
+      });
+
+      newMsg = this.messageRepository.create({
+        content: messageData.content,
+        type: messageData.type,
+        sender_id: userFound,
+        is_anonymous: !!messageData.is_anonymous,
+        chat: chatFound || null,
+      } as DeepPartial<Message>);
+    } else if (groupId) {
+      const groupFound = await this.groupChatRepository.findOne({
+        where: { group_id: groupId },
+      });
+
+      newMsg = this.messageRepository.create({
+        content: messageData.content,
+        type: messageData.type,
+        sender_id: userFound,
+        is_anonymous: !!messageData.is_anonymous,
+        group_chat: groupFound || null,
+      } as DeepPartial<Message>);
+    }
 
     const savedMsg = await this.messageRepository.save(newMsg);
 
     if (chatId) {
       if (chatId && !messageReceivers) {
-        console.log(messageReceivers);
         throw new BadRequestException(
           `Debe haber al menos un receptor para un mensaje.`,
         );

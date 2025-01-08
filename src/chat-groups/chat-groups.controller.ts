@@ -93,6 +93,11 @@ export class ChatGroupsController {
     return this.chatGroupsService.findAll();
   }
 
+  @Get(':user_id/chats')
+  getAllGroupsByUserId(@Param('user_id', ParseUUIDPipe) user_id: string) {
+    return this.chatGroupsService.getAllGroupsByUserId(user_id);
+  }
+
   @Get('chats/:group_id')
   getAllMessagesByGroupId(@Param('group_id', ParseUUIDPipe) group_id: string) {
     return this.chatGroupsService.getAllMessagesByGroupId(group_id);

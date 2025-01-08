@@ -19,8 +19,7 @@ export class CreateMessageDto {
   @ApiProperty({
     type: String,
     description: 'Message content',
-    example: 'Hi, how are you?'
-
+    example: 'Hi, how are you?',
   })
   @IsNotEmpty()
   content: string;
@@ -29,18 +28,16 @@ export class CreateMessageDto {
     type: Boolean,
     required: false,
     description: 'Is it anonymous?',
-    example: true
+    example: true,
   })
   @IsBoolean()
   @IsOptional()
   is_anonymous: boolean;
 
-
   @ApiProperty({
     enum: MessageType,
     description: 'Type of message sent or received.',
-    example: MessageType.TEXT
-
+    example: MessageType.TEXT,
   })
   @IsNotEmpty()
   @IsEnum(MessageType)
@@ -49,8 +46,7 @@ export class CreateMessageDto {
   @ApiProperty({
     type: String,
     description: 'User UUID',
-    example: '1f0aae07-270c-4ad7-9062-a15a866dccd1'
-
+    example: '1f0aae07-270c-4ad7-9062-a15a866dccd1',
   })
   @IsNotEmpty()
   @IsUUID()
@@ -60,7 +56,8 @@ export class CreateMessageDto {
     type: String,
     required: false,
     description: 'chat UUID',
-    example: 'hf0aae07-270c-4ad7-9062-a15a866dccd1'
+    example: 'hf0aae07-270c-4ad7-9062-a15a866dccd1',
+    default: null,
   })
   @IsOptional()
   @IsUUID()
@@ -70,7 +67,8 @@ export class CreateMessageDto {
     type: String,
     required: false,
     description: 'Group UUID',
-    example: 'ff0aae07-270c-4ad7-9062-a15a866dccd1'
+    example: 'ff0aae07-270c-4ad7-9062-a15a866dccd1',
+    default: null,
   })
   @IsOptional()
   @IsUUID()
@@ -80,7 +78,10 @@ export class CreateMessageDto {
     type: [String],
     required: false,
     description: 'List of UUID identifiers of message receivers.',
-    example: ['550e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440001'],
+    example: [
+      '550e8400-e29b-41d4-a716-446655440000',
+      '550e8400-e29b-41d4-a716-446655440001',
+    ],
   })
   @IsArray()
   @IsUUID(undefined, { each: true })
