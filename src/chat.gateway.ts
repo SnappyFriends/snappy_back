@@ -72,7 +72,6 @@ export class ChatGateway
 
       client.join(decoded.id);
       this.usersOnlineService.addUser(client.id, decoded);
-      console.log(`Usuario ${decoded.id} unido a su sala personal`);
 
       const userGroups = await this.groupMemberService.findGroupsByUserId(
         decoded.id,
@@ -80,7 +79,6 @@ export class ChatGateway
       if (userGroups && userGroups.length > 0) {
         userGroups.forEach((group) => {
           client.join(group.id);
-          console.log(`Usuario ${decoded.id} unido al grupo ${group.id}`);
         });
       }
 
@@ -92,7 +90,6 @@ export class ChatGateway
       }
 
       const onlineUsers = this.usersOnlineService.getAllUsers();
-      console.log('Usuarios en línea al conectar:', onlineUsers);
 
       this.server.emit('onlineUsers', onlineUsers);
       this.logger.log(`User connected: ${client.id}`);
@@ -116,8 +113,6 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      console.log('Datos recibidos en el Gateway:', payload);
-
       if (!payload.chatId && !payload.groupId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
       }
@@ -125,7 +120,6 @@ export class ChatGateway
       const message = await this.messageService.createMessage(payload);
 
       if (payload.groupId) {
-        console.log(`Emitiendo mensaje al grupo ${payload.groupId}`);
         this.server.to(payload.groupId).emit('receiveGroupMessage', message);
       } else if (payload.chatId) {
         console.log(
@@ -133,7 +127,6 @@ export class ChatGateway
         );
 
         payload.messageReceivers.forEach((receiverId) => {
-          console.log(`Emitiendo mensaje a ${receiverId}`);
           this.server.to(receiverId).emit('receivePrivateMessage', message);
 
           this.notificationsService
@@ -143,7 +136,6 @@ export class ChatGateway
               user_id: receiverId,
             })
             .then((notification) => {
-              console.log(`Notificación enviada a ${receiverId}`);
               this.server.to(receiverId).emit('messageNotification', {
                 notification,
                 message,
@@ -162,7 +154,6 @@ export class ChatGateway
     @MessageBody() chatId: string,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log(`Cliente ${client.id} se unió a la sala ${chatId}`);
     client.join(chatId);
   }
 
@@ -171,7 +162,6 @@ export class ChatGateway
     @MessageBody() groupId: string,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log(`Cliente ${client.id} se unió a la sala ${groupId}`);
     client.join(groupId);
   }
 
@@ -266,14 +256,12 @@ export class ChatGateway
     client.emit('onlineUsers', onlineUsers);
 
     this.server.emit('onlineUsers', onlineUsers);
-    console.log('Usuarios en línea emitidos:', onlineUsers);
 
     return onlineUsers;
   }
 
   private getCookieValue(cookies: string | undefined, cookieName: string) {
     if (!cookies) {
-      console.log('No cookies found');
       return null;
     }
     const match = cookies.match(new RegExp(`(^| )${cookieName}=([^;]+)`));

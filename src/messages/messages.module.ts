@@ -8,6 +8,7 @@ import { Message } from './entities/message.entity';
 import { Message_Receiver } from './entities/message_Receiver.entity';
 import { Group_Members } from 'src/chat-groups/entities/groupMembers.entity';
 import { Chat } from 'src/chat-groups/entities/chat.entity';
+import { Chat_Groups } from 'src/chat-groups/entities/chat-group.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Chat } from 'src/chat-groups/entities/chat.entity';
       Message_Receiver,
       Group_Members,
       Chat,
+      Chat_Groups,
     ]),
   ],
   controllers: [MessagesController],
