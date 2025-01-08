@@ -1,6 +1,7 @@
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { registerUserDTO } from 'src/auth/dto/auth.dto';
+import { userStatus } from '../entities/user.entity';
 
 export class UpdateUserDTO extends PartialType(registerUserDTO) {
   @IsOptional()
@@ -9,6 +10,10 @@ export class UpdateUserDTO extends PartialType(registerUserDTO) {
     x: number;
     y: number;
   };
+
+  @IsOptional()
+  @IsEnum(userStatus)
+  status: userStatus;
 }
 
 export class GetUsersDTO {
