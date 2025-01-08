@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Chat_Groups } from './entities/chat-group.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { Group_Members, Role } from './entities/groupMembers.entity';
 
 @Injectable()
 export class ChatGroupsService {
@@ -19,10 +20,12 @@ export class ChatGroupsService {
 
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
+    @InjectRepository(Group_Members)
+    private groupMembersRepository: Repository<Group_Members>,
   ) {}
 
   async create(createChatGroupDto: CreateChatGroupDto) {
-    console.log('DATA RECIBIDA:', createChatGroupDto);
     const { creator_id, name, description, privacy } = createChatGroupDto;
 
     const findCreator = await this.usersRepository.findOne({
@@ -53,6 +56,15 @@ export class ChatGroupsService {
     });
 
     await this.chatGroupsRepository.save(newChatGroup);
+
+    const addCreatorAsMember = this.groupMembersRepository.create({
+      group_id: newChatGroup.group_id,
+      user_id: creator_id,
+      role: Role.ADMIN,
+      join_date: new Date(),
+    });
+
+    await this.groupMembersRepository.save(addCreatorAsMember);
 
     const responseObject = {
       name: newChatGroup.name,
@@ -147,9 +159,43 @@ export class ChatGroupsService {
   async getAllMessagesByGroupId(group_id: string) {
     const groupMessagesFound = await this.chatGroupsRepository.find({
       where: { group_id },
-      relations: ['groupMembers', 'messages'],
+      relations: ['groupMembers', 'messages', 'messages.sender_id'],
     });
 
-    return groupMessagesFound;
+    const result = groupMessagesFound.map((group) => {
+      const reducedMembers = group.messages.map((message) => ({
+        message_id: message.message_id,
+        content: message.content,
+        send_date: message.send_date,
+        sender: {
+          user_id: message.sender_id.id,
+          username: message.sender_id.username,
+          fullname: message.sender_id.fullname,
+          profile_image: message.sender_id.profile_image,
+          user_type: message.sender_id.user_type,
+        },
+      }));
+
+      return {
+        group_id: group.group_id,
+        name: group.name,
+        description: group.description,
+        creation_date: group.creation_date,
+        privacy: group.privacy,
+        members: group.groupMembers,
+        messages: reducedMembers,
+      };
+    });
+
+    return result;
+  }
+
+  async getAllGroupsByUserId(user_id: string) {
+    const userGroupsFound = await this.groupMembersRepository.find({
+      where: { user_id },
+      relations: ['group'],
+    });
+
+    return userGroupsFound;
   }
 }

@@ -38,4 +38,7 @@ export class CreateChatGroupDto {
   @IsString()
   @IsNotEmpty()
   creator_id: string;
+
+  @IsOptional()
+  members: string[];
 }
