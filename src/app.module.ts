@@ -25,6 +25,9 @@ import { ChatModule } from './chat-groups/chat.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import { ChatGatewayModule } from './chat.gateway.module';
 import { FollowModule } from './follow/follow.module';
+import { LogsModule } from './Logs/logs.module';
+
+
 
 @Module({
   imports: [
@@ -60,8 +63,9 @@ import { FollowModule } from './follow/follow.module';
     }),
     NodemailerModule,
     ChatGatewayModule,
+    LogsModule,
   ],
   controllers: [],
   providers: [AuthGuard],
 })
-export class AppModule {}
+export class AppModule { }

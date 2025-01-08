@@ -26,6 +26,7 @@ import { Notification } from 'src/notifications/entities/notification.entity';
 import { GroupJoinRequest } from 'src/chat-groups/entities/group-join-request.entity';
 import { Chat } from 'src/chat-groups/entities/chat.entity';
 import { Follow } from 'src/follow/entities/follow.entity';
+import { Log } from 'src/Logs/entities/logs.entity';
 
 export enum userType {
   REGULAR = 'regular',
@@ -182,4 +183,7 @@ export class User {
     inverseJoinColumn: { name: 'chat_id', referencedColumnName: 'id' },
   })
   chats: Chat[];
+
+  @OneToMany(() => Log, (log) => log.admin)
+  logs: Log[]
 }
