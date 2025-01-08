@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User, userStatus, userType } from 'src/users/entities/user.entity';
+import { User, userStatus } from 'src/users/entities/user.entity';
 import { Between, Repository } from 'typeorm';
 import { Log } from './entities/logs.entity';
 import { CreateLogDto, FilterDto } from './dto/create-logs.dto';
+import { Report } from 'src/reports/entities/report.entity';
 
 
 @Injectable()
 export class LogsService {
   constructor(
     @InjectRepository(Log) private readonly logRepository: Repository<Log>,
-    @InjectRepository(User) private usersRepository: Repository<User>
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(Report) private readonly reportRepository: Repository<Report>,
   ) { }
 
   async createLog(createLogDto: CreateLogDto): Promise<Log> {
@@ -127,6 +129,43 @@ export class LogsService {
     };
 
 
+  }
+
+  async getUsersReports() {
+
+    const reports = await this.reportRepository.find({
+      relations: ['reported_user', 'reporting_user']
+    })
+
+    const users = await this.usersRepository.find();
+
+    const usersWhoReport = users.map((user) => {
+      const reportCount = reports.filter((report) => report.reporting_user.id === user.id).length;
+      return { id: user.id, fullname: user.fullname, reportCount };
+    })
+      .filter((user) => user.reportCount > 0)
+      .sort((a, b) => b.reportCount - a.reportCount);
+
+    const mostReportedUsers = users
+      .map((user) => {
+        const reportedCount = reports.filter((report) => report.reported_user.id === user.id).length;
+        return { id: user.id, fullname: user.fullname, reportedCount };
+      })
+      .filter((user) => user.reportedCount > 0)
+      .sort((a, b) => b.reportedCount - a.reportedCount);
+
+    const reportedUsers = reports.map((report) => report.reported_user.id);
+    const uniqueReportedUsers = Array.from(new Set(reportedUsers));
+    const totalReportedUsers = uniqueReportedUsers.length;
+
+    const totalUnreportedUsers = users.length - totalReportedUsers;
+
+    return {
+      usersWhoReport,
+      mostReportedUsers,
+      totalReportedUsers,
+      totalUnreportedUsers,
+    };
   }
 
 
