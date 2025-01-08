@@ -39,12 +39,14 @@ export class ReportsService {
       reporting_user: {
         id: report.reporting_user.id,
         fullname: report.reporting_user.fullname,
-        username: report.reporting_user.username
+        username: report.reporting_user.username,
+        profile_image: report.reporting_user.profile_image,
       },
       reported_user: {
         id: report.reported_user.id,
         fullname: report.reported_user.fullname,
-        username: report.reported_user.username
+        username: report.reported_user.username,
+        profile_image: report.reported_user.profile_image,
       }
     }))
 

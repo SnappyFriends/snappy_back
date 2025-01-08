@@ -15,7 +15,7 @@ export class PurchasesService {
     private readonly purchaseRepository: Repository<Purchase_Log>,
     @InjectRepository(User) private usersRepository: Repository<User>,
   ) {}
-
+ 
   async createInitialPurchase(
     userId: string,
     amount: number,
@@ -47,5 +47,16 @@ export class PurchasesService {
     });
 
     return this.purchaseRepository.save(purchase);
+  }
+
+  async getSubscriptionByUser(userId) {
+    const subscriptionFound = await this.purchaseRepository.findOne({ where: { user: { id: userId } } });
+    if(!subscriptionFound) throw new NotFoundException("Subscription not found");
+
+    return subscriptionFound;
+  }
+
+  async getSubscriptions() {
+    return await this.purchaseRepository.find();
   }
 }

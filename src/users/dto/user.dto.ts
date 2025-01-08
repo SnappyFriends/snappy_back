@@ -8,7 +8,7 @@ export class UpdateUserDTO extends PartialType(registerUserDTO) {
   location: {
     x: number;
     y: number;
-  }
+  };
 }
 
 export class GetUsersDTO {

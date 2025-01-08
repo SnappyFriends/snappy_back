@@ -62,7 +62,6 @@ export class MessagesController {
     },
   })
   create(@Body() createMessageDto: CreateMessageDto) {
-    console.log('Datos recibidos en el backend:', createMessageDto);
     return this.messagesService.createMessage(createMessageDto);
   }
 
