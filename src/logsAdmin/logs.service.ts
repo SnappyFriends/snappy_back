@@ -25,7 +25,7 @@ export class LogsService {
         }
       });
 
-    if (!admin || (admin.user_type !== 'admin' && admin.user_type !== 'superadmin')) {
+    if (!admin || (admin.user_role !== 'admin' && admin.user_role !== 'superadmin')) {
       throw new Error('Solo los admin o superAdmin pueden crear registros');
     }
 

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
-import { userType } from 'src/users/entities/user.entity';
+import { userRole } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -34,9 +34,9 @@ export class AuthGuard implements CanActivate {
       user.iat = new Date(user.iat * 1000);
 
       if (user.isAdmin) {
-        user.roles = [userType.ADMIN];
+        user.roles = [userRole.ADMIN];
       } else {
-        user.roles = [userType.REGULAR];
+        user.roles = [userRole.DEFAULT];
       }
 
       if (!isWs) {
