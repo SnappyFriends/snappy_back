@@ -1,10 +1,8 @@
 import { Controller, Post, Param, ParseUUIDPipe, Get, UseGuards } from "@nestjs/common";
 import { StripeService } from "./stripe.service";
 import { PurchasesService } from "./purchases.service";
-import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { AuthGuard } from "src/auth/guards/auth.guard";
-import { Roles } from "src/decorators/roles.decorator";
-import { userType } from "src/users/entities/user.entity";
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+
 
 @ApiTags('Purchases')
 @Controller('purchases')

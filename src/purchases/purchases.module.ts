@@ -6,6 +6,7 @@ import { Purchase_Log } from './entities/purchase_log.entity';
 import { ConfigModule } from '@nestjs/config';
 import { StripeService } from './stripe.service';
 import { User } from 'src/users/entities/user.entity';
+import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { User } from 'src/users/entities/user.entity';
     ConfigModule
   ],
   controllers: [PurchasesController],
-  providers: [PurchasesService, StripeService],
+  providers: [PurchasesService, StripeService, NodemailerService],
 })
-export class PurchasesModule {}
+export class PurchasesModule { }
