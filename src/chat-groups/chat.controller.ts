@@ -1,30 +1,27 @@
 import {
-  Controller,
-  Post,
   Body,
+  Controller,
+  Get,
   HttpCode,
   HttpStatus,
-  Get,
   Param,
   ParseUUIDPipe,
-  UseGuards,
+  Post,
 } from '@nestjs/common';
-import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-
+import { ChatService } from './chat.service';
+import { CreateChatDto } from './dto/create-chat.dto';
 
 @ApiTags('Chats')
 @Controller('chats')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) { }
+  constructor(private readonly chatService: ChatService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create Chat' })
@@ -88,7 +85,6 @@ export class ChatController {
     return this.chatService.getFilteredUsers(userId);
   }
 
-  @ApiBearerAuth()
   @Get('user-chats/:userId')
   async getUserChats(@Param('userId') userId: string) {
     const chats = await this.chatService.getChatsByUserId(userId);
