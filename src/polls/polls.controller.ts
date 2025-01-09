@@ -23,7 +23,7 @@ export class PollsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Post(':id')
   @ApiOperation({ summary: 'Create Polls' })
   @ApiCreatedResponse({
@@ -141,7 +141,7 @@ export class PollsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Poll' })
   @ApiOkResponse({

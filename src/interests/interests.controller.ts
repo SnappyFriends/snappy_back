@@ -4,8 +4,6 @@ import { Interest } from './entities/interests.entity';
 import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { Roles } from 'src/decorators/roles.decorator';
-import { userType } from 'src/users/entities/user.entity';
 
 @ApiTags('Interests')
 @Controller('interests')
@@ -133,7 +131,6 @@ export class InterestsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete Interest' })
   @ApiOkResponse({ description: 'Interest deleted successfully.', schema: { example: 'Interest con ID ${id} eliminada correctamente' } })

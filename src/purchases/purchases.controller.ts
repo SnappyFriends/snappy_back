@@ -16,7 +16,6 @@ export class PurchasesController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    @Roles(userType.ADMIN || userType.SUPERADMIN)
     @Post('subscribe/:id')
     @ApiOperation({ summary: 'Create Purchases' })
     @ApiCreatedResponse({

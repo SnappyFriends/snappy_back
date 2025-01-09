@@ -20,7 +20,7 @@ export class AdminController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Get('/admin')
   async getLogs(@Query() filterLogsDto: FilterDto) {
     return this.logsService.getLogs(filterLogsDto);
@@ -28,7 +28,7 @@ export class AdminController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Get('user-reports')
   async getUserReports() {
     return this.logsService.getUsersReports()
@@ -36,7 +36,7 @@ export class AdminController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Get('/users/metrics')
   async getLogsUsers(@Query() filterLogsDto: FilterDto) {
     return this.logsService.getLogsUsers(filterLogsDto);

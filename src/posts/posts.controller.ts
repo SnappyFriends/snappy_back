@@ -140,7 +140,6 @@ export class PostsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Post' })
   @ApiOkResponse({
@@ -174,7 +173,6 @@ export class PostsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Post' })
   @ApiOkResponse({

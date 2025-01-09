@@ -149,7 +149,7 @@ export class ReactionsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Put(':id')
   @ApiOperation({ summary: 'Modify Reaction' })
   @ApiOkResponse({
@@ -186,7 +186,7 @@ export class ReactionsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Reaction' })
   @ApiOkResponse({ description: 'Reaction deleted successfully.', schema: { example: 'Reacción con ID ${id} eliminada correctamente' } })
