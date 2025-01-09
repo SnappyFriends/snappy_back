@@ -7,6 +7,7 @@ import {
   Purchase_Log,
 } from './entities/purchase_log.entity';
 import { User, userType } from 'src/users/entities/user.entity';
+import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 
 @Injectable()
 export class PurchasesService {
@@ -14,8 +15,9 @@ export class PurchasesService {
     @InjectRepository(Purchase_Log)
     private readonly purchaseRepository: Repository<Purchase_Log>,
     @InjectRepository(User) private usersRepository: Repository<User>,
-  ) {}
- 
+    private readonly nodemailerService: NodemailerService
+  ) { }
+
   async createInitialPurchase(
     userId: string,
     amount: number,
@@ -46,20 +48,39 @@ export class PurchasesService {
       stripe_session_id: sessionId,
     });
 
-    return this.purchaseRepository.save(purchase);
+    const savedPurchase = this.purchaseRepository.save(purchase);
+
+    const emailSubject = '¡Gracias por tu suscripción Premium!';
+    const emailText = `Hola ${user.fullname}, gracias por adquirir el paquete premium.`;
+    const emailHtml = `<div style="text-align: center;"> 
+      <img src="https://snappyfriends.vercel.app/_next/image?url=%2Ffavicon.ico&w=64&q=75" alt="Logo" style="display: block; margin: 0 auto; width: 150px; height: auto;">
+      <h1> ¡Ahora eres Premium, ${user.fullname}!</h1>
+      Hola ${user.fullname}, gracias por suscribirte a Premium en snappyFriends. Tu suscripción esta activa y ya puedes disfrutar de los beneficios que te ofrecemos en paquete premium.
+      </div>
+  `;
+
+    await this.nodemailerService.sendEmail(
+      user.email,
+      emailSubject,
+      emailText,
+      emailHtml
+    );
+
+    return savedPurchase;
+
   }
 
   async getSubscriptionByUser(userId) {
-    const subscriptionFound = await this.purchaseRepository.findOne({ 
-      where: { user: { id: userId } }, 
-      relations: ['user'] 
+    const subscriptionFound = await this.purchaseRepository.findOne({
+      where: { user: { id: userId } },
+      relations: ['user']
     });
-    if(!subscriptionFound) throw new NotFoundException("Subscription not found");
+    if (!subscriptionFound) throw new NotFoundException("Subscription not found");
 
     return subscriptionFound;
   }
 
   async getSubscriptions() {
-    return await this.purchaseRepository.find({relations: ['user']});
+    return await this.purchaseRepository.find({ relations: ['user'] });
   }
 }
