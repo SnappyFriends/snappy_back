@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Get,
   Param,
+  ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
@@ -18,7 +19,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+
 
 @ApiTags('Chats')
 @Controller('chats')
@@ -82,6 +83,12 @@ export class ChatController {
     };
   }
 
+  @Get('filteredUsers/:userId')
+  async getFilteredUsers(@Param('userId', ParseUUIDPipe) userId: string) {
+    return this.chatService.getFilteredUsers(userId);
+  }
+
+  @ApiBearerAuth()
   @Get('user-chats/:userId')
   async getUserChats(@Param('userId') userId: string) {
     const chats = await this.chatService.getChatsByUserId(userId);

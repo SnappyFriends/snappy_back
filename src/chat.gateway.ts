@@ -113,6 +113,7 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ) {
     try {
+      console.log('Data recibida en el payload:', payload);
       if (!payload.chatId && !payload.groupId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
       }
