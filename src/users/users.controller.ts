@@ -25,16 +25,15 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/decorators/roles.decorator';
 import { userType } from './entities/user.entity';
+import { Roles } from 'src/decorators/roles.decorator';
+
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @ApiBearerAuth()
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Get()
   @ApiOperation({ summary: 'Get all Users.' })
   @ApiOkResponse({
@@ -70,7 +69,6 @@ export class UsersController {
       ],
     },
   })
-  @UseGuards(AuthGuard, RolesGuard)
   async getUsers(@Query() filters: GetUsersDTO) {
     return this.usersService.getUsers(filters);
   }
@@ -202,7 +200,6 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Put(':id')
   @ApiOperation({ summary: 'Modify User' })
   @ApiOkResponse({
@@ -253,7 +250,7 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
   @ApiOkResponse({
@@ -276,7 +273,6 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Post(':userId/assign-interest/:interestId')
   @ApiOperation({ summary: 'Assign interests to User' })
   @ApiCreatedResponse({
@@ -324,7 +320,6 @@ export class UsersController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Post(':userId/remove-interest/:interestId')
   @ApiOperation({ summary: 'Remove interests to User' })
   @ApiCreatedResponse({
