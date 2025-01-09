@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Get,
   Param,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
@@ -77,6 +78,11 @@ export class ChatController {
         id: userIds.id,
       })),
     };
+  }
+
+  @Get('filteredUsers/:userId')
+  async getFilteredUsers(@Param('userId', ParseUUIDPipe) userId: string) {
+    return this.chatService.getFilteredUsers(userId);
   }
 
   @Get('user-chats/:userId')

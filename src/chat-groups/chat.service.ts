@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
-import { In, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Message } from 'src/messages/entities/message.entity';
+import { FollowService } from 'src/follow/follow.service';
+import { Follow } from 'src/follow/entities/follow.entity';
 
 @Injectable()
 export class ChatService {
@@ -16,7 +18,26 @@ export class ChatService {
     private chatRepository: Repository<Chat>,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Message) private messageRepository: Repository<Message>,
+    @InjectRepository(Follow) private followRepository: Repository<Follow>,
+
+    private readonly followService: FollowService,
   ) {}
+
+  async getFilteredUsers(userId: string) {
+    const friendsUsers = await this.followService.getFriends(userId);
+
+    let friendsIds = friendsUsers.map((friend) => friend.id);
+
+    friendsIds = [...friendsIds, userId];
+
+    const filteredUsers = await this.userRepository.find({
+      where: { id: Not(In(friendsIds)) },
+    });
+
+    console.log('friends IDS', friendsIds);
+    console.log(filteredUsers);
+    return filteredUsers;
+  }
 
   async createChat(userIds: string[]): Promise<Chat> {
     const users = await this.userRepository.find({
