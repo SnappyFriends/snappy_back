@@ -23,6 +23,7 @@ export class PurchasesService {
   ) {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
+      relations: ['user']
     });
 
     if (!user) {
@@ -57,6 +58,6 @@ export class PurchasesService {
   }
 
   async getSubscriptions() {
-    return await this.purchaseRepository.find();
+    return await this.purchaseRepository.find({relations: ['user']});
   }
 }
