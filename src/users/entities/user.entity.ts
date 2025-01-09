@@ -30,7 +30,11 @@ import { Log } from 'src/logsAdmin/entities/logs.entity';
 
 export enum userType {
   REGULAR = 'regular',
-  PREMIUM = 'premium',
+  PREMIUM = 'premium'
+}
+
+export enum userRole {
+  DEFAULT = 'default',
   ADMIN = 'admin',
   SUPERADMIN = 'superadmin',
 }
@@ -97,10 +101,12 @@ export class User {
   user_type: userType;
 
   @Column({
-    type: 'boolean',
-    default: false
+    type: 'enum',
+    enum: userRole,
+    nullable: false,
+    default: userRole.DEFAULT,
   })
-  isAdmin: boolean;
+  user_role: userRole;
 
   @Column({
     type: 'enum',
