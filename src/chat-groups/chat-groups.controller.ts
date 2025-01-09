@@ -22,9 +22,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { Roles } from 'src/decorators/roles.decorator';
-import { userType } from 'src/users/entities/user.entity';
+
 
 @ApiTags('Chat-Groups')
 @Controller('chat-groups')
