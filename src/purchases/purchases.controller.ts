@@ -1,7 +1,10 @@
-import { Controller, Post, Param, ParseUUIDPipe, Get } from "@nestjs/common";
+import { Controller, Post, Param, ParseUUIDPipe, Get, UseGuards } from "@nestjs/common";
 import { StripeService } from "./stripe.service";
 import { PurchasesService } from "./purchases.service";
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "src/auth/guards/auth.guard";
+import { Roles } from "src/decorators/roles.decorator";
+import { userType } from "src/users/entities/user.entity";
 
 @ApiTags('Purchases')
 @Controller('purchases')
@@ -11,6 +14,9 @@ export class PurchasesController {
         private readonly purchasesService: PurchasesService,
     ) { }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    @Roles(userType.ADMIN || userType.SUPERADMIN)
     @Post('subscribe/:id')
     @ApiOperation({ summary: 'Create Purchases' })
     @ApiCreatedResponse({
@@ -51,11 +57,15 @@ export class PurchasesController {
         return { url: session.url };
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Get('user/:id')
     async getSubscriptionByUser(@Param('id', ParseUUIDPipe) userId: string) {
         return this.purchasesService.getSubscriptionByUser(userId);
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Get()
     async getSubscriptions() {
         return this.purchasesService.getSubscriptions();

@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { InterestsService } from './interests.service';
 import { Interest } from './entities/interests.entity';
 import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { userType } from 'src/users/entities/user.entity';
 
 @ApiTags('Interests')
 @Controller('interests')
@@ -24,6 +27,8 @@ export class InterestsController {
     return this.interestsService.getAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Interests by ID' })
   @ApiOkResponse({
@@ -59,6 +64,8 @@ export class InterestsController {
     return this.interestsService.getById(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Interest' })
   @ApiCreatedResponse({
@@ -84,6 +91,8 @@ export class InterestsController {
     return this.interestsService.create(createInterestDTO);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Interest' })
   @ApiOkResponse({
@@ -122,6 +131,9 @@ export class InterestsController {
     return this.interestsService.update(id, updateInterestDTO);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete Interest' })
   @ApiOkResponse({ description: 'Interest deleted successfully.', schema: { example: 'Interest con ID ${id} eliminada correctamente' } })

@@ -6,22 +6,27 @@ import {
   HttpStatus,
   Get,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Chats')
 @Controller('chats')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(private readonly chatService: ChatService) { }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Chat' })
   @ApiCreatedResponse({
@@ -79,18 +84,24 @@ export class ChatController {
     };
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get('user-chats/:userId')
   async getUserChats(@Param('userId') userId: string) {
     const chats = await this.chatService.getChatsByUserId(userId);
     return chats; // Devolvemos los chats
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get('chat/:id')
   @ApiOperation({ summary: 'Get all Messages by Chat ID' })
   findAllMessageByChatId(@Param('id') id: string) {
     return this.chatService.findAllMessageByChatId(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':sender_id/:receiver_id')
   findAllChatsByUserId(
     @Param('sender_id') sender_id: string,

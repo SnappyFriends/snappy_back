@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Param, Get, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Delete, Param, Get, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { FollowService } from './follow.service';
 import {
     ApiOperation,
@@ -7,13 +7,17 @@ import {
     ApiNotFoundResponse,
     ApiTags,
     ApiCreatedResponse,
+    ApiBearerAuth,
 } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Follow')
 @Controller('follow')
 export class FollowController {
     constructor(private readonly followService: FollowService) { }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Post(':followerId/:followingId')
     @ApiOperation({ summary: 'Follow a user' })
     @ApiCreatedResponse({
@@ -54,6 +58,9 @@ export class FollowController {
         return this.followService.followUser(followerId, followingId);
     }
 
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Delete(':followerId/:followingId')
     @ApiOperation({ summary: 'Unfollow a user' })
     @ApiOkResponse({
@@ -89,6 +96,9 @@ export class FollowController {
         return this.followService.unfollowUser(followerId, followingId);
     }
 
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Get(':userId/followers')
     @ApiOperation({ summary: 'Get followers of a user' })
     @ApiOkResponse({
@@ -118,6 +128,8 @@ export class FollowController {
         return this.followService.getFollowers(userId);
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Get(':userId/following')
     @ApiOperation({ summary: 'Get users followed by a user' })
     @ApiOkResponse({
@@ -147,6 +159,8 @@ export class FollowController {
         return this.followService.getFollowing(userId);
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Get(':userId/friends')
     @ApiOperation({ summary: 'Get friends of a user' })
     @ApiOkResponse({
@@ -176,12 +190,14 @@ export class FollowController {
         return this.followService.getFriends(userId);
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
     @Get(':followerId/:followingId')
     @ApiOperation({ summary: 'Check if a user is following another user' })
     @ApiOkResponse({
         description: 'Returns whether the first user is following the second user.',
         schema: {
-            example: true, 
+            example: true,
         },
     })
     @ApiNotFoundResponse({

@@ -7,24 +7,30 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { CreateMessageDto } from './dto/create-message.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Messages')
 @Controller('messages')
 export class MessagesController {
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(private readonly messagesService: MessagesService) { }
 
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Messages' })
   @ApiCreatedResponse({
@@ -65,6 +71,8 @@ export class MessagesController {
     return this.messagesService.createMessage(createMessageDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Messages.' })
   @ApiOkResponse({
@@ -87,6 +95,8 @@ export class MessagesController {
     return this.messagesService.findAllMessage();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Message by ID' })
   @ApiOkResponse({
@@ -127,6 +137,8 @@ export class MessagesController {
     return this.messagesService.findOneMessage(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Message' })
   @ApiOkResponse({
@@ -160,6 +172,8 @@ export class MessagesController {
     return this.messagesService.updateMessage(id, updateMessageDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Message' })
   @ApiOkResponse({

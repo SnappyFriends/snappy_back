@@ -1,14 +1,19 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { userType } from 'src/users/entities/user.entity';
 
 @ApiTags('Comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) { }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Comment' })
   @ApiCreatedResponse({
@@ -56,6 +61,8 @@ export class CommentsController {
     return this.commentsService.createComment(createCommentDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Comments' })
   @ApiOkResponse({
@@ -78,6 +85,8 @@ export class CommentsController {
     return this.commentsService.findAllComments();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Comment by ID' })
   @ApiOkResponse({
@@ -120,6 +129,9 @@ export class CommentsController {
     return this.commentsService.findOneComment(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Comment' })
   @ApiOkResponse({
@@ -150,6 +162,9 @@ export class CommentsController {
     return this.commentsService.updateComment(id, updateCommentDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Comment' })
   @ApiOkResponse({ description: 'Comment deleted successfully.', schema: { example: 'Post with id ${commentId} deleted successfully' } })
