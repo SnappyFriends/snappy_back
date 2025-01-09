@@ -9,7 +9,7 @@ export class NodemailerController {
 
   @Post('sendMail')
   async sendEmail(
-    @Body() mailData: SendMailDTO): Promise<{ message: string }> {
+    @Body() mailData: SendMailDTO) {
     const { to, subject, text, html } = mailData;
     return this.nodemailerService.sendEmail(to, subject, text, html);
   }

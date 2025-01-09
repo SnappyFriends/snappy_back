@@ -138,6 +138,23 @@ export class AuthService {
 
     const token = this.jwtService.sign(jwtPayload);
 
+    const emailSubject = '¡Bienvenido a nuestra plataforma!';
+    const emailText = `Hola ${user.fullname}, gracias por registrarte con nosotros.`;
+    const emailHtml = `
+      <div style="text-align: center;">
+        <img src="https://snappyfriends.vercel.app/_next/image?url=%2Ffavicon.ico&w=64&q=75" alt="Logo" style="display: block; margin: 0 auto; width: 150px; height: auto;">
+      <h1>¡Bienvenido, ${user.fullname}!</h1>
+      <p>Gracias por unirte a nuestra plataforma SnappyFriends. Si tienes alguna pregunta, no dudes en contactarnos.</p>
+      </div>
+    `;
+
+    await this.nodemailerService.sendEmail(
+      user.email,
+      emailSubject,
+      emailText,
+      emailHtml);
+
     return { userId: user.id, token, user_type: user.user_type };
+
   }
 }
