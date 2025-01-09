@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsBoolean, IsOptional } from 'class-validator';
 
 export class CreateInterestDTO {
   @ApiProperty({
@@ -20,5 +20,16 @@ export class UpdateInterestDTO {
   })
   @IsString()
   @IsNotEmpty()
+  @IsOptional()
   name: string;
+
+  @ApiProperty({
+    type: Boolean,
+    description: 'defines if the interest is active',
+    example: true,
+    default: true
+  })
+  @IsBoolean()
+  @IsOptional()
+  active: boolean;
 }

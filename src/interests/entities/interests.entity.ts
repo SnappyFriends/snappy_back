@@ -11,4 +11,10 @@ export class Interest {
 
   @ManyToMany(() => User, (user) => user.interests)
   users: User[];
+
+  @Column({
+    type: 'boolean',
+    default: true
+  })
+  active: boolean;
 }

@@ -15,7 +15,7 @@ const configTypeORM = {
   migrations: ['dist/**/migrations/*{.ts,.js}'],
   autoLoadEntities: true,
   dropSchema: (process.env.DB_DROP === 'true' ? true : false) || false,
-  synchronize: true,
+  synchronize: (process.env.DB_SYNC === 'true' ? true : false) || false,
   logging: (process.env.DB_LOGGING === 'true' ? true : false) || false,
 };
 
