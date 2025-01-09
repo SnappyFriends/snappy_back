@@ -33,7 +33,6 @@ export class ChatGroupsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Post()
   @ApiOperation({ summary: 'Create Chat-Groups' })
   @ApiCreatedResponse({
@@ -161,7 +160,6 @@ export class ChatGroupsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Chat-Groups' })
   @ApiOkResponse({
@@ -197,7 +195,6 @@ export class ChatGroupsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Chat-Groups' })
   @ApiOkResponse({

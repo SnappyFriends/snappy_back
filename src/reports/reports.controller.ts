@@ -57,7 +57,7 @@ export class ReportsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Get()
   @ApiOperation({ summary: 'Get all Reports.' })
   @ApiOkResponse({
@@ -134,7 +134,7 @@ export class ReportsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Report' })
   @ApiOkResponse({ description: 'Report deleted successfully.', schema: { example: 'Report deleted successfully.' } })

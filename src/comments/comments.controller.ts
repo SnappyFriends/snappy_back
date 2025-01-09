@@ -131,7 +131,6 @@ export class CommentsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Comment' })
   @ApiOkResponse({
@@ -164,7 +163,6 @@ export class CommentsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Comment' })
   @ApiOkResponse({ description: 'Comment deleted successfully.', schema: { example: 'Post with id ${commentId} deleted successfully' } })

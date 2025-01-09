@@ -183,7 +183,6 @@ export class NotificationsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Notification for ID' })
   @ApiOkResponse({
@@ -228,7 +227,6 @@ export class NotificationsController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Notification' })
   @ApiOkResponse({ description: 'Notification deleted successfully.', schema: { example: 'Notificación con id ${id} borrada correctamente.' } })
