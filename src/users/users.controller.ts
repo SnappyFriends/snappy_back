@@ -13,7 +13,6 @@ import { UsersService } from './users.service';
 import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -23,8 +22,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+
 @ApiTags('Users')
-@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
@@ -124,6 +123,7 @@ export class UsersController {
       },
     },
   })
+
   async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserById(id);
   }
@@ -186,6 +186,7 @@ export class UsersController {
       },
     },
   })
+
   async getUserByUsername(@Param('usernameId') username: string) {
     return this.usersService.getUserByUsername(username);
   }
@@ -237,6 +238,7 @@ export class UsersController {
     };
   }
 
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
   @ApiOkResponse({
@@ -256,6 +258,7 @@ export class UsersController {
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }
+
 
   @Post(':userId/assign-interest/:interestId')
   @ApiOperation({ summary: 'Assign interests to User' })
@@ -346,6 +349,7 @@ export class UsersController {
   ) {
     return this.usersService.removeInterestToUser(userId, interestId);
   }
+
 
   @Get(':user1/distance/:user2')
   @ApiOperation({ summary: 'Get the distance between two users' })

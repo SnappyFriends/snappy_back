@@ -6,12 +6,14 @@ import {
   Param,
   Put,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { GroupMembersService } from '../group-members/group-members.service';
 import { CreateGroupMemberDto } from '../dto/create-group-member.dto';
 import { UpdateGroupMemberDto } from '../dto/update-group-member.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -20,12 +22,15 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Group-Menbers')
 @Controller('group-members')
 export class GroupMembersController {
-  constructor(private readonly groupMembersService: GroupMembersService) {}
+  constructor(private readonly groupMembersService: GroupMembersService) { }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create group-members' })
   @ApiCreatedResponse({
@@ -70,6 +75,8 @@ export class GroupMembersController {
     return this.groupMembersService.create(createGroupMemberDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all group-members.' })
   @ApiOkResponse({
@@ -93,11 +100,15 @@ export class GroupMembersController {
     return this.groupMembersService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':group_id')
   findAllMemberByGroupId(@Param('group_id', ParseUUIDPipe) group_id: string) {
     return this.groupMembersService.findAllMemberByGroupId(group_id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':group_id/user_id')
   @ApiOperation({ summary: 'Search for Chat-Groups by ID' })
   @ApiOkResponse({
@@ -140,6 +151,8 @@ export class GroupMembersController {
     return this.groupMembersService.findOne(group_id, user_id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id/role/:group_id')
   @ApiOperation({ summary: 'Modify Group-members' })
   @ApiOkResponse({
@@ -191,6 +204,8 @@ export class GroupMembersController {
     return this.groupMembersService.update(id, updateGroupMemberDto, group_id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put('/requests/:requestId')
   @ApiNotFoundResponse({
     description: 'Error: Not Found.',
@@ -214,6 +229,8 @@ export class GroupMembersController {
     return updatedRequest;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id/remove-from-admin/:group_id')
   removeFromAdmin(
     @Param('id', ParseUUIDPipe) id: string,
@@ -222,6 +239,8 @@ export class GroupMembersController {
     return this.groupMembersService.removeFromAdmin(id, group_id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id/leave-group/:group_id')
   leaveGroup(
     @Param('id', ParseUUIDPipe) id: string,

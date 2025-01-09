@@ -7,17 +7,24 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { userType } from 'src/users/entities/user.entity';
 
 @ApiTags('Notifications')
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) { }
 
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Notification' })
   @ApiCreatedResponse({
@@ -61,6 +68,8 @@ export class NotificationsController {
     return this.notificationsService.create(createNotificationDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Notifications' })
   @ApiOkResponse({
@@ -82,6 +91,8 @@ export class NotificationsController {
     return this.notificationsService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Notification by ID' })
   @ApiOkResponse({
@@ -123,11 +134,15 @@ export class NotificationsController {
     return this.notificationsService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get('/user/:id')
   findByUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.notificationsService.findByUser(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id/mark-as-read')
   @ApiOperation({ summary: 'Modify Notification mark-as-read' })
   @ApiOkResponse({
@@ -166,6 +181,8 @@ export class NotificationsController {
     return this.notificationsService.markAsRead(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Notification for ID' })
   @ApiOkResponse({
@@ -208,6 +225,8 @@ export class NotificationsController {
     return this.notificationsService.update(id, updateNotificationDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Notification' })
   @ApiOkResponse({ description: 'Notification deleted successfully.', schema: { example: 'Notificación con id ${id} borrada correctamente.' } })

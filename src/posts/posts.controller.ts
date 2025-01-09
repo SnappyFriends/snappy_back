@@ -9,12 +9,14 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { UpdatePostDto } from './dto/update-post-dto';
 import { CreatePostDto } from './dto/create-post-dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiConsumes,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -23,12 +25,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { userType } from 'src/users/entities/user.entity';
 
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) { }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
   @ApiOkResponse({
@@ -50,6 +57,8 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Posts by ID' })
   @ApiOkResponse({
@@ -90,6 +99,8 @@ export class PostsController {
     return this.postsService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('fileImg'))
   @ApiConsumes('multipart/form-data')
@@ -127,6 +138,8 @@ export class PostsController {
     return this.postsService.create(createPostDto, fileImg);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Post' })
   @ApiOkResponse({
@@ -158,6 +171,8 @@ export class PostsController {
     return this.postsService.update(id, updatePostDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Post' })
   @ApiOkResponse({

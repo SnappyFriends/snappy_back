@@ -6,17 +6,21 @@ import {
   Param,
   Put,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { PrivacyService } from './privacy.service';
 import { CreatePrivacyDto } from './dto/create-privacy.dto';
 import { UpdatePrivacyDto } from './dto/update-privacy.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Privacy')
 @Controller('privacy')
 export class PrivacyController {
   constructor(private readonly privacyService: PrivacyService) { }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post(':userId')
   @ApiOperation({ summary: 'Create Privacy' })
   @ApiCreatedResponse({
@@ -61,6 +65,8 @@ export class PrivacyController {
     return this.privacyService.create(userId, createPrivacyDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Privacy by ID' })
   @ApiOkResponse({
@@ -100,6 +106,8 @@ export class PrivacyController {
     return this.privacyService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Privacy' })
   @ApiOkResponse({

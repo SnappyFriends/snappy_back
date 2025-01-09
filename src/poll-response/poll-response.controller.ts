@@ -7,16 +7,21 @@ import {
   Delete,
   ParseUUIDPipe,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { PollResponseService } from './poll-response.service';
 import { CreatePollResponseDto } from './dto/create-poll-response.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Poll Response')
 @Controller('poll-response')
 export class PollResponseController {
   constructor(private readonly pollResponseService: PollResponseService) { }
 
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post(':poll_id')
   @ApiOperation({ summary: 'Create Polls Response' })
   @ApiCreatedResponse({
@@ -83,6 +88,8 @@ export class PollResponseController {
     return this.pollResponseService.create(poll_id, createPollResponseDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Polls-response by ID' })
   @ApiNotFoundResponse({
@@ -119,7 +126,9 @@ export class PollResponseController {
     return this.pollResponseService.findOne(id);
   }
 
-
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Delete(':id')
   @ApiOperation({ summary: 'Delete a Poll-response' })
   @ApiOkResponse({
     description: 'Poll-response deleted successfully.', schema: { example: 'Poll Response with id ${id} deleted successfully' }
@@ -144,7 +153,6 @@ export class PollResponseController {
       }
     }
   })
-  @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.pollResponseService.remove(id);
   }

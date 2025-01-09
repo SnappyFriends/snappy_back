@@ -4,12 +4,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Report } from './entities/report.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 
 @Injectable()
 export class ReportsService {
   constructor(
     @InjectRepository(Report) private reportsRepository: Repository<Report>,
-    @InjectRepository(User) private usersRepository: Repository<User>
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    private readonly nodemailerService: NodemailerService
   ) { }
 
   async create(reportsData: CreateReportDto) {
@@ -28,7 +30,32 @@ export class ReportsService {
       reporting_user: { id: reporting },
       reported_user: { id: reported },
     });
-    return this.reportsRepository.save(report);
+
+    const savedReport = this.reportsRepository.save(report);
+
+    const subject = 'Has sido reportado';
+    const text = `Has sido reportado por violar las normas de la comunidad. Motivo del reporte: ${description}`;
+    const html = `
+      <div style="text-align: center;">
+      <img src="https://snappyfriends.vercel.app/_next/image?url=%2Ffavicon.ico&w=64&q=75" alt="Logo" style="display: block; margin: 0 auto; width: 150px; height: auto;">
+      <p>Hola <strong>${reportedUser.fullname}</strong>,</p>
+      <p>Has sido reportado por violar las normas de la comunidad.</p>
+      <p><strong>Motivo del reporte:</strong> ${description}</p>
+      <p>Por favor, revisa las normas de la comunidad y asegúrate de cumplirlas para evitar sanciones.</p>
+      </div>
+    `;
+
+    try {
+      await this.nodemailerService.sendEmail(
+        reportedUser.email,
+        subject,
+        text,
+        html);
+    } catch (error) {
+      console.error('Error al enviar el correo:', error.message);
+    }
+
+    return savedReport
   }
 
   async findAll() {

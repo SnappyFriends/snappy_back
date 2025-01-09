@@ -69,15 +69,17 @@ export class AuthService {
     const payload = {
       id: foundUser.id,
       email: foundUser.email,
-      user_type: foundUser.user_type
+      user_type: foundUser.user_type,
+      user_status: foundUser.status
     }
 
     const token = this.jwtService.sign(payload);
 
     const userId = payload.id
     const user_type = payload.user_type
+    const user_status = payload.user_status
 
-    return { userId, token, user_type, message: "Iniciaste sesión satisfactoriamente." };
+    return { userId, token, user_type, user_status, message: "Iniciaste sesión satisfactoriamente." };
   }
 
   async verifyGoogleToken(token: string) {
@@ -110,11 +112,12 @@ export class AuthService {
         id: user.id,
         email: user.email,
         user_type: user.user_type,
+        user_status: user.status
       };
 
       const token = this.jwtService.sign(jwtPayload);
 
-      return { userId: user.id, token, user_type: user.user_type };
+      return { userId: user.id, token, user_type: user.user_type, user_status: user.status };
     }
 
     return { email, googleId, picture, fullname: name };
@@ -138,6 +141,23 @@ export class AuthService {
 
     const token = this.jwtService.sign(jwtPayload);
 
+    const emailSubject = '¡Bienvenido a nuestra plataforma!';
+    const emailText = `Hola ${user.fullname}, gracias por registrarte con nosotros.`;
+    const emailHtml = `
+      <div style="text-align: center;">
+        <img src="https://snappyfriends.vercel.app/_next/image?url=%2Ffavicon.ico&w=64&q=75" alt="Logo" style="display: block; margin: 0 auto; width: 150px; height: auto;">
+      <h1>¡Bienvenido, ${user.fullname}!</h1>
+      <p>Gracias por unirte a nuestra plataforma SnappyFriends. Si tienes alguna pregunta, no dudes en contactarnos.</p>
+      </div>
+    `;
+
+    await this.nodemailerService.sendEmail(
+      user.email,
+      emailSubject,
+      emailText,
+      emailHtml);
+
     return { userId: user.id, token, user_type: user.user_type };
+
   }
 }
