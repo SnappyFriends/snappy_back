@@ -61,6 +61,7 @@ export class UsersSeederService implements OnModuleInit {
             profile_image: '/no_img.png',
             birthdate: '2000-01-01',
             genre: 'SNAPPY',
+            isAdmin: true,
             user_type: userType.SUPERADMIN
         });
 

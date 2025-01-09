@@ -97,6 +97,12 @@ export class User {
   user_type: userType;
 
   @Column({
+    type: 'boolean',
+    default: false
+  })
+  isAdmin: boolean;
+
+  @Column({
     type: 'enum',
     enum: userStatus,
     nullable: false,
