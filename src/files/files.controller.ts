@@ -9,9 +9,6 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 export class FilesController {
   constructor(private readonly filesService: FilesService) { }
 
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post('/uploadProfileImage/:userId')
   @ApiOperation({ summary: 'Add Files' })
   @ApiCreatedResponse({

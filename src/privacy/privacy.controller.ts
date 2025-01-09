@@ -19,8 +19,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 export class PrivacyController {
   constructor(private readonly privacyService: PrivacyService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Post(':userId')
   @ApiOperation({ summary: 'Create Privacy' })
   @ApiCreatedResponse({
@@ -65,8 +64,7 @@ export class PrivacyController {
     return this.privacyService.create(userId, createPrivacyDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Get(':id')
   @ApiOperation({ summary: 'Search for Privacy by ID' })
   @ApiOkResponse({
@@ -106,8 +104,6 @@ export class PrivacyController {
     return this.privacyService.findOne(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Privacy' })
   @ApiOkResponse({

@@ -14,8 +14,6 @@ export class PurchasesController {
         private readonly purchasesService: PurchasesService,
     ) { }
 
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard)
     @Post('subscribe/:id')
     @ApiOperation({ summary: 'Create Purchases' })
     @ApiCreatedResponse({
@@ -56,15 +54,12 @@ export class PurchasesController {
         return { url: session.url };
     }
 
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard)
     @Get('user/:id')
     async getSubscriptionByUser(@Param('id', ParseUUIDPipe) userId: string) {
         return this.purchasesService.getSubscriptionByUser(userId);
     }
 
-    @ApiBearerAuth()
-    @UseGuards(AuthGuard)
+
     @Get()
     async getSubscriptions() {
         return this.purchasesService.getSubscriptions();

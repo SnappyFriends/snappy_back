@@ -12,8 +12,6 @@ import { userType } from 'src/users/entities/user.entity';
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Comment' })
   @ApiCreatedResponse({
@@ -61,8 +59,6 @@ export class CommentsController {
     return this.commentsService.createComment(createCommentDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Comments' })
   @ApiOkResponse({
@@ -85,8 +81,6 @@ export class CommentsController {
     return this.commentsService.findAllComments();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Comment by ID' })
   @ApiOkResponse({
@@ -129,8 +123,6 @@ export class CommentsController {
     return this.commentsService.findOneComment(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Comment' })
   @ApiOkResponse({
@@ -161,8 +153,6 @@ export class CommentsController {
     return this.commentsService.updateComment(id, updateCommentDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Comment' })
   @ApiOkResponse({ description: 'Comment deleted successfully.', schema: { example: 'Post with id ${commentId} deleted successfully' } })

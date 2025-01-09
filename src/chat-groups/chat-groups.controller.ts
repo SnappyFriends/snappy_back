@@ -31,8 +31,6 @@ import { userType } from 'src/users/entities/user.entity';
 export class ChatGroupsController {
   constructor(private readonly chatGroupsService: ChatGroupsService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Chat-Groups' })
   @ApiCreatedResponse({
@@ -81,8 +79,6 @@ export class ChatGroupsController {
     return this.chatGroupsService.create(createChatGroupDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Chat-Groups.' })
   @ApiOkResponse({
@@ -102,22 +98,17 @@ export class ChatGroupsController {
     return this.chatGroupsService.findAll();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Get(':user_id/chats')
   getAllGroupsByUserId(@Param('user_id', ParseUUIDPipe) user_id: string) {
     return this.chatGroupsService.getAllGroupsByUserId(user_id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get('chats/:group_id')
   getAllMessagesByGroupId(@Param('group_id', ParseUUIDPipe) group_id: string) {
     return this.chatGroupsService.getAllMessagesByGroupId(group_id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Chat-Groups by ID' })
   @ApiOkResponse({
@@ -158,8 +149,7 @@ export class ChatGroupsController {
     return this.chatGroupsService.findOne(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Put(':id')
   @ApiOperation({ summary: 'Modify Chat-Groups' })
   @ApiOkResponse({
@@ -193,8 +183,7 @@ export class ChatGroupsController {
     return this.chatGroupsService.update(id, updateChatGroupDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Chat-Groups' })
   @ApiOkResponse({

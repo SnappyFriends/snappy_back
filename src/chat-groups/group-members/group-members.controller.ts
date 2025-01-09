@@ -29,8 +29,6 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 export class GroupMembersController {
   constructor(private readonly groupMembersService: GroupMembersService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create group-members' })
   @ApiCreatedResponse({
@@ -75,8 +73,6 @@ export class GroupMembersController {
     return this.groupMembersService.create(createGroupMemberDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all group-members.' })
   @ApiOkResponse({
@@ -100,15 +96,11 @@ export class GroupMembersController {
     return this.groupMembersService.findAll();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get(':group_id')
   findAllMemberByGroupId(@Param('group_id', ParseUUIDPipe) group_id: string) {
     return this.groupMembersService.findAllMemberByGroupId(group_id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get(':group_id/user_id')
   @ApiOperation({ summary: 'Search for Chat-Groups by ID' })
   @ApiOkResponse({
@@ -151,8 +143,6 @@ export class GroupMembersController {
     return this.groupMembersService.findOne(group_id, user_id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Put(':id/role/:group_id')
   @ApiOperation({ summary: 'Modify Group-members' })
   @ApiOkResponse({
@@ -204,8 +194,7 @@ export class GroupMembersController {
     return this.groupMembersService.update(id, updateGroupMemberDto, group_id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Put('/requests/:requestId')
   @ApiNotFoundResponse({
     description: 'Error: Not Found.',

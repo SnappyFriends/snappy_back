@@ -11,18 +11,13 @@ import {
 import { PollsService } from './polls.service';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { Roles } from 'src/decorators/roles.decorator';
-import { userType } from 'src/users/entities/user.entity';
+
 
 @ApiTags('Polls')
 @Controller('polls')
 export class PollsController {
   constructor(private readonly pollsService: PollsService) { }
 
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
 
   @Post(':id')
   @ApiOperation({ summary: 'Create Polls' })
@@ -77,8 +72,6 @@ export class PollsController {
     return this.pollsService.create(id, createPollDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Polls' })
   @ApiOkResponse({
@@ -103,8 +96,7 @@ export class PollsController {
     return this.pollsService.findAll();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Get('/:poll_id')
   @ApiOperation({ summary: 'Search for Polls by ID' })
   @ApiOkResponse({
@@ -139,8 +131,7 @@ export class PollsController {
     return this.pollsService.findOne(poll_id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Poll' })
