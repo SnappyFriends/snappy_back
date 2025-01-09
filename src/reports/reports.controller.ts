@@ -1,13 +1,18 @@
-import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/reports.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { userType } from 'src/users/entities/user.entity';
 
 @ApiTags('Reports')
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) { }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Reports' })
   @ApiCreatedResponse({
@@ -50,6 +55,9 @@ export class ReportsController {
     return this.reportsService.create(createReportDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Get()
   @ApiOperation({ summary: 'Get all Reports.' })
   @ApiOkResponse({
@@ -76,6 +84,8 @@ export class ReportsController {
     return this.reportsService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Report by ID' })
   @ApiOkResponse({
@@ -122,6 +132,9 @@ export class ReportsController {
     return this.reportsService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Report' })
   @ApiOkResponse({ description: 'Report deleted successfully.', schema: { example: 'Report deleted successfully.' } })

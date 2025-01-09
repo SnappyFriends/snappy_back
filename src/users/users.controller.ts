@@ -8,6 +8,7 @@ import {
   Put,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
@@ -22,13 +23,18 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { userType } from './entities/user.entity';
 
 @ApiTags('Users')
-@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  @ApiBearerAuth()
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Get()
   @ApiOperation({ summary: 'Get all Users.' })
   @ApiOkResponse({
@@ -64,10 +70,12 @@ export class UsersController {
       ],
     },
   })
+  @UseGuards(AuthGuard, RolesGuard)
   async getUsers(@Query() filters: GetUsersDTO) {
     return this.usersService.getUsers(filters);
   }
 
+  @ApiBearerAuth()
   @Get(':id')
   @ApiOperation({ summary: 'Search for Users by ID' })
   @ApiOkResponse({
@@ -124,10 +132,12 @@ export class UsersController {
       },
     },
   })
+  @UseGuards(AuthGuard)
   async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserById(id);
   }
 
+  @ApiBearerAuth()
   @Get('username/:usernameId')
   @ApiOperation({ summary: '"Search username' })
   @ApiOkResponse({
@@ -186,10 +196,13 @@ export class UsersController {
       },
     },
   })
+  @UseGuards(AuthGuard)
   async getUserByUsername(@Param('usernameId') username: string) {
     return this.usersService.getUserByUsername(username);
   }
 
+  @ApiBearerAuth()
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Put(':id')
   @ApiOperation({ summary: 'Modify User' })
   @ApiOkResponse({
@@ -225,6 +238,7 @@ export class UsersController {
       },
     },
   })
+  @UseGuards(AuthGuard)
   async updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() userData: UpdateUserDTO,
@@ -237,6 +251,9 @@ export class UsersController {
     };
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
   @ApiOkResponse({
@@ -257,6 +274,9 @@ export class UsersController {
     return this.usersService.deleteUser(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Post(':userId/assign-interest/:interestId')
   @ApiOperation({ summary: 'Assign interests to User' })
   @ApiCreatedResponse({
@@ -302,6 +322,9 @@ export class UsersController {
     return this.usersService.assignInterestToUser(userId, interestId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(userType.ADMIN || userType.SUPERADMIN)
   @Post(':userId/remove-interest/:interestId')
   @ApiOperation({ summary: 'Remove interests to User' })
   @ApiCreatedResponse({
@@ -347,6 +370,8 @@ export class UsersController {
     return this.usersService.removeInterestToUser(userId, interestId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':user1/distance/:user2')
   @ApiOperation({ summary: 'Get the distance between two users' })
   @ApiResponse({

@@ -1,13 +1,17 @@
-import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFile, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseInterceptors, UploadedFile, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { StoriesService } from './stories.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBadRequestResponse, ApiConsumes, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiConsumes, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { CreateStoryDTO } from './dto/stories.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('stories')
 export class StoriesController {
   constructor(private readonly storiesService: StoriesService) { }
 
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('fileImg'))
   @ApiConsumes('multipart/form-data')
@@ -45,6 +49,8 @@ export class StoriesController {
     return this.storiesService.create(storyData, fileImg);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all stories' })
   @ApiOkResponse({
@@ -82,6 +88,8 @@ export class StoriesController {
     return this.storiesService.findAll();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search stories by ID' })
   @ApiOkResponse({
@@ -125,11 +133,15 @@ export class StoriesController {
     return this.storiesService.findOne(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get('user/:id')
   findByUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.storiesService.findByUser(id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Story' })
   @ApiOkResponse({
