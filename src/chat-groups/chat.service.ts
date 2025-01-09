@@ -27,15 +27,20 @@ export class ChatService {
     const friendsUsers = await this.followService.getFriends(userId);
 
     let friendsIds = friendsUsers.map((friend) => friend.id);
+    const usersWithChats = await this.getChatsByUserId(userId);
+
+    const usersIds = usersWithChats.flatMap((user) =>
+      user.participants.map((participant) => participant.id),
+    );
 
     friendsIds = [...friendsIds, userId];
 
+    const excludedIds = [...new Set([...friendsIds, ...usersIds])];
+
     const filteredUsers = await this.userRepository.find({
-      where: { id: Not(In(friendsIds)) },
+      where: { id: Not(In(excludedIds)) },
     });
 
-    console.log('friends IDS', friendsIds);
-    console.log(filteredUsers);
     return filteredUsers;
   }
 

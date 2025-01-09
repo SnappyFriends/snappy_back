@@ -1,20 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseUUIDPipe,
+  Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
-import { ChatGroupsService } from './chat-groups.service';
-import { CreateChatGroupDto } from './dto/create-chat-group.dto';
-import { UpdateChatGroupDto } from './dto/update-chat-group.dto';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -22,12 +17,14 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-
+import { ChatGroupsService } from './chat-groups.service';
+import { CreateChatGroupDto } from './dto/create-chat-group.dto';
+import { UpdateChatGroupDto } from './dto/update-chat-group.dto';
 
 @ApiTags('Chat-Groups')
 @Controller('chat-groups')
 export class ChatGroupsController {
-  constructor(private readonly chatGroupsService: ChatGroupsService) { }
+  constructor(private readonly chatGroupsService: ChatGroupsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create Chat-Groups' })
@@ -96,7 +93,6 @@ export class ChatGroupsController {
     return this.chatGroupsService.findAll();
   }
 
-
   @Get(':user_id/chats')
   getAllGroupsByUserId(@Param('user_id', ParseUUIDPipe) user_id: string) {
     return this.chatGroupsService.getAllGroupsByUserId(user_id);
@@ -147,7 +143,6 @@ export class ChatGroupsController {
     return this.chatGroupsService.findOne(id);
   }
 
-
   @Put(':id')
   @ApiOperation({ summary: 'Modify Chat-Groups' })
   @ApiOkResponse({
@@ -180,7 +175,6 @@ export class ChatGroupsController {
   ) {
     return this.chatGroupsService.update(id, updateChatGroupDto);
   }
-
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Chat-Groups' })

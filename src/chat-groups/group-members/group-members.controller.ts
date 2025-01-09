@@ -1,16 +1,12 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
   Param,
-  Put,
   ParseUUIDPipe,
-  UseGuards,
+  Post,
+  Put,
 } from '@nestjs/common';
-import { GroupMembersService } from '../group-members/group-members.service';
-import { CreateGroupMemberDto } from '../dto/create-group-member.dto';
-import { UpdateGroupMemberDto } from '../dto/update-group-member.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -21,12 +17,14 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { CreateGroupMemberDto } from '../dto/create-group-member.dto';
+import { UpdateGroupMemberDto } from '../dto/update-group-member.dto';
+import { GroupMembersService } from '../group-members/group-members.service';
 
 @ApiTags('Group-Menbers')
 @Controller('group-members')
 export class GroupMembersController {
-  constructor(private readonly groupMembersService: GroupMembersService) { }
+  constructor(private readonly groupMembersService: GroupMembersService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create group-members' })
@@ -192,7 +190,6 @@ export class GroupMembersController {
   ) {
     return this.groupMembersService.update(id, updateGroupMemberDto, group_id);
   }
-
 
   @Put('/requests/:requestId')
   @ApiNotFoundResponse({

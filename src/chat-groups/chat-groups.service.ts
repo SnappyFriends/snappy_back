@@ -193,7 +193,7 @@ export class ChatGroupsService {
   async getAllGroupsByUserId(user_id: string) {
     const userGroupsFound = await this.groupMembersRepository.find({
       where: { user_id },
-      relations: ['group'],
+      relations: ['group', 'group.messages'],
     });
 
     return userGroupsFound;

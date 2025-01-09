@@ -121,6 +121,7 @@ export class ChatGateway
       const message = await this.messageService.createMessage(payload);
 
       if (payload.groupId) {
+        console.log('Mensaje grupal recibido:', message);
         this.server.to(payload.groupId).emit('receiveGroupMessage', message);
       } else if (payload.chatId) {
         console.log(
@@ -128,6 +129,7 @@ export class ChatGateway
         );
 
         payload.messageReceivers.forEach((receiverId) => {
+          console.log('Mensaje privado recibido:', message);
           this.server.to(receiverId).emit('receivePrivateMessage', message);
 
           this.notificationsService
