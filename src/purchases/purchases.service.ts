@@ -22,8 +22,7 @@ export class PurchasesService {
     sessionId: string,
   ) {
     const user = await this.usersRepository.findOne({
-      where: { id: userId },
-      relations: ['user']
+      where: { id: userId }
     });
 
     if (!user) {
@@ -51,7 +50,10 @@ export class PurchasesService {
   }
 
   async getSubscriptionByUser(userId) {
-    const subscriptionFound = await this.purchaseRepository.findOne({ where: { user: { id: userId } } });
+    const subscriptionFound = await this.purchaseRepository.findOne({ 
+      where: { user: { id: userId } }, 
+      relations: ['user'] 
+    });
     if(!subscriptionFound) throw new NotFoundException("Subscription not found");
 
     return subscriptionFound;
