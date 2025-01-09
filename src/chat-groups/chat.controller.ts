@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Get,
   Param,
+  ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
@@ -23,7 +24,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 @ApiTags('Chats')
 @Controller('chats')
 export class ChatController {
-  constructor(private readonly chatService: ChatService) { }
+  constructor(private readonly chatService: ChatService) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
@@ -82,6 +83,11 @@ export class ChatController {
         id: userIds.id,
       })),
     };
+  }
+
+  @Get('filteredUsers/:userId')
+  async getFilteredUsers(@Param('userId', ParseUUIDPipe) userId: string) {
+    return this.chatService.getFilteredUsers(userId);
   }
 
   @ApiBearerAuth()

@@ -12,14 +12,13 @@ import * as bcrypt from 'bcrypt';
 import { Interest } from 'src/interests/entities/interests.entity';
 import { getDistance } from 'geolib';
 
-
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     @InjectRepository(Interest)
     private interestsRepository: Repository<Interest>,
-  ) { }
+  ) {}
 
   async getUsers(filters: GetUsersDTO) {
     const { page = 1, limit = 10, interests, username } = filters;
@@ -27,6 +26,9 @@ export class UsersService {
     const queryBuilder = this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.interests', 'interest')
+      .leftJoinAndSelect('user.chats', 'chats')
+      .leftJoinAndSelect('user.followers', 'followers')
+      .leftJoinAndSelect('user.following', 'following')
       .skip((page - 1) * limit)
       .take(limit);
 
