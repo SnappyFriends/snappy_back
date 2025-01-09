@@ -88,7 +88,6 @@ export class ChatController {
     return this.chatService.getFilteredUsers(userId);
   }
 
-  @ApiBearerAuth()
   @Get('user-chats/:userId')
   async getUserChats(@Param('userId') userId: string) {
     const chats = await this.chatService.getChatsByUserId(userId);

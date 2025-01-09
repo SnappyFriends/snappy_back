@@ -19,7 +19,7 @@ import {
 @ApiTags('Follow')
 @Controller('follow')
 export class FollowController {
-  constructor(private readonly followService: FollowService) {}
+  constructor(private readonly followService: FollowService) { }
 
   @Post(':followerId/:followingId')
   @ApiOperation({ summary: 'Follow a user' })
