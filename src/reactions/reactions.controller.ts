@@ -21,8 +21,6 @@ import { userType } from 'src/users/entities/user.entity';
 export class ReactionsController {
   constructor(private readonly reactionsService: ReactionsService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post(':post_id')
   @ApiOperation({ summary: 'Create Reactions' })
   @ApiCreatedResponse({
@@ -73,8 +71,6 @@ export class ReactionsController {
     return this.reactionsService.create(id, createReactionDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Reactions.' })
   @ApiOkResponse({
@@ -100,8 +96,7 @@ export class ReactionsController {
     return this.reactionsService.findAll();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Get(':id')
   @ApiOperation({ summary: 'Search for Reactions by ID' })
   @ApiOkResponse({
@@ -147,9 +142,6 @@ export class ReactionsController {
     return this.reactionsService.findOne(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-
   @Put(':id')
   @ApiOperation({ summary: 'Modify Reaction' })
   @ApiOkResponse({
@@ -184,8 +176,7 @@ export class ReactionsController {
     return this.reactionsService.update(id, updateReactionDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Reaction' })

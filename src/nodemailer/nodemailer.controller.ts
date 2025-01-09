@@ -9,8 +9,6 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 export class NodemailerController {
   constructor(private readonly nodemailerService: NodemailerService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post('sendMail')
   async sendEmail(
     @Body() mailData: SendMailDTO) {

@@ -11,8 +11,6 @@ import { userType } from 'src/users/entities/user.entity';
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Reports' })
   @ApiCreatedResponse({
@@ -55,8 +53,7 @@ export class ReportsController {
     return this.reportsService.create(createReportDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
 
   @Get()
   @ApiOperation({ summary: 'Get all Reports.' })
@@ -84,8 +81,6 @@ export class ReportsController {
     return this.reportsService.findAll();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Report by ID' })
   @ApiOkResponse({
@@ -132,8 +127,6 @@ export class ReportsController {
     return this.reportsService.findOne(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Report' })

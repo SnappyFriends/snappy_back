@@ -11,31 +11,22 @@ import { userType } from 'src/users/entities/user.entity';
 export class AdminController {
   constructor(private readonly logsService: LogsService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post()
   async createLog(@Body() createLogDto: CreateLogDto) {
     return this.logsService.createLog(createLogDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
 
   @Get('/admin')
   async getLogs(@Query() filterLogsDto: FilterDto) {
     return this.logsService.getLogs(filterLogsDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
 
   @Get('user-reports')
   async getUserReports() {
     return this.logsService.getUsersReports()
   }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
 
   @Get('/users/metrics')
   async getLogsUsers(@Query() filterLogsDto: FilterDto) {

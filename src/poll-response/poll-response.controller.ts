@@ -19,9 +19,6 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 export class PollResponseController {
   constructor(private readonly pollResponseService: PollResponseService) { }
 
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post(':poll_id')
   @ApiOperation({ summary: 'Create Polls Response' })
   @ApiCreatedResponse({
@@ -88,8 +85,6 @@ export class PollResponseController {
     return this.pollResponseService.create(poll_id, createPollResponseDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Polls-response by ID' })
   @ApiNotFoundResponse({
@@ -126,8 +121,6 @@ export class PollResponseController {
     return this.pollResponseService.findOne(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Poll-response' })
   @ApiOkResponse({

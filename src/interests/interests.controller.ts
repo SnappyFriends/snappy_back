@@ -25,8 +25,6 @@ export class InterestsController {
     return this.interestsService.getAll();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Interests by ID' })
   @ApiOkResponse({
@@ -62,8 +60,6 @@ export class InterestsController {
     return this.interestsService.getById(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Interest' })
   @ApiCreatedResponse({
@@ -89,8 +85,6 @@ export class InterestsController {
     return this.interestsService.create(createInterestDTO);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Interest' })
   @ApiOkResponse({
@@ -129,8 +123,6 @@ export class InterestsController {
     return this.interestsService.update(id, updateInterestDTO);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete Interest' })
   @ApiOkResponse({ description: 'Interest deleted successfully.', schema: { example: 'Interest con ID ${id} eliminada correctamente' } })

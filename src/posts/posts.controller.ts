@@ -34,8 +34,7 @@ import { userType } from 'src/users/entities/user.entity';
 export class PostsController {
   constructor(private readonly postsService: PostsService) { }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Get()
   @ApiOperation({ summary: 'Get all posts' })
   @ApiOkResponse({
@@ -57,8 +56,7 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Get(':id')
   @ApiOperation({ summary: 'Search for Posts by ID' })
   @ApiOkResponse({
@@ -99,8 +97,7 @@ export class PostsController {
     return this.postsService.findOne(id);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+
   @Post()
   @UseInterceptors(FileInterceptor('fileImg'))
   @ApiConsumes('multipart/form-data')
@@ -138,8 +135,6 @@ export class PostsController {
     return this.postsService.create(createPostDto, fileImg);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Post' })
   @ApiOkResponse({
@@ -171,8 +166,6 @@ export class PostsController {
     return this.postsService.update(id, updatePostDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Post' })
   @ApiOkResponse({
