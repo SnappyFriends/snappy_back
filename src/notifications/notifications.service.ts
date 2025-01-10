@@ -96,11 +96,12 @@ export class NotificationsService {
   }
 
   async findByUser(id: string) {
-    const userFound = await this.usersRepository.findOne({ where: { id }, relations: ['user', 'user_sender'] });
+    const userFound = await this.usersRepository.findOne({ where: { id } });
     if (!userFound) throw new NotFoundException(`Usuario con id ${id} no encontrado.`);
 
     const notifications = await this.notificationRepository.find({
-      where: { user: { id: userFound.id } }
+      where: { user: { id: userFound.id } },
+      relations: ['user', 'user_sender']
     });
 
     return notifications;
