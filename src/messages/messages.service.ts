@@ -72,6 +72,7 @@ export class MessagesService {
         sender_id: userFound,
         is_anonymous: !!messageData.is_anonymous,
         group_chat: groupFound || null,
+        username: messageData.username,
       } as DeepPartial<Message>);
     }
 
@@ -101,17 +102,17 @@ export class MessagesService {
     }
 
     const responseObject = {
-      username: savedMsg.sender_id.username,
-      sender_id: savedMsg.sender_id.id,
-      user_type: savedMsg.sender_id.user_type,
-      profile_image: savedMsg.sender_id.profile_image,
       message_id: savedMsg.message_id,
       content: savedMsg.content,
       send_date: savedMsg.send_date,
-      type: savedMsg.type,
-      is_anonymous: savedMsg.is_anonymous,
+      sender: {
+        user_id: savedMsg.sender_id.id,
+        username: savedMsg.sender_id.username,
+        fullname: savedMsg.sender_id.fullname,
+        profile_image: savedMsg.sender_id.profile_image,
+        user_type: savedMsg.type,
+      },
     };
-
     return responseObject;
   }
 

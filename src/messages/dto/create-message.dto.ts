@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsBoolean,
   IsArray,
+  IsString,
 } from 'class-validator';
 
 export enum MessageType {
@@ -16,6 +17,13 @@ export enum MessageType {
 }
 
 export class CreateMessageDto {
+  @IsOptional()
+  send_date: Date;
+
+  @IsOptional()
+  @IsString()
+  username: string;
+
   @ApiProperty({
     type: String,
     description: 'Message content',
