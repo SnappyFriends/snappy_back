@@ -107,23 +107,42 @@ export class ChatGateway
     this.server.emit('onlineUsers', onlineUsers);
   }
 
+  @SubscribeMessage('join_chat')
+  handleJoinChat(
+    @MessageBody() chatId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.join(chatId);
+  }
+
+  @SubscribeMessage('join_group_chat')
+  handleJoinGroupChat(
+    @MessageBody() groupId: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('groupIDDD', groupId.group_id);
+    if (!groupId.group_id || typeof groupId.group_id !== 'string') {
+      return;
+    }
+
+    client.join(groupId.group_id);
+    console.log(`usuario ${client.id} conectado al grupo ${groupId.group_id}`);
+  }
+
   @SubscribeMessage('message')
   async handleNewMessage(
     @MessageBody() payload: CreateMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      console.log('Data recibida en el payload:', payload);
-      if (!payload.chatId && !payload.groupId) {
+      console.log('Data recibida en el payload Mensaje PRIVADO:', payload);
+      if (!payload.chatId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
       }
 
       const message = await this.messageService.createMessage(payload);
 
-      if (payload.groupId) {
-        console.log('Mensaje grupal recibido:', message);
-        this.server.to(payload.groupId).emit('receiveGroupMessage', message);
-      } else if (payload.chatId) {
+      if (payload.chatId) {
         console.log(
           `Emitiendo mensaje privado a los receptores: ${payload.messageReceivers}`,
         );
@@ -152,21 +171,28 @@ export class ChatGateway
       client.emit('error', error.message);
     }
   }
-
-  @SubscribeMessage('join_chat')
-  handleJoinChat(
-    @MessageBody() chatId: string,
+  @SubscribeMessage('groupMessage')
+  async handleNewGroupMessage(
+    @MessageBody() payload: CreateMessageDto,
     @ConnectedSocket() client: Socket,
   ) {
-    client.join(chatId);
-  }
+    try {
+      console.log('Data recibida en el payload MENSAJE GRUPAL:', payload);
+      if (!payload.chatId && !payload.groupId) {
+        throw new BadRequestException('Debe especificar un chatId o groupId');
+      }
 
-  @SubscribeMessage('join_group_chat')
-  handleJoinGroupChat(
-    @MessageBody() groupId: string,
-    @ConnectedSocket() client: Socket,
-  ) {
-    client.join(groupId);
+      const message = await this.messageService.createGroupMessage(payload);
+
+      if (payload.groupId) {
+        console.log('Mensaje grupal recibido:', message);
+
+        this.server.to(payload.groupId).emit('receiveGroupMessage', message);
+      }
+    } catch (error) {
+      console.error('Error al manejar el mensaje:', error.message);
+      client.emit('error', error.message);
+    }
   }
 
   @SubscribeMessage('notification')
