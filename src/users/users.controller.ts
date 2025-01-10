@@ -21,7 +21,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-
+import { userType } from './entities/user.entity';
 
 @ApiTags('Users')
 @Controller('users')
