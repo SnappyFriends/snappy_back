@@ -39,9 +39,13 @@ export class Chat_Groups {
   @JoinColumn({ name: 'creator_id' })
   creator: User;
 
-  @OneToMany(() => Group_Members, (groupMember) => groupMember.group)
+  @OneToMany(() => Group_Members, (groupMember) => groupMember.group, {
+    cascade: true,
+  })
   groupMembers: Group_Members[];
 
-  @OneToMany(() => Message, (message) => message.group_chat)
+  @OneToMany(() => Message, (message) => message.group_chat, {
+    cascade: true,
+  })
   messages: Message[];
 }
