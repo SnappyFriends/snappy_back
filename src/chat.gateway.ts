@@ -101,16 +101,16 @@ export class ChatGateway
   }
 
   async handleDisconnect(client: Socket) {
-    const token = client.handshake.query.token;
-    const decoded = this.jwtService.verify(token as string);
+    /* const token = client.handshake.query.token;
+    const decoded = this.jwtService.verify(token as string); */
 
     console.log('🔴 Cliente desconectado:', client.id);
     this.usersOnlineService.removeUser(client.id);
     const onlineUsers = this.usersOnlineService.getAllUsers();
     this.server.emit('onlineUsers', onlineUsers);
-    this.usersService.updateUser(decoded.id, {
+    /* this.usersService.updateUser(decoded.id, {
       last_login_date: new Date(),
-    });
+    }); */
   }
 
   @SubscribeMessage('join_chat')
