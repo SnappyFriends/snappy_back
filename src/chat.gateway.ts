@@ -67,37 +67,39 @@ export class ChatGateway
       return;
     }
 
-    try {
-      const decoded = this.jwtService.verify(token as string);
+    setTimeout(async () => {
+      try {
+        const decoded = this.jwtService.verify(token as string);
 
-      client.join(decoded.id);
-      this.usersOnlineService.addUser(client.id, decoded);
+        client.join(decoded.id);
+        this.usersOnlineService.addUser(client.id, decoded);
 
-      const userGroups = await this.groupMemberService.findGroupsByUserId(
-        decoded.id,
-      );
-      if (userGroups && userGroups.length > 0) {
-        userGroups.forEach((group) => {
-          client.join(group.id);
-        });
-      }
+        const userGroups = await this.groupMemberService.findGroupsByUserId(
+          decoded.id,
+        );
+        if (userGroups && userGroups.length > 0) {
+          userGroups.forEach((group) => {
+            client.join(group.id);
+          });
+        }
 
-      const user = await this.usersService.getUserById(decoded.sub);
-      if (!user) {
-        client.emit('error', 'Usuario no encontrado');
+        const user = await this.usersService.getUserById(decoded.sub);
+        if (!user) {
+          client.emit('error', 'Usuario no encontrado');
+          client.disconnect();
+          return;
+        }
+
+        const onlineUsers = this.usersOnlineService.getAllUsers();
+
+        this.server.emit('onlineUsers', onlineUsers);
+        this.logger.log(`User connected: ${client.id}`);
+      } catch (error) {
+        this.logger.error('Token inválido o expirado', error.message);
+        client.emit('error', 'Token inválido o expirado');
         client.disconnect();
-        return;
       }
-
-      const onlineUsers = this.usersOnlineService.getAllUsers();
-
-      this.server.emit('onlineUsers', onlineUsers);
-      this.logger.log(`User connected: ${client.id}`);
-    } catch (error) {
-      this.logger.error('Token inválido o expirado', error.message);
-      client.emit('error', 'Token inválido o expirado');
-      client.disconnect();
-    }
+    }, 2000);
   }
 
   async handleDisconnect(client: Socket) {
