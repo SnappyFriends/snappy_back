@@ -39,7 +39,12 @@ export class AuthService {
         userWithoutPassword.email,
         registerData.email,
         'Bienvenido A snappyFriends!',
-        'Gracias por registrarte en nuestra plataforma. Esperamos que tengas la mejor experiencia ☺'
+        `<div style="text-align: center;">
+        <img src="https://snappyfriends.vercel.app/_next/image?url=%2Ffavicon.ico&w=64&q=75" alt="Logo" style="display: block; margin: 0 auto; width: 150px; height: auto;">
+        <h1>¡Bienvenido, !</h1>
+        <p>Gracias por unirte a nuestra plataforma SnappyFriends ☺. Si tienes alguna pregunta, no dudes en contactarnos.</p>
+        </div>
+      `,
       );
 
       return userWithoutPassword;
@@ -50,7 +55,12 @@ export class AuthService {
       await this.nodemailerService.sendEmail(
         registerData.email,
         'Bienvenido A snappyFriends!',
-        'Gracias por registrarte en nuestra plataforma. Esperamos que tengas la mejor experiencia ☺'
+        `<div style="text-align: center;">
+        <img src="https://snappyfriends.vercel.app/_next/image?url=%2Ffavicon.ico&w=64&q=75" alt="Logo" style="display: block; margin: 0 auto; width: 150px; height: auto;">
+        <h1>¡Bienvenido, !</h1>
+        <p>Gracias por unirte a nuestra plataforma SnappyFriends ☺. Si tienes alguna pregunta, no dudes en contactarnos.</p>
+        </div>
+      `,
       );
 
       return registerData;
