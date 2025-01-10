@@ -54,7 +54,7 @@ export class NotificationsService {
   async findAll() {
     try {
       const notifications = await this.notificationRepository.find({
-        relations: ['user'],
+        relations: ['user', 'user_sender'],
       });
 
       const responseObject = notifications.map((notification) => ({
@@ -75,7 +75,7 @@ export class NotificationsService {
     try {
       const notifications = await this.notificationRepository.findOne({
         where: { notification_id: id },
-        relations: ['user'],
+        relations: ['user', 'user_sender'],
       });
       if (!notifications) {
         throw new NotFoundException('Notificación no encontrada.');
@@ -96,7 +96,7 @@ export class NotificationsService {
   }
 
   async findByUser(id: string) {
-    const userFound = await this.usersRepository.findOne({ where: { id } });
+    const userFound = await this.usersRepository.findOne({ where: { id }, relations: ['user', 'user_sender'] });
     if (!userFound) throw new NotFoundException(`Usuario con id ${id} no encontrado.`);
 
     const notifications = await this.notificationRepository.find({
