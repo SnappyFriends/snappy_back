@@ -16,7 +16,7 @@ const configTypeORM = {
   autoLoadEntities: true,
   dropSchema: (process.env.DB_DROP === 'true' ? true : false) || false,
   synchronize: (process.env.DB_SYNC === 'true' ? true : false) || false,
-  logging: (process.env.DB_LOGGING === 'false' ? true : false) || false,
+  logging: (process.env.DB_LOGGING === 'true' ? true : false) || false,
 };
 
 
