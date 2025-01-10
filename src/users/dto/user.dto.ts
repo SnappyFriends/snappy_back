@@ -33,7 +33,7 @@ export class GetUsersDTO {
     example: 5,
   })
   @IsOptional()
-  limit: number = 20;
+  limit: number = 40;
 
   @IsOptional()
   @IsString()
