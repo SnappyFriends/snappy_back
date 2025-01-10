@@ -50,9 +50,13 @@ export class Message {
   )
   messageReceivers: Message_Receiver[];
 
-  @ManyToOne(() => Chat, (chat) => chat.messages)
+  @ManyToOne(() => Chat, (chat) => chat.messages, {
+    cascade: true,
+  })
   chat: Chat;
 
-  @ManyToOne(() => Chat_Groups, (chatGroup) => chatGroup.messages)
+  @ManyToOne(() => Chat_Groups, (chatGroup) => chatGroup.messages, {
+    onDelete: 'CASCADE',
+  })
   group_chat: Chat_Groups;
 }
