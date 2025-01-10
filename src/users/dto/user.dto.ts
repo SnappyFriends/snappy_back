@@ -6,14 +6,18 @@ import { userStatus } from '../entities/user.entity';
 export class UpdateUserDTO extends PartialType(registerUserDTO) {
   @IsOptional()
   @IsNotEmpty()
-  location: {
+  location?: {
     x: number;
     y: number;
   };
 
   @IsOptional()
   @IsEnum(userStatus)
-  status: userStatus;
+  status?: userStatus;
+
+  @IsOptional()
+  @IsString()
+  last_login_date?: Date;
 }
 
 export class GetUsersDTO {

@@ -101,10 +101,16 @@ export class ChatGateway
   }
 
   async handleDisconnect(client: Socket) {
+    const token = client.handshake.query.token;
+    const decoded = this.jwtService.verify(token as string);
+
     console.log('🔴 Cliente desconectado:', client.id);
     this.usersOnlineService.removeUser(client.id);
     const onlineUsers = this.usersOnlineService.getAllUsers();
     this.server.emit('onlineUsers', onlineUsers);
+    this.usersService.updateUser(decoded.id, {
+      last_login_date: new Date(),
+    });
   }
 
   @SubscribeMessage('join_chat')
@@ -156,7 +162,7 @@ export class ChatGateway
               content: 'Nuevo mensaje privado',
               type: NotificationType.MESSAGE,
               user_id: receiverId,
-              sender_user: payload.sender_id
+              sender_user: payload.sender_id,
             })
             .then((notification) => {
               this.server.to(receiverId).emit('messageNotification', {
