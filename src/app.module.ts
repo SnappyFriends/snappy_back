@@ -27,8 +27,6 @@ import { ChatGatewayModule } from './chat.gateway.module';
 import { FollowModule } from './follow/follow.module';
 import { LogsModule } from './logsAdmin/logs.module';
 
-
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
@@ -58,8 +56,8 @@ import { LogsModule } from './logsAdmin/logs.module';
     FilesModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '12h' },
+      secret: process.env.JWT_SECRET /* 
+      signOptions: { expiresIn: '12h' }, */,
     }),
     NodemailerModule,
     ChatGatewayModule,
@@ -68,4 +66,4 @@ import { LogsModule } from './logsAdmin/logs.module';
   controllers: [],
   providers: [AuthGuard],
 })
-export class AppModule { }
+export class AppModule {}
