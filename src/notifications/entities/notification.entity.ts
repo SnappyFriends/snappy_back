@@ -51,4 +51,10 @@ export class Notification {
   @ManyToOne(() => User, (user) => user.notifications)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => User, (user) => user.notification_sender, {
+    nullable: true
+  })
+  @JoinColumn({ name: 'notification_sender' })
+  user_sender: User;
 }

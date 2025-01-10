@@ -185,6 +185,9 @@ export class User {
   @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];
 
+  @OneToMany(() => Notification, (notification) => notification.user_sender)
+  notification_sender: Notification[];
+
   @OneToMany(() => GroupJoinRequest, (request) => request.user)
   joinRequests: GroupJoinRequest[];
 

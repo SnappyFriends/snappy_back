@@ -24,16 +24,22 @@ export class NotificationsService {
   async create(
     createNotificationDto: CreateNotificationDto,
   ): Promise<Notification> {
-    const { user_id, content, type } = createNotificationDto;
+    const { user_id, content, type, sender_user } = createNotificationDto;
 
     const user = await this.usersRepository.findOne({ where: { id: user_id } });
     if (!user) throw new NotFoundException(`El usuario con el id ${user_id} no fue encontrado.`,);
+
+    if (sender_user) {
+      const senderFound = await this.usersRepository.findOne({ where: { id: sender_user } });
+      if (!senderFound) throw new NotFoundException(`El usuario con el id ${sender_user} no fue encontrado.`,);
+    }
 
     const newNotification = this.notificationRepository.create({
       content,
       type,
       status: NotificationStatus.UNREAD,
       user: { id: user_id },
+      user_sender: { id: sender_user }
     });
     try {
       return await this.notificationRepository.save(newNotification);
