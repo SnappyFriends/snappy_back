@@ -156,6 +156,7 @@ export class ChatGateway
               content: 'Nuevo mensaje privado',
               type: NotificationType.MESSAGE,
               user_id: receiverId,
+              sender_user: payload.sender_id
             })
             .then((notification) => {
               this.server.to(receiverId).emit('messageNotification', {

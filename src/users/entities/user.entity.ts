@@ -30,7 +30,11 @@ import { Log } from 'src/logsAdmin/entities/logs.entity';
 
 export enum userType {
   REGULAR = 'regular',
-  PREMIUM = 'premium',
+  PREMIUM = 'premium'
+}
+
+export enum userRole {
+  DEFAULT = 'default',
   ADMIN = 'admin',
   SUPERADMIN = 'superadmin',
 }
@@ -95,6 +99,14 @@ export class User {
     default: userType.REGULAR,
   })
   user_type: userType;
+
+  @Column({
+    type: 'enum',
+    enum: userRole,
+    nullable: false,
+    default: userRole.DEFAULT,
+  })
+  user_role: userRole;
 
   @Column({
     type: 'enum',
@@ -172,6 +184,9 @@ export class User {
 
   @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];
+
+  @OneToMany(() => Notification, (notification) => notification.user_sender)
+  notification_sender: Notification[];
 
   @OneToMany(() => GroupJoinRequest, (request) => request.user)
   joinRequests: GroupJoinRequest[];

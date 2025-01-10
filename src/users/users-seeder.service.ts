@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User, userType } from './entities/user.entity';
+import { User, userRole } from './entities/user.entity';
 import * as dataInterests from '../assets/interests-seed.json';
 import * as dataUsers from '../assets/users-seed.json';
 import * as bcrypt from "bcrypt";
@@ -61,7 +61,7 @@ export class UsersSeederService implements OnModuleInit {
             profile_image: '/no_img.png',
             birthdate: '2000-01-01',
             genre: 'SNAPPY',
-            user_type: userType.SUPERADMIN
+            user_role: userRole.SUPERADMIN
         });
 
         await this.userRepository.save(superadmin);

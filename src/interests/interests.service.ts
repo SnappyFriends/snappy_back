@@ -33,6 +33,8 @@ export class InterestsService {
       interest.name = interestData.name;
     }
 
+    interest.active = interestData.active;
+
     return this.interestsRepository.save(interest);
   }
 
