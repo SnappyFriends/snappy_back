@@ -33,12 +33,11 @@ export class MessagesService {
     private readonly groupChatRepository: Repository<Chat_Groups>,
   ) {}
 
-  async createMessage(createMessageDto: CreateMessageDto) {
-    const { sender_id, messageReceivers, chatId, groupId, ...messageData } =
-      createMessageDto;
+  async createGroupMessage(createGroupMessageDto: CreateMessageDto) {
+    const { sender_id, groupId, ...messageData } = createGroupMessageDto;
 
-    if (!chatId && !groupId) {
-      throw new BadRequestException('Debe especificar un chatId o groupId');
+    if (!groupId) {
+      throw new BadRequestException('Debe especificar un groupId');
     }
 
     const userFound = await this.userRepository.findOne({
@@ -62,6 +61,77 @@ export class MessagesService {
 
     let newMsg;
 
+    if (groupId) {
+      const groupFound = await this.groupChatRepository.findOne({
+        where: { group_id: groupId },
+      });
+
+      newMsg = this.messageRepository.create({
+        content: messageData.content,
+        type: messageData.type,
+        sender_id: userFound,
+        is_anonymous: !!messageData.is_anonymous,
+        group_chat: groupFound || null,
+      } as DeepPartial<Message>);
+    }
+
+    const savedMsg = await this.messageRepository.save(newMsg);
+
+    if (groupId) {
+      const groupMembers = await this.groupMembersRepository.find({
+        where: { group_id: groupId },
+        relations: ['user'],
+      });
+
+      if (!groupMembers || groupMembers.length === 0) {
+        throw new NotFoundException(
+          `No se encontraron miembros para el grupo ${groupId}`,
+        );
+      }
+
+      const msgReceiversEntities = groupMembers.map((member) => {
+        return this.messageReceiverRepository.create({
+          message_id: savedMsg as DeepPartial<Message>,
+          receiver_id: member.user,
+          status: statusMessage.UNREAD,
+        });
+      });
+
+      await this.messageReceiverRepository.save(msgReceiversEntities);
+    }
+
+    const responseObject = {
+      username: savedMsg.sender_id.username,
+      sender_id: savedMsg.sender_id.id,
+      user_type: savedMsg.sender_id.user_type,
+      profile_image: savedMsg.sender_id.profile_image,
+      message_id: savedMsg.message_id,
+      content: savedMsg.content,
+      send_date: savedMsg.send_date,
+      type: savedMsg.type,
+      is_anonymous: savedMsg.is_anonymous,
+    };
+
+    return responseObject;
+  }
+
+  async createMessage(createMessageDto: CreateMessageDto) {
+    const { sender_id, messageReceivers, chatId, ...messageData } =
+      createMessageDto;
+
+    if (!chatId) {
+      throw new BadRequestException('Debe especificar un chatId');
+    }
+
+    const userFound = await this.userRepository.findOne({
+      where: { id: sender_id },
+    });
+    if (!userFound) {
+      throw new NotFoundException(`El usuario con ID ${sender_id} no existe`);
+    }
+
+    let newMsg;
+
     if (chatId) {
       const chatFound = await this.chatRepository.findOne({
         where: { id: chatId },
@@ -73,18 +143,6 @@ export class MessagesService {
         sender_id: userFound,
         is_anonymous: !!messageData.is_anonymous,
         chat: chatFound || null,
-      } as DeepPartial<Message>);
-    } else if (groupId) {
-      const groupFound = await this.groupChatRepository.findOne({
-        where: { group_id: groupId },
-      });
-
-      newMsg = this.messageRepository.create({
-        content: messageData.content,
-        type: messageData.type,
-        sender_id: userFound,
-        is_anonymous: !!messageData.is_anonymous,
-        group_chat: groupFound || null,
       } as DeepPartial<Message>);
     }
 
@@ -115,29 +173,6 @@ export class MessagesService {
           });
         }),
       );
-
-      await this.messageReceiverRepository.save(msgReceiversEntities);
-    }
-
-    if (groupId) {
-      const groupMembers = await this.groupMembersRepository.find({
-        where: { group_id: groupId },
-        relations: ['user'],
-      });
-
-      if (!groupMembers || groupMembers.length === 0) {
-        throw new NotFoundException(
-          `No se encontraron miembros para el grupo ${groupId}`,
-        );
-      }
-
-      const msgReceiversEntities = groupMembers.map((member) => {
-        return this.messageReceiverRepository.create({
-          message_id: savedMsg as DeepPartial<Message>,
-          receiver_id: member.user,
-          status: statusMessage.UNREAD,
-        });
-      });
 
       await this.messageReceiverRepository.save(msgReceiversEntities);
     }
