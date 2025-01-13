@@ -1,24 +1,16 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
-  ParseUUIDPipe,
-  Post,
+  Delete,
   Put,
+  ParseUUIDPipe,
+  Post
 } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiCreatedResponse,
-  ApiInternalServerErrorResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service';
 
 @ApiTags('Notifications')
@@ -135,6 +127,11 @@ export class NotificationsController {
   @Get('/user/:id')
   findByUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.notificationsService.findByUser(id);
+  }
+
+  @Post('/readAll/:id')
+  markAllAsRead(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notificationsService.markAllAsRead(id);
   }
 
   @Put(':id/mark-as-read')

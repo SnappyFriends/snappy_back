@@ -139,14 +139,36 @@ export class NotificationsService {
       where: { notification_id: id },
     });
 
-    if (!notification) {
-      throw new NotFoundException('Notificación no encontrada');
-    }
+    if (!notification) throw new NotFoundException('Notificación no encontrada');
 
     notification.status = NotificationStatus.READ;
     await this.notificationRepository.save(notification);
 
     return notification;
+  }
+
+  async markAllAsRead(userId: string) {
+    const userFound = await this.usersRepository.findOne({ where: { id: userId } })
+    if (!userFound) throw new NotFoundException('No se encontró al usuario')
+
+    const notifications = await this.notificationRepository.find({
+      where: {
+        status: NotificationStatus.UNREAD,
+        user: { id: userFound.id }
+      },
+    });
+
+    if (notifications.length === 0) {
+      throw new NotFoundException('No hay notificaciones por leer');
+    }
+
+    notifications.forEach(notification => {
+      notification.status = NotificationStatus.READ;
+    });
+
+    await this.notificationRepository.save(notifications);
+
+    return notifications;
   }
 
   async remove(id: string): Promise<{ message: string }> {
