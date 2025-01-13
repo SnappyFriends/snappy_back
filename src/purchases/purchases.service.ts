@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import {
   PaymentMethod,
   PaymentStatus,
@@ -8,6 +8,7 @@ import {
 } from './entities/purchase_log.entity';
 import { User, userType } from 'src/users/entities/user.entity';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
+import { subscriptionRangeDTO } from './dto/purchases.dto';
 
 @Injectable()
 export class PurchasesService {
@@ -82,5 +83,33 @@ export class PurchasesService {
 
   async getSubscriptions() {
     return await this.purchaseRepository.find({ relations: ['user'] });
+  }
+
+  async getSubscriptionsRange(subscriptionRange: subscriptionRangeDTO) {
+    const { startDate, endDate } = subscriptionRange;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const subscriptions = await this.purchaseRepository.find({
+      where: {
+        purchase_date: Between(start, end)
+      },
+      relations: ['user'],
+      select: {
+        user: {
+          id: true,
+          username: true,
+          fullname: true,
+          profile_image: true
+        }
+      }
+    })
+
+    const totalAmount = subscriptions.reduce((total, subscription) => total + subscription.amount, 0)
+
+    return {
+      subscriptions,
+      totalAmount
+    }
   }
 }

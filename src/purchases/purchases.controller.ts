@@ -1,7 +1,8 @@
-import { Controller, Post, Param, ParseUUIDPipe, Get, UseGuards } from "@nestjs/common";
+import { Controller, Post, Param, ParseUUIDPipe, Get, Query } from "@nestjs/common";
 import { StripeService } from "./stripe.service";
 import { PurchasesService } from "./purchases.service";
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { subscriptionRangeDTO } from "./dto/purchases.dto";
 
 
 @ApiTags('Purchases')
@@ -57,9 +58,13 @@ export class PurchasesController {
         return this.purchasesService.getSubscriptionByUser(userId);
     }
 
-
     @Get()
     async getSubscriptions() {
         return this.purchasesService.getSubscriptions();
+    }
+
+    @Get('/metrics')
+    async getSubscriptionsRange(@Query() subscriptionRange: subscriptionRangeDTO) {
+        return this.purchasesService.getSubscriptionsRange(subscriptionRange);
     }
 }
