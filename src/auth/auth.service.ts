@@ -8,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { registerGoogleDTO, registerUserDTO } from './dto/auth.dto';
 import { OAuth2Client } from 'google-auth-library';
 import { NodemailerService } from 'src/nodemailer/nodemailer.service';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Injectable()
 export class AuthService {
@@ -80,7 +81,8 @@ export class AuthService {
       id: foundUser.id,
       email: foundUser.email,
       user_type: foundUser.user_type,
-      user_status: foundUser.status
+      user_status: foundUser.status,
+      Roles: [foundUser.user_role]
     }
 
     const token = this.jwtService.sign(payload);
@@ -88,8 +90,9 @@ export class AuthService {
     const userId = payload.id
     const user_type = payload.user_type
     const user_status = payload.user_status
+    const roles = payload.Roles
 
-    return { userId, token, user_type, user_status, message: "Iniciaste sesión satisfactoriamente." };
+    return { userId, token, user_type, user_status, roles, message: "Iniciaste sesión satisfactoriamente." };
   }
 
   async verifyGoogleToken(token: string) {
@@ -122,7 +125,8 @@ export class AuthService {
         id: user.id,
         email: user.email,
         user_type: user.user_type,
-        user_status: user.status
+        user_status: user.status,
+        roles: [user.user_role]
       };
 
       const token = this.jwtService.sign(jwtPayload);

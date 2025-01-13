@@ -4,7 +4,8 @@ import { CreateReportDto } from './dto/reports.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
-import { userType } from 'src/users/entities/user.entity';
+import { userRole } from 'src/users/entities/user.entity';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('Reports')
 @Controller('reports')
@@ -53,8 +54,9 @@ export class ReportsController {
     return this.reportsService.create(createReportDto);
   }
 
-
-
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Reports.' })
   @ApiOkResponse({
@@ -81,6 +83,9 @@ export class ReportsController {
     return this.reportsService.findAll();
   }
 
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Search for Report by ID' })
   @ApiOkResponse({
@@ -128,6 +133,9 @@ export class ReportsController {
   }
 
 
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Report' })
   @ApiOkResponse({ description: 'Report deleted successfully.', schema: { example: 'Report deleted successfully.' } })

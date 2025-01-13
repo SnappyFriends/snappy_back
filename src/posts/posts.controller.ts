@@ -27,7 +27,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
-import { userType } from 'src/users/entities/user.entity';
+import { userRole, userType } from 'src/users/entities/user.entity';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -166,6 +167,9 @@ export class PostsController {
     return this.postsService.update(id, updatePostDto);
   }
 
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a Post' })
   @ApiOkResponse({
