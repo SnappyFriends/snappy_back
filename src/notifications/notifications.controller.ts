@@ -6,16 +6,12 @@ import {
   Param,
   Delete,
   Put,
-  ParseUUIDPipe,
-  UseGuards,
+  ParseUUIDPipe
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { Roles } from 'src/decorators/roles.decorator';
-import { userType } from 'src/users/entities/user.entity';
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Notifications')
 @Controller('notifications')
@@ -128,12 +124,15 @@ export class NotificationsController {
     return this.notificationsService.findOne(id);
   }
 
-
   @Get('/user/:id')
   findByUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.notificationsService.findByUser(id);
   }
 
+  @Post('/readAll/:id')
+  markAllAsRead(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notificationsService.markAllAsRead(id);
+  }
 
   @Put(':id/mark-as-read')
   @ApiOperation({ summary: 'Modify Notification mark-as-read' })
