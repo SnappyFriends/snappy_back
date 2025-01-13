@@ -160,34 +160,28 @@ export class ChatGroupsService {
     const groupMessagesFound = await this.chatGroupsRepository.find({
       where: { group_id },
       relations: ['groupMembers', 'messages', 'messages.sender_id'],
-    });
-
-    const result = groupMessagesFound.map((group) => {
-      const reducedMembers = group.messages.map((message) => ({
-        message_id: message.message_id,
-        content: message.content,
-        send_date: message.send_date,
-        sender: {
-          user_id: message.sender_id.id,
-          username: message.sender_id.username,
-          fullname: message.sender_id.fullname,
-          profile_image: message.sender_id.profile_image,
-          user_type: message.sender_id.user_type,
+      select: {
+        messages: {
+          message_id: true,
+          send_date: true,
+          content: true,
+          sender_id: {
+            id: true,
+            username: true,
+            fullname: true,
+            profile_image: true,
+            user_type: true,
+          },
         },
-      }));
-
-      return {
-        group_id: group.group_id,
-        name: group.name,
-        description: group.description,
-        creation_date: group.creation_date,
-        privacy: group.privacy,
-        members: group.groupMembers,
-        messages: reducedMembers,
-      };
+        groupMembers: {
+          user_id: true,
+          role: true,
+          join_date: true,
+        },
+      },
     });
 
-    return result;
+    return groupMessagesFound;
   }
 
   async getAllGroupsByUserId(user_id: string) {

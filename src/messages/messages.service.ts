@@ -105,8 +105,8 @@ export class MessagesService {
       message_id: savedMsg.message_id,
       content: savedMsg.content,
       send_date: savedMsg.send_date,
-      sender: {
-        user_id: savedMsg.sender_id.id,
+      sender_id: {
+        id: savedMsg.sender_id.id,
         username: savedMsg.sender_id.username,
         fullname: savedMsg.sender_id.fullname,
         profile_image: savedMsg.sender_id.profile_image,
@@ -200,23 +200,25 @@ export class MessagesService {
         'messageReceivers',
         'messageReceivers.receiver_id',
       ],
-      select: {
-        sender_id: {
-          id: true,
-          fullname: true,
-          username: true,
-        },
-        messageReceivers: {
-          id: true,
-          status: true,
-          receiver_id: {
-            id: true,
-          },
-        },
-      },
     });
 
-    return messages;
+    const resultMessage = messages.map((message) => ({
+      message: {
+        message_id: message.message_id,
+        send_date: message.send_date,
+        type: message.type,
+        content: message.content,
+        is_anonymous: message.is_anonymous,
+        sender_id: message.sender_id.id,
+
+        receiver: message.messageReceivers.map((receiver) => ({
+          receiverId: receiver.receiver_id.id,
+          status: receiver.status,
+        })),
+      },
+    }));
+
+    return resultMessage;
   }
 
   async findOneMessage(idMessage: string) {

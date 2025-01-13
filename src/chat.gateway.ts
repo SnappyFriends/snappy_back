@@ -33,7 +33,8 @@ dotenv.config({ path: './.env' });
   transports: ['websocket'],
 })
 export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
@@ -46,7 +47,7 @@ export class ChatGateway
     private usersService: UsersService,
     private notificationsService: NotificationsService,
     private usersOnlineService: UsersOnlineService,
-  ) { }
+  ) {}
 
   afterInit() {
     this.logger.log('🚀 Socket Server Initialized');
@@ -136,7 +137,6 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      console.log('Data recibida en el payload Mensaje PRIVADO:', payload);
       if (!payload.chatId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
       }
@@ -149,7 +149,6 @@ export class ChatGateway
         );
 
         payload.messageReceivers.forEach((receiverId) => {
-          console.log('Mensaje privado recibido:', message);
           this.server.to(receiverId).emit('receivePrivateMessage', message);
 
           this.notificationsService
@@ -178,7 +177,6 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
   ) {
     try {
-      console.log('Data recibida en el payload MENSAJE GRUPAL:', payload);
       if (!payload.chatId && !payload.groupId) {
         throw new BadRequestException('Debe especificar un chatId o groupId');
       }
@@ -186,8 +184,6 @@ export class ChatGateway
       const message = await this.messageService.createGroupMessage(payload);
 
       if (payload.groupId) {
-        console.log('Mensaje grupal recibido:', message);
-
         this.server.to(payload.groupId).emit('receiveGroupMessage', message);
       }
     } catch (error) {
