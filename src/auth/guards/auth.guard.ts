@@ -10,7 +10,7 @@ import { userRole } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtServices: JwtService) {}
+  constructor(private jwtServices: JwtService) { }
   //Agregando un comentario para poder hacer el pull sin romper nadaaaa..
   canActivate(
     context: ExecutionContext,
@@ -20,9 +20,9 @@ export class AuthGuard implements CanActivate {
     const token = isWs
       ? context.switchToWs().getData().token
       : context
-          .switchToHttp()
-          .getRequest()
-          .headers.authorization?.split(' ')[1];
+        .switchToHttp()
+        .getRequest()
+        .headers.authorization?.split(' ')[1];
 
     if (!token) throw new UnauthorizedException('Token no encontrado.');
 
@@ -30,14 +30,12 @@ export class AuthGuard implements CanActivate {
       const secret = process.env.JWT_SECRET;
       const user = this.jwtServices.verify(token, { secret });
 
+      user.roles = user.Roles || ['default'];
+
       user.exp = new Date(user.exp * 1000);
       user.iat = new Date(user.iat * 1000);
 
-      if (user.isAdmin) {
-        user.roles = [userRole.ADMIN];
-      } else {
-        user.roles = [userRole.DEFAULT];
-      }
+
 
       if (!isWs) {
         context.switchToHttp().getRequest().user = user;

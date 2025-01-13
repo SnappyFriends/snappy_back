@@ -8,11 +8,13 @@ import {
   Put,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -21,13 +23,20 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { userType } from './entities/user.entity';
+import { userRole, userType } from './entities/user.entity';
+import { Roles } from 'src/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+
+  // @ApiBearerAuth()
+  // @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  // @UseGuards(AuthGuard, RolesGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Users.' })
   @ApiOkResponse({
@@ -238,7 +247,9 @@ export class UsersController {
     };
   }
 
-
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
   @ApiOkResponse({
