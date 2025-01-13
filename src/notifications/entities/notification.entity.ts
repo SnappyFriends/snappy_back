@@ -10,13 +10,10 @@ import { v4 as uuid } from 'uuid';
 import { User } from 'src/users/entities/user.entity';
 
 export enum NotificationType {
-  FRIEND_REQUEST = 'friend_request',
-  MESSAGE = 'message',
-  POST_REACTION = 'post_reaction',
-  COMMENT = 'comment',
-  GROUP_INVITATION = 'group_invitation',
-  SYSTEM = 'system',
-  PURCHASE = 'purchase',
+  MESSAGE = "message",
+  COMMENT = "comment",
+  REACTION = "reaction",
+  FOLLOWER = "follower",
 }
 
 export enum NotificationStatus {

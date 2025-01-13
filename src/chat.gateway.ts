@@ -18,7 +18,7 @@ import { CreateMessageDto } from './messages/dto/create-message.dto';
 import { UsersOnlineService, UsersService } from './users/users.service';
 import {
   NotificationType,
-  NotificationStatus,
+  // NotificationStatus,
 } from './notifications/entities/notification.entity';
 import { NotificationsService } from './notifications/notifications.service';
 
@@ -33,8 +33,7 @@ dotenv.config({ path: './.env' });
   transports: ['websocket'],
 })
 export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -47,9 +46,7 @@ export class ChatGateway
     private usersService: UsersService,
     private notificationsService: NotificationsService,
     private usersOnlineService: UsersOnlineService,
-  ) {
-    console.log('ChatGateway constructor');
-  }
+  ) { }
 
   afterInit() {
     this.logger.log('🚀 Socket Server Initialized');
@@ -126,13 +123,11 @@ export class ChatGateway
     @MessageBody() groupId: any,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('groupIDDD', groupId.group_id);
     if (!groupId.group_id || typeof groupId.group_id !== 'string') {
       return;
     }
 
     client.join(groupId.group_id);
-    console.log(`usuario ${client.id} conectado al grupo ${groupId.group_id}`);
   }
 
   @SubscribeMessage('message')
@@ -159,7 +154,7 @@ export class ChatGateway
 
           this.notificationsService
             .create({
-              content: 'Nuevo mensaje privado',
+              content: 'te ha enviado un mensaje privado',
               type: NotificationType.MESSAGE,
               user_id: receiverId,
               sender_user: payload.sender_id,
@@ -201,89 +196,89 @@ export class ChatGateway
     }
   }
 
-  @SubscribeMessage('notification')
-  async handleNotification(
-    @MessageBody()
-    payload: {
-      type: NotificationType;
-      content: string;
-      userId: string;
-      friendRequestId?: string;
-      messageId?: string;
-      postId?: string;
-      commentId?: string;
-      groupId?: string;
-      purchaseId?: string;
-    },
-    @ConnectedSocket() client: Socket,
-  ) {
-    console.log('📨 Notificación recibida:', payload);
+  // @SubscribeMessage('notification')
+  // async handleNotification(
+  //   @MessageBody()
+  //   payload: {
+  //     type: NotificationType;
+  //     content: string;
+  //     userId: string;
+  //     friendRequestId?: string;
+  //     messageId?: string;
+  //     postId?: string;
+  //     commentId?: string;
+  //     groupId?: string;
+  //     purchaseId?: string;
+  //   },
+  //   @ConnectedSocket() client: Socket,
+  // ) {
+  //   console.log('📨 Notificación recibida:', payload);
 
-    try {
-      const notification = {
-        content: payload.content,
-        type: payload.type,
-        user_id: payload.userId,
-        status: NotificationStatus.UNREAD,
-      };
+  //   try {
+  //     const notification = {
+  //       content: payload.content,
+  //       type: payload.type,
+  //       user_id: payload.userId,
+  //       status: NotificationStatus.UNREAD,
+  //     };
 
-      const savedNotification =
-        await this.notificationsService.create(notification);
+  //     const savedNotification =
+  //       await this.notificationsService.create(notification);
 
-      switch (payload.type) {
-        case NotificationType.FRIEND_REQUEST:
-          this.server.to(payload.userId).emit('friendRequestNotification', {
-            ...savedNotification,
-            friendRequestId: payload.friendRequestId,
-          });
-          break;
+  //     switch (payload.type) {
+  //       case NotificationType.FRIEND_REQUEST:
+  //         this.server.to(payload.userId).emit('friendRequestNotification', {
+  //           ...savedNotification,
+  //           friendRequestId: payload.friendRequestId,
+  //         });
+  //         break;
 
-        case NotificationType.MESSAGE:
-          this.server.to(payload.userId).emit('messageNotification', {
-            ...savedNotification,
-            messageId: payload.messageId,
-          });
-          break;
+  //       case NotificationType.MESSAGE:
+  //         this.server.to(payload.userId).emit('messageNotification', {
+  //           ...savedNotification,
+  //           messageId: payload.messageId,
+  //         });
+  //         break;
 
-        case NotificationType.POST_REACTION:
-          this.server.to(payload.userId).emit('postReactionNotification', {
-            ...savedNotification,
-            postId: payload.postId,
-          });
-          break;
+  //       case NotificationType.POST_REACTION:
+  //         this.server.to(payload.userId).emit('postReactionNotification', {
+  //           ...savedNotification,
+  //           postId: payload.postId,
+  //         });
+  //         break;
 
-        case NotificationType.COMMENT:
-          this.server.to(payload.userId).emit('commentNotification', {
-            ...savedNotification,
-            commentId: payload.commentId,
-          });
-          break;
+  //       case NotificationType.COMMENT:
+  //         this.server.to(payload.userId).emit('commentNotification', {
+  //           ...savedNotification,
+  //           commentId: payload.commentId,
+  //         });
+  //         break;
 
-        case NotificationType.GROUP_INVITATION:
-          this.server.to(payload.userId).emit('groupInvitationNotification', {
-            ...savedNotification,
-            groupId: payload.groupId,
-          });
-          break;
+  //       case NotificationType.GROUP_INVITATION:
+  //         this.server.to(payload.userId).emit('groupInvitationNotification', {
+  //           ...savedNotification,
+  //           groupId: payload.groupId,
+  //         });
+  //         break;
 
-        case NotificationType.PURCHASE:
-          this.server.to(payload.userId).emit('purchaseNotification', {
-            ...savedNotification,
-            purchaseId: payload.purchaseId,
-          });
-          break;
+  //       case NotificationType.PURCHASE:
+  //         this.server.to(payload.userId).emit('purchaseNotification', {
+  //           ...savedNotification,
+  //           purchaseId: payload.purchaseId,
+  //         });
+  //         break;
 
-        case NotificationType.SYSTEM:
-          this.server
-            .to(payload.userId)
-            .emit('systemNotification', savedNotification);
-          break;
-      }
-    } catch (error) {
-      console.error('Error al manejar la notificación:', error.message);
-      client.emit('error', error.message);
-    }
-  }
+  //       case NotificationType.SYSTEM:
+  //         this.server
+  //           .to(payload.userId)
+  //           .emit('systemNotification', savedNotification);
+  //         break;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error al manejar la notificación:', error.message);
+  //     client.emit('error', error.message);
+  //   }
+  // }
 
   @SubscribeMessage('getConnectedUsers')
   handleGetConnectedUsers(@ConnectedSocket() client: Socket) {

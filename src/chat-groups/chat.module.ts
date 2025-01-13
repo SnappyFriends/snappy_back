@@ -6,11 +6,11 @@ import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import { Message } from 'src/messages/entities/message.entity';
 import { Follow } from 'src/follow/entities/follow.entity';
-import { FollowService } from 'src/follow/follow.service';
+import { FollowModule } from 'src/follow/follow.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Chat, User, Message, Follow])],
-  providers: [ChatService, FollowService],
+  imports: [TypeOrmModule.forFeature([Chat, User, Message, Follow]), FollowModule],
+  providers: [ChatService],
   controllers: [ChatController],
 })
 export class ChatModule {}

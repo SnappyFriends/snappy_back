@@ -10,7 +10,8 @@ import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Post } from 'src/posts/entities/post.entity';
-
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { NotificationType } from 'src/notifications/entities/notification.entity';
 
 @Injectable()
 export class CommentsService {
@@ -19,6 +20,7 @@ export class CommentsService {
     private readonly commentRepository: Repository<Comment>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
+    private readonly notificationsService: NotificationsService
   ) { }
 
   async createComment(createCommentDto: CreateCommentDto): Promise<Comment> {
@@ -31,6 +33,12 @@ export class CommentsService {
 
       const postFound = await this.postRepository.findOne({
         where: { post_id: createCommentDto.post_id },
+        relations: ['user'],
+        select: {
+          user: {
+            id: true
+          }
+        }
       });
 
       if (!postFound) throw new NotFoundException('Post not found');
@@ -41,6 +49,15 @@ export class CommentsService {
         postComment: postFound,
         comment_date: new Date(),
       });
+
+      if(postFound.user.id != userFound.id) {
+        this.notificationsService.create({
+          content: "ha comentado tu publicación",
+          type: NotificationType.COMMENT,
+          user_id: postFound.user.id,
+          sender_user: userFound.id
+        })
+      }
 
       return await this.commentRepository.save(comment);
     } catch {
