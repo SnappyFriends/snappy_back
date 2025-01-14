@@ -83,7 +83,7 @@ export class PurchasesService {
     const subscriptionFound = await this.purchaseRepository.findOne({
       where: {
         user: { id: userId },
-        status: PaymentStatus.PENDING
+        status: PaymentStatus.COMPLETED
       },
       relations: ['user']
     });
