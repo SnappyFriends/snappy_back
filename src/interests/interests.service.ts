@@ -16,6 +16,10 @@ export class InterestsService {
   }
 
   async getAll(): Promise<Interest[]> {
+    return this.interestsRepository.find({ where: { active: true } });
+  }
+
+  async getAllAdmin(): Promise<Interest[]> {
     return this.interestsRepository.find();
   }
 
