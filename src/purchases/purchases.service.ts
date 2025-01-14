@@ -43,7 +43,6 @@ export class PurchasesService {
   }
 
   async completePurchase(sessionId: string) {
-    console.log("Session ID:", sessionId)
     const purchase = await this.purchaseRepository.findOne({
       where: { stripe_session_id: sessionId, status: PaymentStatus.PENDING },
       relations: ['user'],
@@ -59,7 +58,7 @@ export class PurchasesService {
 
     const user = purchase.user;
     user.user_type = userType.PREMIUM;
-    await this.usersRepository.save(user);
+    await this.usersRepository.update(user.id, { user_type: userType.PREMIUM });
 
     const savedPurchase = await this.purchaseRepository.save(purchase);
 

@@ -58,7 +58,6 @@ export class PurchasesController {
 
     @Post('subscribe/success/:sessionId')
     async successSubscription(@Param('sessionId') sessionId: string) {
-        console.log("Pruebita ", sessionId)
         return await this.purchasesService.completePurchase(sessionId);
     }
 
