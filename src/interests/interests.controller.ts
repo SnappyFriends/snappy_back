@@ -28,6 +28,11 @@ export class InterestsController {
     return this.interestsService.getAll();
   }
 
+  @Get('/admin/interests')
+  getAllAdmin(): Promise<Interest[]> {
+    return this.interestsService.getAllAdmin();
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Search for Interests by ID' })
   @ApiOkResponse({

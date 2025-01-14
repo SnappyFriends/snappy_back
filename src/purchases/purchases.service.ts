@@ -103,7 +103,8 @@ export class PurchasesService {
 
     const subscriptions = await this.purchaseRepository.find({
       where: {
-        purchase_date: Between(start, end)
+        purchase_date: Between(start, end),
+        status: PaymentStatus.COMPLETED
       },
       relations: ['user'],
       select: {
