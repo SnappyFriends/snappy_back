@@ -7,7 +7,11 @@
     "profile_image": "/no_img.png",
     "birthdate": "1990-05-15",
     "genre": "MASCULINO",
-    "interests": ["Música", "Tecnología", "Cine"]
+    "interests": ["Música", "Tecnología", "Cine"],
+    "location": {
+      "x": -34.611778,
+      "y": -58.417309
+    }
   },
   {
     "fullname": "Jane Smith",
@@ -17,17 +21,11 @@
     "profile_image": "/no_img.png",
     "birthdate": "1985-08-23",
     "genre": "FEMENINO",
-    "interests": ["Arte", "Cine", "Literatura"]
-  },
-  {
-    "fullname": "Michael Johnson",
-    "username": "michaeljohnson",
-    "email": "michael@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1992-11-02",
-    "genre": "MASCULINO",
-    "interests": ["Deportes", "Videojuegos", "Tecnología"]
+    "interests": ["Arte", "Cine", "Literatura"],
+    "location": {
+      "x": -32.944198,
+      "y": -60.736302
+    }
   },
   {
     "fullname": "Sarah Williams",
@@ -37,17 +35,11 @@
     "profile_image": "/no_img.png",
     "birthdate": "1998-01-18",
     "genre": "FEMENINO",
-    "interests": ["Viajes", "Gastronomía", "Arte"]
-  },
-  {
-    "fullname": "David Brown",
-    "username": "davidbrown",
-    "email": "david@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1980-12-04",
-    "genre": "MASCULINO",
-    "interests": ["Cine", "Literatura", "Tecnología"]
+    "interests": ["Viajes", "Gastronomía", "Arte"],
+    "location": {
+      "x": -42.780202,
+      "y": -65.039570
+    }
   },
   {
     "fullname": "Emily Davis",
@@ -57,7 +49,11 @@
     "profile_image": "/no_img.png",
     "birthdate": "1993-07-30",
     "genre": "FEMENINO",
-    "interests": ["Música", "Cine", "Fotografía"]
+    "interests": ["Música", "Cine", "Fotografía"],
+    "location": {
+      "x": -24.786007,
+      "y": -65.408058
+    }
   },
   {
     "fullname": "William Martinez",
@@ -67,86 +63,38 @@
     "profile_image": "/no_img.png",
     "birthdate": "1987-03-25",
     "genre": "MASCULINO",
-    "interests": ["Deportes", "Tecnología", "Fotografía"]
+    "interests": ["Deportes", "Tecnología", "Fotografía"],
+    "location": {
+      "x": -30.039585,
+      "y": -51.479474
+    }
   },
   {
-    "fullname": "Olivia Wilson",
-    "username": "oliviawilson",
-    "email": "olivia@example.com",
+    "fullname": "Ana González",
+    "username": "anagonzalez",
+    "email": "ana@example.cl",
     "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
     "profile_image": "/no_img.png",
-    "birthdate": "1995-06-12",
+    "birthdate": "1992-05-10",
     "genre": "FEMENINO",
-    "interests": ["Arte", "Gastronomía", "Literatura"]
+    "interests": ["Música", "Arte", "Literatura"],
+    "location": {
+      "x": -33.448899,
+      "y": -70.669265
+    }
   },
   {
-    "fullname": "Liam Moore",
-    "username": "liammoore",
-    "email": "liam@example.com",
+    "fullname": "Carlos Soto",
+    "username": "carlossoto",
+    "email": "carlos@example.cl",
     "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
     "profile_image": "/no_img.png",
-    "birthdate": "1991-02-14",
+    "birthdate": "1987-12-17",
     "genre": "MASCULINO",
-    "interests": ["Videojuegos", "Deportes", "Tecnología"]
-  },
-  {
-    "fullname": "Sophia Taylor",
-    "username": "sophiataylor",
-    "email": "sophia@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1990-09-06",
-    "genre": "FEMENINO",
-    "interests": ["Literatura", "Cine", "Arte"]
-  },
-  {
-    "fullname": "Jackson Lee",
-    "username": "jacksonlee",
-    "email": "jackson@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1988-04-25",
-    "genre": "MASCULINO",
-    "interests": ["Música", "Cine", "Tecnología"]
-  },
-  {
-    "fullname": "Amelia Harris",
-    "username": "ameliaharris",
-    "email": "amelia@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1994-12-15",
-    "genre": "FEMENINO",
-    "interests": ["Deportes", "Arte", "Gastronomía"]
-  },
-  {
-    "fullname": "Mason Clark",
-    "username": "masonclark",
-    "email": "mason@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1992-03-09",
-    "genre": "MASCULINO",
-    "interests": ["Programación", "Cine", "Tecnología"]
-  },
-  {
-    "fullname": "Isabella Young",
-    "username": "isabellayoung",
-    "email": "isabella@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1997-01-22",
-    "genre": "FEMENINO",
-    "interests": ["Ciencias", "Arte", "Literatura"]
-  },
-  {
-    "fullname": "James King",
-    "username": "jamesking",
-    "email": "james@example.com",
-    "password": "$2b$10$QiT63r6DaoBoQfZpPmWQou9BFk0TOTsVsasDUSKvG3MX.n93Ezn7a",
-    "profile_image": "/no_img.png",
-    "birthdate": "1983-05-30",
-    "genre": "MASCULINO",
-    "interests": ["Deportes", "Música", "Videojuegos"]
+    "interests": ["Deportes", "Fotografía", "Viajes"],
+    "location": {
+      "x": -33.469119,
+      "y": -70.642217
+    }
   }
 ]

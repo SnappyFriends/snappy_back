@@ -83,6 +83,7 @@ export class UsersSeederService implements OnModuleInit {
                 birthdate: element.birthdate,
                 genre: element.genre,
                 interests: interests,
+                location: element.location
             });
 
             users.push(user);
