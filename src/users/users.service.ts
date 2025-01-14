@@ -221,8 +221,10 @@ export class UsersService {
     }
 
     if (
+      !userFound1.location ||
+      !userFound2.location ||
       !userFound1.location.x ||
-      userFound1.location.y ||
+      !userFound1.location.y ||
       !userFound2.location.x ||
       !userFound2.location.y
     ) {

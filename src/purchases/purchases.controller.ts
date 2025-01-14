@@ -8,7 +8,6 @@ import { Roles } from "src/decorators/roles.decorator";
 import { AuthGuard } from "src/auth/guards/auth.guard";
 import { RolesGuard } from "src/auth/guards/roles.guard";
 
-
 @ApiTags('Purchases')
 @Controller('purchases')
 export class PurchasesController {
@@ -52,14 +51,16 @@ export class PurchasesController {
 
         const session = await this.stripeService.createCheckoutSession(amount, userId);
 
-        await this.purchasesService.createInitialPurchase(userId, amount, session.id);
+        await this.purchasesService.createPendingPurchase(userId, amount, session.id);
 
         return { url: session.url };
     }
 
-    // @ApiBearerAuth()
-    // @Roles(userRole.DEFAULT, userRole.ADMIN, userRole.SUPERADMIN,)
-    // @UseGuards(AuthGuard, RolesGuard)
+    @Post('subscribe/success/:sessionId')
+    async successSubscription(@Param('sessionId') sessionId: string) {
+        return await this.purchasesService.completePurchase(sessionId);
+    }
+
     @Get('user/:id')
     async getSubscriptionByUser(@Param('id', ParseUUIDPipe) userId: string) {
         return this.purchasesService.getSubscriptionByUser(userId);
@@ -73,9 +74,6 @@ export class PurchasesController {
         return this.purchasesService.getSubscriptions();
     }
 
-    // @ApiBearerAuth()
-    // @Roles(userRole.ADMIN, userRole.SUPERADMIN)
-    // @UseGuards(AuthGuard, RolesGuard)
     @Get('/metrics')
     async getSubscriptionsRange(@Query() subscriptionRange: subscriptionRangeDTO) {
         return this.purchasesService.getSubscriptionsRange(subscriptionRange);

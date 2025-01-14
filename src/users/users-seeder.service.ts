@@ -74,6 +74,12 @@ export class UsersSeederService implements OnModuleInit {
                 element.interests.includes(interest.name)
             );
 
+            let location = null;
+            if (element.location) {
+                const { x, y } = element.location;
+                location = `${x},${y}`;
+            }
+
             const user = this.userRepository.create({
                 fullname: element.fullname,
                 username: element.username,
@@ -83,6 +89,7 @@ export class UsersSeederService implements OnModuleInit {
                 birthdate: element.birthdate,
                 genre: element.genre,
                 interests: interests,
+                location: location
             });
 
             users.push(user);
