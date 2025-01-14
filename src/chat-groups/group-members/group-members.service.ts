@@ -83,7 +83,7 @@ export class GroupMembersService {
       const responseObject = allGroupMembers.map((groupMember) => ({
         group_id: groupMember.group_id,
         user_id: groupMember.user_id,
-        role: groupMember.role,
+        group_role: groupMember.role,
         join_date: groupMember.join_date,
         group: {
           name: groupMember.group.name,
