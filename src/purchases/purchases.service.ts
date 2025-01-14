@@ -19,22 +19,12 @@ export class PurchasesService {
     private readonly nodemailerService: NodemailerService
   ) { }
 
-  async createInitialPurchase(
-    userId: string,
-    amount: number,
-    sessionId: string,
-  ) {
+  async createPendingPurchase(userId: string, amount: number, sessionId: string) {
     const user = await this.usersRepository.findOne({
       where: { id: userId }
     });
 
-    if (!user) {
-      throw new NotFoundException('El usuario no existe');
-    }
-
-    user.user_type = userType.PREMIUM;
-
-    await this.usersRepository.save(user);
+    if (!user) throw new NotFoundException('El usuario no existe');
 
     const expireDate = new Date();
     expireDate.setDate(expireDate.getDate() + 30);
@@ -45,20 +35,40 @@ export class PurchasesService {
       purchase_date: new Date(),
       expiration_date: expireDate,
       payment_method: PaymentMethod.CARD,
-      status: PaymentStatus.COMPLETED,
+      status: PaymentStatus.PENDING,
       stripe_session_id: sessionId,
     });
 
-    const savedPurchase = this.purchaseRepository.save(purchase);
+    return await this.purchaseRepository.save(purchase);
+  }
+
+  async completePurchase(sessionId: string) {
+    console.log("Session ID:", sessionId)
+    const purchase = await this.purchaseRepository.findOne({
+      where: { stripe_session_id: sessionId, status: PaymentStatus.PENDING },
+      relations: ['user'],
+    });
+
+    if (!purchase) throw new NotFoundException('Compra no encontrada o ya completada');
+
+    purchase.status = PaymentStatus.COMPLETED;
+
+    const expireDate = new Date();
+    expireDate.setDate(expireDate.getDate() + 30);
+    purchase.expiration_date = expireDate;
+
+    const user = purchase.user;
+    user.user_type = userType.PREMIUM;
+    await this.usersRepository.save(user);
+
+    const savedPurchase = await this.purchaseRepository.save(purchase);
 
     const emailSubject = '¡Gracias por tu suscripción Premium!';
     const emailText = `Hola ${user.fullname}, gracias por adquirir el paquete premium.`;
-    const emailHtml = `<div style="text-align: center;"> 
-      <img src="https://snappyfriends.vercel.app/_next/image?url=%2Ffavicon.ico&w=64&q=75" alt="Logo" style="display: block; margin: 0 auto; width: 150px; height: auto;">
-      <h1> ¡Ahora eres Premium, ${user.fullname}!</h1>
-      Hola ${user.fullname}, gracias por suscribirte a Premium en snappyFriends. Tu suscripción esta activa y ya puedes disfrutar de los beneficios que te ofrecemos en paquete premium.
-      </div>
-  `;
+    const emailHtml = `<div style="text-align: center;">
+      <h1>¡Ahora eres Premium, ${user.fullname}!</h1>
+      Gracias por suscribirte a nuestro paquete premium. Tu suscripción está activa.
+      </div>`;
 
     await this.nodemailerService.sendEmail(
       user.email,
@@ -68,12 +78,14 @@ export class PurchasesService {
     );
 
     return savedPurchase;
-
   }
 
   async getSubscriptionByUser(userId) {
     const subscriptionFound = await this.purchaseRepository.findOne({
-      where: { user: { id: userId } },
+      where: {
+        user: { id: userId },
+        status: PaymentStatus.PENDING
+      },
       relations: ['user']
     });
     if (!subscriptionFound) throw new NotFoundException("Subscription not found");
