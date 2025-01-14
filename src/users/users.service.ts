@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -117,6 +118,12 @@ export class UsersService {
   async updateUser(id: string, userData: UpdateUserDTO) {
     if (userData.password) {
       userData.password = await bcrypt.hash(userData.password, 10);
+    }
+
+    if(userData.username) {
+      const existingUser = await this.usersRepository.findOne({ where: { username: userData.username } });
+
+      if (existingUser && existingUser.id !== id) throw new ConflictException(`El nombre de usuario "${userData.username}" ya está en uso.`);
     }
 
     const result = await this.usersRepository.update(id, userData);
