@@ -61,9 +61,6 @@ export class PurchasesController {
         return await this.purchasesService.completePurchase(sessionId);
     }
 
-    @ApiBearerAuth()
-    @Roles(userRole.ADMIN, userRole.SUPERADMIN)
-    @UseGuards(AuthGuard, RolesGuard)
     @Get('user/:id')
     async getSubscriptionByUser(@Param('id', ParseUUIDPipe) userId: string) {
         return this.purchasesService.getSubscriptionByUser(userId);
@@ -77,9 +74,6 @@ export class PurchasesController {
         return this.purchasesService.getSubscriptions();
     }
 
-    // @ApiBearerAuth()
-    // @Roles(userRole.ADMIN, userRole.SUPERADMIN)
-    // @UseGuards(AuthGuard, RolesGuard)
     @Get('/metrics')
     async getSubscriptionsRange(@Query() subscriptionRange: subscriptionRangeDTO) {
         return this.purchasesService.getSubscriptionsRange(subscriptionRange);

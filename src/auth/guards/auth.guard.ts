@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
       const secret = process.env.JWT_SECRET;
       const user = this.jwtServices.verify(token, { secret });
 
-      user.roles = user.Roles || ['default'];
+      user.roles = user.Roles || 'default';
 
       user.exp = new Date(user.exp * 1000);
       user.iat = new Date(user.iat * 1000);
