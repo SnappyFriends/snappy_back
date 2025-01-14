@@ -112,10 +112,10 @@ export class LogsService {
 
     const userTypeDistribution = await this.usersRepository
       .createQueryBuilder('user')
-      .select('user.type', 'type')
+      .select('user.user_type', 'user_type')
       .addSelect('COUNT(*)', 'count')
       .where('user.registration_date BETWEEN :fromDate AND :toDate', { fromDate, toDate })
-      .groupBy('user.type')
+      .groupBy('user.user_type')
       .getRawMany();
 
     return {
@@ -124,7 +124,6 @@ export class LogsService {
       inactiveUsers,
       newUsers,
       userTypeDistribution,
-
 
     };
 

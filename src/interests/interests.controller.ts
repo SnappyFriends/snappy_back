@@ -4,6 +4,9 @@ import { Interest } from './entities/interests.entity';
 import { CreateInterestDTO, UpdateInterestDTO } from './dto/interests.dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { userRole } from 'src/users/entities/user.entity';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @ApiTags('Interests')
 @Controller('interests')
@@ -60,6 +63,10 @@ export class InterestsController {
     return this.interestsService.getById(id);
   }
 
+
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Post()
   @ApiOperation({ summary: 'Create Interest' })
   @ApiCreatedResponse({
@@ -85,6 +92,9 @@ export class InterestsController {
     return this.interestsService.create(createInterestDTO);
   }
 
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Modify Interest' })
   @ApiOkResponse({
@@ -123,6 +133,9 @@ export class InterestsController {
     return this.interestsService.update(id, updateInterestDTO);
   }
 
+  @ApiBearerAuth()
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN)
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete Interest' })
   @ApiOkResponse({ description: 'Interest deleted successfully.', schema: { example: 'Interest con ID ${id} eliminada correctamente' } })
