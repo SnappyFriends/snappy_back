@@ -57,9 +57,9 @@ export class PurchasesController {
         return { url: session.url };
     }
 
-    @ApiBearerAuth()
-    @Roles(userRole.ADMIN, userRole.SUPERADMIN)
-    @UseGuards(AuthGuard, RolesGuard)
+    // @ApiBearerAuth()
+    // @Roles(userRole.DEFAULT, userRole.ADMIN, userRole.SUPERADMIN,)
+    // @UseGuards(AuthGuard, RolesGuard)
     @Get('user/:id')
     async getSubscriptionByUser(@Param('id', ParseUUIDPipe) userId: string) {
         return this.purchasesService.getSubscriptionByUser(userId);
