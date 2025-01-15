@@ -27,11 +27,13 @@ import {
 import { Roles } from 'src/decorators/roles.decorator'; */
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { userRole } from './entities/user.entity';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   // @ApiBearerAuth()
   // @Roles(userRole.ADMIN, userRole.SUPERADMIN)
@@ -245,11 +247,7 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
-<<<<<<< HEAD
   @Roles(userRole.ADMIN, userRole.SUPERADMIN, userRole.DEFAULT)
-=======
-  /* @Roles(userRole.ADMIN, userRole.SUPERADMIN) */
->>>>>>> 71efbe828c9a7414cb632bfcd885a1b649599f6a
   @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
