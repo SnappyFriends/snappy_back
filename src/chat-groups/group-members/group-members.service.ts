@@ -195,9 +195,9 @@ export class GroupMembersService {
     };
   }
 
-  async leaveGroup(id: string, group_id: string) {
+  async leaveGroup(group_id: string, user_id: string) {
     const groupMemberToLeave = await this.groupMembersRepository.findOne({
-      where: { user_id: id, group_id },
+      where: { user_id, group_id },
     });
 
     if (!groupMemberToLeave) {
@@ -207,7 +207,7 @@ export class GroupMembersService {
     await this.groupMembersRepository.remove(groupMemberToLeave);
 
     return {
-      message: `El usuario con ID ${id} ha salido del grupo.`,
+      message: `El usuario con ID ${user_id} ha salido del grupo.`,
     };
   }
 

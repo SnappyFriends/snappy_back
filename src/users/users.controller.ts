@@ -23,16 +23,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { userRole, userType } from './entities/user.entity';
-import { Roles } from 'src/decorators/roles.decorator';
+/* import { userRole, userType } from './entities/user.entity';
+import { Roles } from 'src/decorators/roles.decorator'; */
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
-
+  constructor(private readonly usersService: UsersService) {}
 
   // @ApiBearerAuth()
   // @Roles(userRole.ADMIN, userRole.SUPERADMIN)
@@ -132,7 +131,6 @@ export class UsersController {
       },
     },
   })
-
   async getUserById(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.getUserById(id);
   }
@@ -195,7 +193,6 @@ export class UsersController {
       },
     },
   })
-
   async getUserByUsername(@Param('usernameId') username: string) {
     return this.usersService.getUserByUsername(username);
   }
@@ -248,7 +245,11 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
+<<<<<<< HEAD
   @Roles(userRole.ADMIN, userRole.SUPERADMIN, userRole.DEFAULT)
+=======
+  /* @Roles(userRole.ADMIN, userRole.SUPERADMIN) */
+>>>>>>> 71efbe828c9a7414cb632bfcd885a1b649599f6a
   @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
@@ -269,7 +270,6 @@ export class UsersController {
   async deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.deleteUser(id);
   }
-
 
   @Post(':userId/assign-interest/:interestId')
   @ApiOperation({ summary: 'Assign interests to User' })
@@ -360,7 +360,6 @@ export class UsersController {
   ) {
     return this.usersService.removeInterestToUser(userId, interestId);
   }
-
 
   @Get(':user1/distance/:user2')
   @ApiOperation({ summary: 'Get the distance between two users' })

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -222,11 +223,11 @@ export class GroupMembersController {
     return this.groupMembersService.removeFromAdmin(id, group_id);
   }
 
-  @Put(':id/leave-group/:group_id')
+  @Delete(':group_id/leave-group/:user_id')
   leaveGroup(
-    @Param('id', ParseUUIDPipe) id: string,
     @Param('group_id', ParseUUIDPipe) group_id: string,
+    @Param('user_id', ParseUUIDPipe) user_id: string,
   ) {
-    return this.groupMembersService.leaveGroup(id, group_id);
+    return this.groupMembersService.leaveGroup(group_id, user_id);
   }
 }
