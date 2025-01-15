@@ -245,7 +245,11 @@ export class UsersController {
   }
 
   @ApiBearerAuth()
+<<<<<<< HEAD
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN, userRole.DEFAULT)
+=======
   /* @Roles(userRole.ADMIN, userRole.SUPERADMIN) */
+>>>>>>> 71efbe828c9a7414cb632bfcd885a1b649599f6a
   @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
