@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
+import { GetUsersDTO, UpdateLocationDTO, UpdateUserDTO } from './dto/user.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -244,6 +244,11 @@ export class UsersController {
       message: 'User updated successfully',
       data: { id, ...userData },
     };
+  }
+
+  @Put('/saveLocation/:id')
+  async saveLocation(@Param('id', ParseUUIDPipe) id: string, @Body() location: UpdateLocationDTO) {
+    return this.usersService.saveLocation(id, location);
   }
 
   // @ApiBearerAuth()

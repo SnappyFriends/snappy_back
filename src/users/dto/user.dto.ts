@@ -20,6 +20,15 @@ export class UpdateUserDTO extends PartialType(registerUserDTO) {
   last_login_date?: Date;
 }
 
+export class UpdateLocationDTO {
+  @IsOptional()
+  @IsNotEmpty()
+  location?: {
+    x: number;
+    y: number;
+  };
+}
+
 export class GetUsersDTO {
   @ApiPropertyOptional({
     description: 'The page number for pagination (default: 1)',

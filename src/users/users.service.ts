@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { GetUsersDTO, UpdateUserDTO } from './dto/user.dto';
+import { GetUsersDTO, UpdateLocationDTO, UpdateUserDTO } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -135,6 +135,13 @@ export class UsersService {
     const { password, ...userWithoutPassword } = updatedUser;
 
     return userWithoutPassword;
+  }
+
+  async saveLocation(id: string, location: UpdateLocationDTO) {
+    const result = await this.usersRepository.update(id, location);
+    if (result.affected === 0) throw new NotFoundException(`No se encontró un usuario con el ID ${id}`);
+
+    return `Localización del usuario ${id} guardada con éxito. (${location})`;
   }
 
   async deleteUser(id: string) {
