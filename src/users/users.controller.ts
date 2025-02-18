@@ -8,13 +8,11 @@ import {
   Put,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { GetUsersDTO, UpdateLocationDTO, UpdateUserDTO } from './dto/user.dto';
 import {
   ApiBadRequestResponse,
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -23,21 +21,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-/* import { userRole, userType } from './entities/user.entity';
-import { Roles } from 'src/decorators/roles.decorator'; */
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { userRole } from './entities/user.entity';
-import { Roles } from 'src/decorators/roles.decorator';
-
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
-  // @ApiBearerAuth()
-  // @Roles(userRole.ADMIN, userRole.SUPERADMIN)
-  // @UseGuards(AuthGuard, RolesGuard)
   @Get()
   @ApiOperation({ summary: 'Get all Users.' })
   @ApiOkResponse({
@@ -59,11 +47,8 @@ export class UsersController {
           location: 'Austin',
           stories: [],
           interests: [],
-          privacy: [],
-          responses: [],
           reportedReports: [],
           reportingReports: [],
-          polls: [],
           posts: [],
           reactions: [],
           comments: [],
@@ -98,11 +83,8 @@ export class UsersController {
           location: 'Austin',
           stories: [],
           interests: [],
-          privacy: [],
-          responses: [],
           reportedReports: [],
           reportingReports: [],
-          polls: [],
           posts: [],
           reactions: [],
           comments: [],
@@ -162,11 +144,8 @@ export class UsersController {
             name: 'Música',
           },
         ],
-        privacy: [],
-        responses: [],
         reportedReports: [],
         reportingReports: [],
-        polls: [],
         posts: [],
         reactions: [],
         comments: [],
@@ -247,13 +226,13 @@ export class UsersController {
   }
 
   @Put('/saveLocation/:id')
-  async saveLocation(@Param('id', ParseUUIDPipe) id: string, @Body() location: UpdateLocationDTO) {
+  async saveLocation(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() location: UpdateLocationDTO,
+  ) {
     return this.usersService.saveLocation(id, location);
   }
 
-  // @ApiBearerAuth()
-  // @Roles(userRole.ADMIN, userRole.SUPERADMIN, userRole.DEFAULT)
-  // @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a User' })
   @ApiOkResponse({

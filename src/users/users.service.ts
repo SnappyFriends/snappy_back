@@ -63,11 +63,8 @@ export class UsersService {
       relations: [
         'stories',
         'interests',
-        'privacy',
-        'responses',
         'reportedReports',
         'reportingReports',
-        'polls',
         'posts',
         'reactions',
         'comments',
@@ -90,11 +87,8 @@ export class UsersService {
       relations: [
         'stories',
         'interests',
-        'privacy',
-        'responses',
         'reportedReports',
         'reportingReports',
-        'polls',
         'posts',
         'reactions',
         'comments',
