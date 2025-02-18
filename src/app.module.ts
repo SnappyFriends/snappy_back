@@ -5,12 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { ReactionsModule } from './reactions/reactions.module';
 import { CommentsModule } from './comments/comments.module';
-import { PollsModule } from './polls/polls.module';
 import { ReportsModule } from './reports/reports.module';
-import { PrivacyModule } from './privacy/privacy.module';
 import { MessagesModule } from './messages/messages.module';
 import { InterestsModule } from './interests/interests.module';
-import { PollResponseModule } from './poll-response/poll-response.module';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { StoriesModule } from './stories/stories.module';
@@ -47,17 +44,14 @@ import { LogsModule } from './logsAdmin/logs.module';
     GroupMembersModule,
     ChatGroupsModule,
     NotificationsModule,
-    PollsModule,
-    PollResponseModule,
     FollowModule,
-    PrivacyModule,
     ReportsModule,
     PurchasesModule,
     FilesModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET /* 
-      signOptions: { expiresIn: '12h' }, */,
+      secret: process.env.JWT_SECRET, /* 
+      signOptions: { expiresIn: '12h' }, */
     }),
     NodemailerModule,
     ChatGatewayModule,

@@ -1,8 +1,5 @@
 import { Reaction } from 'src/reactions/entities/reaction.entity';
-import { Privacy } from 'src/privacy/entities/privacy.entity';
-import { PollResponse } from 'src/poll-response/entities/poll-response.entity';
 import { Report } from 'src/reports/entities/report.entity';
-import { Poll } from 'src/polls/entities/poll.entity';
 import { Post } from 'src/posts/entities/post.entity';
 import { Stories } from 'src/stories/entities/stories.entity';
 import {
@@ -137,26 +134,17 @@ export class User {
   @JoinTable()
   interests: Interest[];
 
-  @OneToMany(() => Privacy, (privacy) => privacy.user)
-  privacy: Privacy[];
-
   @OneToMany(() => Follow, (follow) => follow.following)
   followers: Follow[];
 
   @OneToMany(() => Follow, (follow) => follow.follower)
   following: Follow[];
 
-  @OneToMany(() => PollResponse, (response) => response.user)
-  responses: PollResponse[];
-
   @OneToMany(() => Report, (report) => report.reported_user)
   reportedReports: Report[];
 
   @OneToMany(() => Report, (report) => report.reporting_user)
   reportingReports: Report[];
-
-  @OneToMany(() => Poll, (poll) => poll.user)
-  polls: Poll[];
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
