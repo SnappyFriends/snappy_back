@@ -78,21 +78,21 @@ export class GroupMembersService {
     try {
       const allGroupMembers = await this.groupMembersRepository.find({
         relations: ['group'],
+        select: {
+          group_id: true,
+          user_id: true,
+          role: true,
+          join_date: true,
+          group: {
+            name: true,
+            description: true,
+            creation_date: true,
+            privacy: true,
+          },
+        },
       });
 
-      const responseObject = allGroupMembers.map((groupMember) => ({
-        group_id: groupMember.group_id,
-        user_id: groupMember.user_id,
-        group_role: groupMember.role,
-        join_date: groupMember.join_date,
-        group: {
-          name: groupMember.group.name,
-          description: groupMember.group.description,
-          creation_date: groupMember.group.creation_date,
-          privacy: groupMember.group.privacy,
-        },
-      }));
-      return responseObject;
+      return allGroupMembers;
     } catch {
       throw new BadRequestException(
         'Ocurrió un error inesperado al traer miembros del grupo. Inténtelo nuevamente.',

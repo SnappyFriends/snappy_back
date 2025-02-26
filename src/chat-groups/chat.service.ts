@@ -87,23 +87,30 @@ export class ChatService {
     const chatFound = await this.chatRepository.findOne({
       where: { id: chatId },
       relations: ['participants', 'messages', 'messages.sender_id'],
+      select: {
+        id: true,
+        key: true,
+        participants: {
+          id: true,
+          username: true,
+          profile_image: true,
+          user_type: true,
+          fullname: true,
+        },
+        messages: {
+          content: true,
+          send_date: true,
+          sender_id: {
+            id: true,
+            username: true,
+            profile_image: true,
+            user_type: true,
+          },
+        },
+      },
     });
 
-    const chatMaped = {
-      ...chatFound,
-      messages: chatFound.messages.map((message) => {
-        return {
-          content: message.content,
-          send_date: message.send_date,
-          sender_id: message.sender_id.id,
-          username: message.sender_id.username,
-          profile_image: message.sender_id.profile_image,
-          user_type: message.sender_id.user_type,
-        };
-      }),
-    };
-
-    return chatMaped;
+    return chatFound;
   }
 
   async findAllChatsByUserId(sender_id: string, receiver_id: string) {
