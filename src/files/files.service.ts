@@ -12,7 +12,14 @@ export class FilesService {
   ) {}
 
   async uploadImg(userId: string, fileImg: Express.Multer.File) {
-    const userFound = await this.usersRepository.findOneBy({ id: userId });
+    const userFound = await this.usersRepository.findOne({
+      where: { id: userId },
+      select: {
+        id: true,
+        fullname: true,
+        username: true,
+      },
+    });
 
     if (!userFound) throw new NotFoundException('User not found.');
 

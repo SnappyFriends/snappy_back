@@ -13,9 +13,10 @@ import { NotificationType } from 'src/notifications/entities/notification.entity
 @Injectable()
 export class FollowService {
   constructor(
-    @InjectRepository(Follow) private readonly followRepository: Repository<Follow>,
+    @InjectRepository(Follow)
+    private readonly followRepository: Repository<Follow>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async followUser(followerId: string, followingId: string) {
@@ -49,11 +50,11 @@ export class FollowService {
     await this.followRepository.save(follow);
 
     this.notificationsService.create({
-      content: "ha comenzado a seguirte",
+      content: 'ha comenzado a seguirte',
       type: NotificationType.FOLLOWER,
       user_id: following.id,
-      sender_user: follower.id
-    })
+      sender_user: follower.id,
+    });
 
     return 'Successfully followed the user';
   }
@@ -88,21 +89,17 @@ export class FollowService {
       throw new NotFoundException('User not found');
     }
 
-    const follows = await this.followRepository.find({
-      where: { following: { id: userId } },
-      relations: ['follower'],
-    });
-
-    const objectReturn = follows.map((follow) => {
-      return {
-        id: follow.follower.id,
-        username: follow.follower.username,
-        profile_image: follow.follower.profile_image,
-        user_type: follow.follower.user_type,
-      };
-    });
-
-    return objectReturn;
+    return this.followRepository
+      .createQueryBuilder('follow')
+      .innerJoin('follow.follower', 'follower')
+      .where('follow.followingId = :userId', { userId })
+      .select([
+        'follower.id AS id',
+        'follower.username AS username',
+        'follower.profile_image AS profile_image',
+        'follower.user_type AS user_type',
+      ])
+      .getRawMany();
   }
 
   async getFollowing(userId: string) {
@@ -112,21 +109,17 @@ export class FollowService {
       throw new NotFoundException('User not found');
     }
 
-    const follows = await this.followRepository.find({
-      where: { follower: { id: userId } },
-      relations: ['following'],
-    });
-
-    const objectReturn = follows.map((follow) => {
-      return {
-        id: follow.following.id,
-        username: follow.following.username,
-        profile_image: follow.following.profile_image,
-        user_type: follow.following.user_type,
-      };
-    });
-
-    return objectReturn;
+    return this.followRepository
+      .createQueryBuilder('follow')
+      .innerJoin('follow.following', 'following')
+      .where('follow.followerId = :userId', { userId })
+      .select([
+        'following.id AS id',
+        'following.username AS username',
+        'following.profile_image AS profile_image',
+        'following.user_type AS user_type',
+      ])
+      .getRawMany();
   }
 
   async getFriends(userId: string) {

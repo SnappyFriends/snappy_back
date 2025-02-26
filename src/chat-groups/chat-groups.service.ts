@@ -30,6 +30,11 @@ export class ChatGroupsService {
 
     const findCreator = await this.usersRepository.findOne({
       where: { id: creator_id },
+      select: {
+        id: true,
+        fullname: true,
+        username: true,
+      },
     });
 
     if (!findCreator) {
@@ -40,6 +45,7 @@ export class ChatGroupsService {
 
     const findName = await this.chatGroupsRepository.findOne({
       where: { name: name },
+      select: { name: true },
     });
 
     if (findName) {
@@ -66,18 +72,22 @@ export class ChatGroupsService {
 
     await this.groupMembersRepository.save(addCreatorAsMember);
 
-    const responseObject = {
-      name: newChatGroup.name,
-      description: newChatGroup.description,
-      privacy: newChatGroup.privacy,
-      creator: {
-        id: newChatGroup.creator.id,
-        fullname: newChatGroup.creator.fullname,
-        username: newChatGroup.creator.username,
+    const responseObject = await this.chatGroupsRepository.findOne({
+      where: { group_id: newChatGroup.group_id },
+      relations: ['creator'],
+      select: {
+        group_id: true,
+        name: true,
+        description: true,
+        privacy: true,
+        creation_date: true,
+        creator: {
+          id: true,
+          fullname: true,
+          username: true,
+        },
       },
-      group_id: newChatGroup.group_id,
-      creation_date: newChatGroup.creation_date,
-    };
+    });
 
     return responseObject;
   }
